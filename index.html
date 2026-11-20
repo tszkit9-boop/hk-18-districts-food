@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>香港十八區食好西指南 | HK 18 Districts Foodie Guide & CMS</title>
+  <title>香港食好西指南 | HK Foodie Guide & CMS</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -39,7 +39,7 @@
             香港食好西<span class="text-orange-600">指南</span>
           </h1>
           <p class="text-[11px] text-gray-400 font-medium hidden sm:block mt-0.5">
-            HK 18 DISTRICTS • <span id="sync-status-label">LOCAL MODE</span>
+            HK FOODIE GUIDE • <span id="sync-status-label">LOCAL MODE</span>
           </p>
         </div>
       </div>
@@ -76,19 +76,19 @@
     <section class="bg-gradient-to-b from-orange-50 via-amber-50/40 to-transparent pt-8 pb-6 px-4 sm:px-6 lg:px-8 border-b border-orange-100/60">
       <div class="max-w-4xl mx-auto text-center">
         <span id="hero-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold mb-3">
-          <i data-lucide="flame" class="w-3.5 h-3.5"></i> 全港十八區地道美食資料庫
+          <i data-lucide="flame" class="w-3.5 h-3.5"></i> 全港細分地段地道美食資料庫
         </span>
         <h2 id="hero-title" class="text-2xl sm:text-4xl font-black text-gray-900 tracking-tight mb-2">
           今日想喺邊區<span class="text-orange-600">食好西</span>？
         </h2>
         <p id="hero-subtitle" class="text-sm sm:text-base text-gray-600 mb-6">
-          覆蓋港島、九龍、新界及離島共 18 區，隨時搜尋招牌菜同街坊食評
+          覆蓋港島、九龍、新界及離島常用搵食地段，隨時搜尋招牌菜同街坊食評
         </p>
 
         <div class="bg-white p-2 rounded-2xl shadow-md border border-gray-200/80 flex flex-col sm:flex-row gap-2">
           <div class="flex-1 flex items-center px-3 gap-2">
             <i data-lucide="search" class="w-5 h-5 text-gray-400 shrink-0"></i>
-            <input id="search-input" type="text" oninput="renderFrontCards()" placeholder="搜尋餐廳名稱、招牌菜（例如：菠蘿油、雲吞麵、車仔麵）..." class="w-full py-2 text-sm focus:outline-none text-gray-800 placeholder-gray-400" />
+            <input id="search-input" type="text" oninput="renderFrontCards()" placeholder="搜尋餐廳名稱、地區、招牌菜..." class="w-full py-2 text-sm focus:outline-none text-gray-800 placeholder-gray-400" />
           </div>
           <div class="h-px sm:h-8 sm:w-px bg-gray-200 my-auto"></div>
           <div class="flex items-center px-3 gap-2 sm:w-48">
@@ -198,7 +198,7 @@
 
           <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
             <div class="flex items-center justify-between text-slate-500 text-xs font-bold mb-2">
-              <span id="stat-top-district-label">最多餐廳地區</span>
+              <span id="stat-top-district-label">最多餐廳地段</span>
               <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center"><i data-lucide="map" class="w-4 h-4"></i></div>
             </div>
             <div id="stat-top-district" class="text-2xl sm:text-3xl font-black text-slate-900">-</div>
@@ -227,7 +227,7 @@
             </div>
             <div class="relative w-full sm:w-64">
               <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-              <input id="admin-search" type="text" oninput="renderAdminTable()" placeholder="搜尋餐廳、地區或菜式..." class="w-full pl-9 pr-3 py-1.5 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:border-slate-500" />
+              <input id="admin-search" type="text" oninput="renderAdminTable()" placeholder="搜尋餐廳、地段或菜式..." class="w-full pl-9 pr-3 py-1.5 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:border-slate-500" />
             </div>
           </div>
 
@@ -236,7 +236,7 @@
               <thead>
                 <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase bg-slate-50">
                   <th id="th-restaurant" class="py-3.5 px-4">餐廳資訊</th>
-                  <th id="th-district-cat" class="py-3.5 px-4">地區 / 分類</th>
+                  <th id="th-district-cat" class="py-3.5 px-4">地段 / 分類</th>
                   <th id="th-price-rating" class="py-3.5 px-4">價位 / 評分</th>
                   <th id="th-featured" class="py-3.5 px-4 text-center">編輯精選</th>
                   <th id="th-status" class="py-3.5 px-4 text-center">狀態</th>
@@ -351,7 +351,7 @@
         <div class="flex flex-wrap items-start justify-between gap-2 mb-3">
           <div>
             <div class="flex items-center gap-2 text-xs font-bold text-orange-600 mb-1">
-              <span id="modal-district">地區</span><span>•</span><span id="modal-category">分類</span><span>•</span><span id="modal-price" class="text-emerald-600">$$</span>
+              <span id="modal-district">地段</span><span>•</span><span id="modal-category">分類</span><span>•</span><span id="modal-price" class="text-emerald-600">$$</span>
             </div>
             <h3 id="modal-name" class="text-2xl font-black text-gray-900">餐廳名稱</h3>
           </div>
@@ -418,7 +418,7 @@
             <input id="form-name" type="text" placeholder="例如：華嫂冰室" class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500" />
           </div>
           <div>
-            <label id="lbl-form-district" class="block text-xs font-bold text-gray-700 mb-1">所屬地區 (全港18區) *</label>
+            <label id="lbl-form-district" class="block text-xs font-bold text-gray-700 mb-1">所屬地區 / 地段 *</label>
             <select id="form-district" class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500 bg-white"></select>
           </div>
         </div>
@@ -460,8 +460,21 @@
         </div>
 
         <div>
-          <label id="lbl-form-image" class="block text-xs font-bold text-gray-700 mb-1">食物圖片網址 (留空將自動配對美食靚相)</label>
-          <input id="form-image" type="text" placeholder="https://...（可留空）" class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500" />
+          <label id="lbl-form-image" class="block text-xs font-bold text-gray-700 mb-1">食物相片（可直接揀相，或貼圖片網址；留空會自動配對）</label>
+          <input id="form-image" type="text" oninput="handleImageUrlInput()" placeholder="https://...（可留空或直接揀相）" class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500" />
+          <div class="mt-2 flex flex-wrap items-center gap-2">
+            <label class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-300 bg-gray-50 hover:bg-gray-100 text-xs font-bold text-gray-700 transition-colors">
+              <i data-lucide="image-plus" class="w-4 h-4 text-orange-600"></i>
+              <span id="btn-pick-photo">揀選相片檔案</span>
+              <input id="form-image-file" type="file" accept="image/*" onchange="handlePhotoFileSelect(event)" class="hidden" />
+            </label>
+            <button type="button" id="btn-clear-photo" onclick="clearSelectedPhoto()" class="hidden px-2.5 py-1.5 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50">
+              清除相片
+            </button>
+          </div>
+          <div id="photo-preview-box" class="hidden mt-2.5">
+            <img id="photo-preview-img" src="" alt="Preview" class="h-32 w-full object-cover rounded-xl border border-gray-200" />
+          </div>
         </div>
 
         <div id="admin-only-fields" class="pt-2 border-t border-gray-100 flex flex-wrap items-center justify-between gap-4">
@@ -508,23 +521,62 @@
     }
 
     const DISTRICT_LABELS = [
-      { value: '中西區', zh: '中西區', en: 'Central & Western' },
-      { value: '灣仔', zh: '灣仔', en: 'Wan Chai' },
-      { value: '東區', zh: '東區', en: 'Eastern' },
-      { value: '南區', zh: '南區', en: 'Southern' },
-      { value: '油尖旺', zh: '油尖旺', en: 'Yau Tsim Mong' },
-      { value: '深水埗', zh: '深水埗', en: 'Sham Shui Po' },
-      { value: '九龍城', zh: '九龍城', en: 'Kowloon City' },
-      { value: '黃大仙', zh: '黃大仙', en: 'Wong Tai Sin' },
-      { value: '觀塘', zh: '觀塘', en: 'Kwun Tong' },
-      { value: '荃灣', zh: '荃灣', en: 'Tsuen Wan' },
-      { value: '屯門', zh: '屯門', en: 'Tuen Mun' },
-      { value: '元朗', zh: '元朗', en: 'Yuen Long' },
-      { value: '北區', zh: '北區', en: 'North' },
-      { value: '大埔', zh: '大埔', en: 'Tai Po' },
-      { value: '沙田', zh: '沙田', en: 'Sha Tin' },
-      { value: '西貢', zh: '西貢', en: 'Sai Kung' },
-      { value: '離島', zh: '離島', en: 'Islands' }
+      // 港島
+      { value: '中環', zh: '中環', en: 'Central', area: '中西區' },
+      { value: '上環', zh: '上環', en: 'Sheung Wan', area: '中西區' },
+      { value: '金鐘', zh: '金鐘', en: 'Admiralty', area: '中西區' },
+      { value: '西營盤/堅尼地城', zh: '西營盤 / 堅尼地城', en: 'Sai Ying Pun / Kennedy Town', area: '中西區' },
+      { value: '灣仔', zh: '灣仔', en: 'Wan Chai', area: '灣仔' },
+      { value: '銅鑼灣', zh: '銅鑼灣', en: 'Causeway Bay', area: '灣仔' },
+      { value: '跑馬地', zh: '跑馬地', en: 'Happy Valley', area: '灣仔' },
+      { value: '天后', zh: '天后', en: 'Tin Hau', area: '東區' },
+      { value: '炮台山', zh: '炮台山', en: 'Fortress Hill', area: '東區' },
+      { value: '北角', zh: '北角', en: 'North Point', area: '東區' },
+      { value: '鰂魚涌', zh: '鰂魚涌', en: 'Quarry Bay', area: '東區' },
+      { value: '太古', zh: '太古', en: 'Tai Koo', area: '東區' },
+      { value: '筲箕灣', zh: '筲箕灣', en: 'Shau Kei Wan', area: '東區' },
+      { value: '柴灣', zh: '柴灣', en: 'Chai Wan', area: '東區' },
+      { value: '香港仔', zh: '香港仔', en: 'Aberdeen', area: '南區' },
+      { value: '黃竹坑', zh: '黃竹坑', en: 'Wong Chuk Hang', area: '南區' },
+      { value: '赤柱', zh: '赤柱', en: 'Stanley', area: '南區' },
+
+      // 九龍
+      { value: '尖沙咀', zh: '尖沙咀', en: 'Tsim Sha Tsui', area: '油尖旺' },
+      { value: '佐敦', zh: '佐敦', en: 'Jordan', area: '油尖旺' },
+      { value: '油麻地', zh: '油麻地', en: 'Yau Ma Tei', area: '油尖旺' },
+      { value: '旺角', zh: '旺角', en: 'Mong Kok', area: '油尖旺' },
+      { value: '太子', zh: '太子', en: 'Prince Edward', area: '油尖旺' },
+      { value: '深水埗', zh: '深水埗', en: 'Sham Shui Po', area: '深水埗' },
+      { value: '長沙灣', zh: '長沙灣', en: 'Cheung Sha Wan', area: '深水埗' },
+      { value: '荔枝角', zh: '荔枝角', en: 'Lai Chi Kok', area: '深水埗' },
+      { value: '九龍城', zh: '九龍城', en: 'Kowloon City', area: '九龍城' },
+      { value: '啟德', zh: '啟德', en: 'Kai Tak', area: '九龍城' },
+      { value: '新蒲崗', zh: '新蒲崗', en: 'San Po Kong', area: '黃大仙' },
+      { value: '黃大仙', zh: '黃大仙', en: 'Wong Tai Sin', area: '黃大仙' },
+      { value: '鑽石山', zh: '鑽石山', en: 'Diamond Hill', area: '黃大仙' },
+      { value: '觀塘', zh: '觀塘', en: 'Kwun Tong', area: '觀塘' },
+      { value: '牛頭角', zh: '牛頭角', en: 'Ngau Tau Kok', area: '觀塘' },
+      { value: '九龍灣', zh: '九龍灣', en: 'Kowloon Bay', area: '觀塘' },
+      { value: '油塘', zh: '油塘', en: 'Yau Tong', area: '觀塘' },
+
+      // 新界及離島
+      { value: '荃灣', zh: '荃灣', en: 'Tsuen Wan', area: '荃灣' },
+      { value: '葵涌', zh: '葵涌', en: 'Kwai Chung', area: '葵青' },
+      { value: '青衣', zh: '青衣', en: 'Tsing Yi', area: '葵青' },
+      { value: '屯門', zh: '屯門', en: 'Tuen Mun', area: '屯門' },
+      { value: '元朗', zh: '元朗', en: 'Yuen Long', area: '元朗' },
+      { value: '天水圍', zh: '天水圍', en: 'Tin Shui Wai', area: '元朗' },
+      { value: '上水', zh: '上水', en: 'Sheung Shui', area: '北區' },
+      { value: '粉嶺', zh: '粉嶺', en: 'Fanling', area: '北區' },
+      { value: '大埔', zh: '大埔', en: 'Tai Po', area: '大埔' },
+      { value: '沙田', zh: '沙田', en: 'Sha Tin', area: '沙田' },
+      { value: '火炭', zh: '火炭', en: 'Fo Tan', area: '沙田' },
+      { value: '馬鞍山', zh: '馬鞍山', en: 'Ma On Shan', area: '沙田' },
+      { value: '西貢', zh: '西貢', en: 'Sai Kung', area: '西貢' },
+      { value: '將軍澳', zh: '將軍澳', en: 'Tseung Kwan O', area: '西貢' },
+      { value: '東涌', zh: '東涌', en: 'Tung Chung', area: '離島' },
+      { value: '長洲', zh: '長洲', en: 'Cheung Chau', area: '離島' },
+      { value: '坪洲', zh: '坪洲', en: 'Peng Chau', area: '離島' }
     ];
 
     const CATEGORY_LABELS = [
@@ -555,18 +607,18 @@
 
     const I18N = {
       zh: {
-        pageTitle: '香港十八區食好西指南 | HK 18 Districts Foodie Guide & CMS',
+        pageTitle: '香港食好西指南 | HK Foodie Guide & CMS',
         brandHtml: '香港食好西<span class="text-orange-600">指南</span>',
         navFront: '前台搵食',
         navAdmin: '後台 Admin',
         langToggle: 'EN',
         submitFull: '報料好西',
         submitShort: '報料',
-        heroBadge: '全港十八區地道美食資料庫',
+        heroBadge: '全港細分地段地道美食資料庫',
         heroTitleHtml: '今日想喺邊區<span class="text-orange-600">食好西</span>？',
-        heroSubtitle: '覆蓋港島、九龍、新界及離島共 18 區，隨時搜尋招牌菜同街坊食評',
-        searchPlaceholder: '搜尋餐廳名稱、招牌菜（例如：菠蘿油、雲吞麵、車仔麵）...',
-        allDistricts: '全部地區 (18區)',
+        heroSubtitle: '覆蓋港島、九龍、新界及離島常用搵食地段，隨時搜尋招牌菜同街坊食評',
+        searchPlaceholder: '搜尋餐廳名稱、地區、招牌菜（例如：菠蘿油、雲吞麵、旺角）...',
+        allDistricts: '全部地段',
         allPrices: '所有價位',
         priceUnder50: '$ ($50以下)',
         price51to150: '$$ ($51-$150)',
@@ -594,16 +646,16 @@
         statPublishedSub: (n) => `已發佈 ${n} 間`,
         statPending: '待審核報料',
         statPendingSub: '需管理員批核上架',
-        statTopDistrict: '最多餐廳地區',
+        statTopDistrict: '最多餐廳地段',
         statDistrictCount: (n) => `共 ${n} 間好西`,
         statAvgRating: '全站平均評分',
         statAvgRatingSub: '滿分 5.0 分',
         tabAll: '全部資料',
         tabPublished: '已發佈',
         tabPending: '待審核',
-        adminSearchPlaceholder: '搜尋餐廳、地區或菜式...',
+        adminSearchPlaceholder: '搜尋餐廳、地段或菜式...',
         thRestaurant: '餐廳資訊',
-        thDistrictCat: '地區 / 分類',
+        thDistrictCat: '地段 / 分類',
         thPriceRating: '價位 / 評分',
         thFeatured: '編輯精選',
         thStatus: '狀態',
@@ -658,7 +710,7 @@
         formReportSubmit: '提交報料',
         lblFormName: '餐廳名稱 *',
         phFormName: '例如：華嫂冰室',
-        lblFormDistrict: '所屬地區 (全港18區) *',
+        lblFormDistrict: '所屬地區 / 地段 *',
         lblFormCategory: '菜式分類 *',
         lblFormPrice: '人均消費 *',
         lblFormRating: '推薦評分 (1-5)',
@@ -670,8 +722,10 @@
         phFormMtr: '例如：灣仔站 A1 出口步行 5 分鐘',
         lblFormDesc: '美食簡介 / 食評 *',
         phFormDesc: '寫低呢間餐廳有咩特別、必食推介或者排隊貼士...',
-        lblFormImage: '食物圖片網址 (留空將自動配對美食靚相)',
-        phFormImage: 'https://...（可留空）',
+        lblFormImage: '食物相片（可直接揀相，或貼圖片網址；留空會自動配對）',
+        phFormImage: 'https://...（可留空或直接揀相）',
+        btnPickPhoto: '揀選相片檔案',
+        btnClearPhoto: '清除相片',
         lblFormFeatured: '設為「編輯精選」置頂推介',
         lblFormStatus: '發佈狀態：',
         statusOptPublished: '已發佈 (前台顯示)',
@@ -681,18 +735,18 @@
         defaultDish: '招牌推介'
       },
       en: {
-        pageTitle: 'HK 18 Districts Foodie Guide & CMS',
+        pageTitle: 'HK Foodie Guide & CMS',
         brandHtml: 'HK Foodie<span class="text-orange-600">Guide</span>',
         navFront: 'Explore',
         navAdmin: 'Admin CMS',
         langToggle: '中',
         submitFull: 'Submit Spot',
         submitShort: 'Submit',
-        heroBadge: 'Hong Kong 18 Districts Food Directory',
+        heroBadge: 'Hong Kong Sub-district Food Directory',
         heroTitleHtml: 'Where to <span class="text-orange-600">eat well</span> today?',
-        heroSubtitle: 'Covering all 18 districts across Hong Kong Island, Kowloon, New Territories & Islands',
-        searchPlaceholder: 'Search restaurant name, signature dish (e.g. Pineapple Bun, Wonton Noodle)...',
-        allDistricts: 'All Districts (18)',
+        heroSubtitle: 'Covering neighborhoods across Hong Kong Island, Kowloon, New Territories & Islands',
+        searchPlaceholder: 'Search restaurant name, area, dish (e.g. Pineapple Bun, Mong Kok)...',
+        allDistricts: 'All Neighborhoods',
         allPrices: 'All Budgets',
         priceUnder50: '$ (Under HK$50)',
         price51to150: '$$ (HK$51–150)',
@@ -720,16 +774,16 @@
         statPublishedSub: (n) => `${n} published`,
         statPending: 'Pending Review',
         statPendingSub: 'Awaiting admin approval',
-        statTopDistrict: 'Top District',
+        statTopDistrict: 'Top Area',
         statDistrictCount: (n) => `${n} ${n === 1 ? 'spot' : 'spots'}`,
         statAvgRating: 'Average Rating',
         statAvgRatingSub: 'Out of 5.0',
         tabAll: 'All',
         tabPublished: 'Published',
         tabPending: 'Pending',
-        adminSearchPlaceholder: 'Search restaurant, district or dish...',
+        adminSearchPlaceholder: 'Search restaurant, area or dish...',
         thRestaurant: 'Restaurant',
-        thDistrictCat: 'District / Category',
+        thDistrictCat: 'Area / Category',
         thPriceRating: 'Price / Rating',
         thFeatured: 'Featured',
         thStatus: 'Status',
@@ -784,7 +838,7 @@
         formReportSubmit: 'Submit Spot',
         lblFormName: 'Restaurant Name *',
         phFormName: 'e.g. Wah So Cafe',
-        lblFormDistrict: 'District (18 Districts) *',
+        lblFormDistrict: 'Neighborhood / Area *',
         lblFormCategory: 'Category *',
         lblFormPrice: 'Price Range *',
         lblFormRating: 'Rating (1-5)',
@@ -796,8 +850,10 @@
         phFormMtr: 'e.g. Wan Chai Exit A1, 5 mins walk',
         lblFormDesc: 'Description / Review *',
         phFormDesc: 'Share highlights, must-try items, or queue tips...',
-        lblFormImage: 'Photo URL (optional, auto-matched if blank)',
-        phFormImage: 'https://... (optional)',
+        lblFormImage: 'Photo (pick a file or paste URL; auto-matched if blank)',
+        phFormImage: 'https://... (optional or pick file)',
+        btnPickPhoto: 'Choose Photo',
+        btnClearPhoto: 'Remove Photo',
         lblFormFeatured: 'Mark as Featured Pick',
         lblFormStatus: 'Status:',
         statusOptPublished: 'Published (Visible)',
@@ -835,7 +891,7 @@
         comments: ['沙爹湯底好濃郁，大光麵必點！']
       },
       {
-        id: 'hk-4', name: '佳佳甜品', district: '油尖旺', category: '甜品/糖水', price: '$', rating: 4.8, likes: 475, featured: true, status: 'published',
+        id: 'hk-4', name: '佳佳甜品', district: '佐敦', category: '甜品/糖水', price: '$', rating: 4.8, likes: 475, featured: true, status: 'published',
         dishes: ['寧波薑汁湯丸', '香滑芝麻糊', '核桃露'], address: '佐敦寧波街29號地舖', mtr: '佐敦站 A 出口步行 2 分鐘',
         desc: '石磨芝麻糊同核桃露香氣濃郁，配埋寧波黑芝麻湯丸，秋冬暖胃首選。',
         image: 'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=800&q=80',
@@ -876,6 +932,7 @@
     let selectedCategory = '全部';
     let adminStatusFilter = 'ALL';
     let currentDetailId = null;
+    let uploadedPhotoDataUrl = '';
 
     function t() {
       return I18N[currentLang];
@@ -899,6 +956,77 @@
       if (window.lucide && typeof window.lucide.createIcons === 'function') {
         window.lucide.createIcons();
       }
+    }
+
+    function resetPhotoInputUI() {
+      uploadedPhotoDataUrl = '';
+      const fileInput = document.getElementById('form-image-file');
+      if (fileInput) fileInput.value = '';
+      document.getElementById('btn-clear-photo').classList.add('hidden');
+      document.getElementById('photo-preview-box').classList.add('hidden');
+      document.getElementById('photo-preview-img').src = '';
+    }
+
+    function showPhotoPreview(src) {
+      document.getElementById('photo-preview-img').src = src;
+      document.getElementById('photo-preview-box').classList.remove('hidden');
+      document.getElementById('btn-clear-photo').classList.remove('hidden');
+    }
+
+    function clearSelectedPhoto() {
+      resetPhotoInputUI();
+      const urlVal = document.getElementById('form-image').value.trim();
+      if (/^https?:\/\//i.test(urlVal)) {
+        showPhotoPreview(urlVal);
+      }
+    }
+
+    function handleImageUrlInput() {
+      if (uploadedPhotoDataUrl) return;
+      const urlVal = document.getElementById('form-image').value.trim();
+      if (/^https?:\/\//i.test(urlVal)) {
+        showPhotoPreview(urlVal);
+      } else {
+        document.getElementById('photo-preview-box').classList.add('hidden');
+        document.getElementById('btn-clear-photo').classList.add('hidden');
+      }
+    }
+
+    function handlePhotoFileSelect(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/')) {
+        alert(currentLang === 'en' ? 'Please select an image file.' : '請揀選圖片檔案！');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function (ev) {
+        const img = new Image();
+        img.onload = function () {
+          const maxSide = 900;
+          let width = img.width;
+          let height = img.height;
+          if (width > maxSide || height > maxSide) {
+            if (width >= height) {
+              height = Math.round((height * maxSide) / width);
+              width = maxSide;
+            } else {
+              width = Math.round((width * maxSide) / height);
+              height = maxSide;
+            }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          uploadedPhotoDataUrl = canvas.toDataURL('image/jpeg', 0.75);
+          showPhotoPreview(uploadedPhotoDataUrl);
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
     }
 
     function applyStaticTranslations() {
@@ -1012,6 +1140,8 @@
       document.getElementById('form-desc').placeholder = l.phFormDesc;
       document.getElementById('lbl-form-image').textContent = l.lblFormImage;
       document.getElementById('form-image').placeholder = l.phFormImage;
+      document.getElementById('btn-pick-photo').textContent = l.btnPickPhoto;
+      document.getElementById('btn-clear-photo').textContent = l.btnClearPhoto;
       document.getElementById('lbl-form-featured').textContent = l.lblFormFeatured;
       document.getElementById('lbl-form-status').textContent = l.lblFormStatus;
       document.getElementById('user-submit-notice').textContent = l.userSubmitNotice;
@@ -1069,15 +1199,15 @@
 
       filterSel.innerHTML = `<option value="ALL">${l.allDistricts}</option>` +
         DISTRICT_LABELS.map(d => `<option value="${d.value}">${d[currentLang]}</option>`).join('');
-      filterSel.value = prevFilterDist;
+      filterSel.value = DISTRICT_LABELS.some(d => d.value === prevFilterDist) ? prevFilterDist : 'ALL';
 
       formDistrictSel.innerHTML = DISTRICT_LABELS
         .map(d => `<option value="${d.value}">${d[currentLang]}</option>`).join('');
-      formDistrictSel.value = prevFormDist;
+      formDistrictSel.value = DISTRICT_LABELS.some(d => d.value === prevFormDist) ? prevFormDist : DISTRICT_LABELS[0].value;
 
       formCatSel.innerHTML = CATEGORY_LABELS.filter(c => c.value !== '全部')
         .map(c => `<option value="${c.value}">${c[currentLang]}</option>`).join('');
-      formCatSel.value = prevFormCat;
+      formCatSel.value = CATEGORY_LABELS.some(c => c.value === prevFormCat && c.value !== '全部') ? prevFormCat : CATEGORY_LABELS[1].value;
     }
 
     function toggleLanguage() {
@@ -1123,19 +1253,26 @@
         }
       }
 
-      const savedRest = localStorage.getItem('hk_foodie_guide_data_v3');
+      const savedRest = localStorage.getItem('hk_foodie_guide_data_v4');
       restaurants = savedRest ? JSON.parse(savedRest) : [...DEFAULT_RESTAURANTS];
-      if (!savedRest) localStorage.setItem('hk_foodie_guide_data_v3', JSON.stringify(restaurants));
+      if (!savedRest) localStorage.setItem('hk_foodie_guide_data_v4', JSON.stringify(restaurants));
 
-      const savedAdmins = localStorage.getItem('hk_foodie_guide_admins_v3');
+      const savedAdmins = localStorage.getItem('hk_foodie_guide_admins_v4');
       admins = savedAdmins ? JSON.parse(savedAdmins) : [...DEFAULT_ADMINS];
-      if (!savedAdmins) localStorage.setItem('hk_foodie_guide_admins_v3', JSON.stringify(admins));
+      if (!savedAdmins) localStorage.setItem('hk_foodie_guide_admins_v4', JSON.stringify(admins));
 
       renderAll();
     }
 
     async function persistRestaurant(item, isDelete = false) {
-      localStorage.setItem('hk_foodie_guide_data_v3', JSON.stringify(restaurants));
+      try {
+        localStorage.setItem('hk_foodie_guide_data_v4', JSON.stringify(restaurants));
+      } catch (e) {
+        alert(currentLang === 'en'
+          ? 'Storage limit reached. Try using a smaller photo or URL.'
+          : '瀏覽器本機儲存空間已滿，請改用較細相片或圖片網址！');
+        throw e;
+      }
       updateBadges();
       if (supabaseClient) {
         const { error } = isDelete
@@ -1149,7 +1286,7 @@
     }
 
     async function persistAdmin(item, isDelete = false) {
-      localStorage.setItem('hk_foodie_guide_admins_v3', JSON.stringify(admins));
+      localStorage.setItem('hk_foodie_guide_admins_v4', JSON.stringify(admins));
       document.getElementById('admin-count-pill').textContent = admins.length;
       if (supabaseClient) {
         const { error } = isDelete
@@ -1164,7 +1301,7 @@
     async function resetDemoData() {
       if (!confirm(currentLang === 'en' ? 'Reset to initial demo restaurants?' : '確定要還原至初始香港美食示範資料嗎？')) return;
       restaurants = JSON.parse(JSON.stringify(DEFAULT_RESTAURANTS));
-      localStorage.setItem('hk_foodie_guide_data_v3', JSON.stringify(restaurants));
+      localStorage.setItem('hk_foodie_guide_data_v4', JSON.stringify(restaurants));
       if (supabaseClient) {
         await supabaseClient.from('restaurants').delete().neq('id', '');
         await supabaseClient.from('restaurants').upsert(restaurants);
@@ -1359,12 +1496,14 @@
         if (keyword) {
           const distEn = getDistrictName(r.district).toLowerCase();
           const catEn = getCategoryName(r.category).toLowerCase();
+          const areaName = ((DISTRICT_LABELS.find(d => d.value === r.district) || {}).area || '').toLowerCase();
           const ok = r.name.toLowerCase().includes(keyword)
             || (r.dishes || []).some(d => d.toLowerCase().includes(keyword))
             || (r.desc || '').toLowerCase().includes(keyword)
             || (r.district || '').toLowerCase().includes(keyword)
             || distEn.includes(keyword)
-            || catEn.includes(keyword);
+            || catEn.includes(keyword)
+            || areaName.includes(keyword);
           if (!ok) return false;
         }
         return true;
@@ -1599,6 +1738,7 @@
     function openAdminFormModal(editId = null) {
       const l = t();
       document.getElementById('restaurant-form').reset();
+      resetPhotoInputUI();
       document.getElementById('form-mode').value = 'admin';
       document.getElementById('admin-only-fields').classList.remove('hidden');
       document.getElementById('user-submit-notice').classList.add('hidden');
@@ -1617,9 +1757,15 @@
         document.getElementById('form-address').value = r.address;
         document.getElementById('form-mtr').value = r.mtr || '';
         document.getElementById('form-desc').value = r.desc;
-        document.getElementById('form-image').value = r.image;
         document.getElementById('form-featured').checked = r.featured;
         document.getElementById('form-status').value = r.status;
+        if (r.image && r.image.startsWith('data:image/')) {
+          uploadedPhotoDataUrl = r.image;
+          showPhotoPreview(r.image);
+        } else if (r.image) {
+          document.getElementById('form-image').value = r.image;
+          if (/^https?:\/\//i.test(r.image)) showPhotoPreview(r.image);
+        }
       } else {
         document.getElementById('form-modal-title').textContent = l.formAddTitle;
         document.getElementById('form-submit-btn').textContent = l.formAddSubmit;
@@ -1634,6 +1780,7 @@
     function openSubmitModal() {
       const l = t();
       document.getElementById('restaurant-form').reset();
+      resetPhotoInputUI();
       document.getElementById('form-id').value = '';
       document.getElementById('form-mode').value = 'submit';
       document.getElementById('form-modal-title').textContent = l.formReportTitle;
@@ -1676,7 +1823,9 @@
 
         const status = mode === 'admin' ? document.getElementById('form-status').value : 'pending';
         const featured = mode === 'admin' ? document.getElementById('form-featured').checked : false;
-        const validImage = /^https?:\/\//i.test(rawImage) ? rawImage : getFallbackImage(category);
+        const validImage = uploadedPhotoDataUrl
+          ? uploadedPhotoDataUrl
+          : (/^https?:\/\//i.test(rawImage) ? rawImage : getFallbackImage(category));
 
         const payload = {
           name,
