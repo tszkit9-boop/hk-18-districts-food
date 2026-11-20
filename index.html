@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>香港食好西指南 | HK Foodie Guide & Multi-Admin CMS</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Noto Sans TC -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background-color: #FAF8F5;
+      color: #1F2937;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .card-hover {
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.12);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- 頂部導航欄 -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-orange-100 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+      <!-- Logo -->
+      <div class="flex items-center gap-2.5 cursor-pointer" onclick="switchView('front')">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center text-white shadow-md">
+          <i data-lucide="utensils" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h1 class="font-black text-lg sm:text-xl tracking-tight text-gray-900 leading-none">
+            香港食好西<span class="text-orange-600">指南</span>
+          </h1>
+          <p class="text-[11px] text-gray-400 font-medium hidden sm:block mt-0.5">HK FOODIE GUIDE & CMS</p>
+        </div>
+      </div>
+
+      <!-- 前後台模式切換器 -->
+      <div class="flex items-center bg-gray-100 p-1 rounded-xl border border-gray-200">
+        <button id="btn-view-front" onclick="switchView('front')" class="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-white text-orange-600 shadow-sm">
+          <i data-lucide="compass" class="w-4 h-4"></i>
+          <span>前台瀏覽 (搵食)</span>
+        </button>
+        <button id="btn-view-admin" onclick="handleAdminNavClick()" class="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-gray-600 hover:text-gray-900 relative">
+          <i data-lucide="shield-check" class="w-4 h-4"></i>
+          <span>後台管理 (Admin)</span>
+          <span id="pending-badge" class="hidden absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[10px] flex items-center justify-center font-bold">0</span>
+        </button>
+      </div>
+
+      <!-- 右側按鈕：報料投稿 或 Admin登出 -->
+      <div class="flex items-center gap-2">
+        <button onclick="openSubmitModal()" class="flex items-center gap-1.5 bg-orange-600 hover:bg-orange-700 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold shadow-sm transition-colors">
+          <i data-lucide="plus-circle" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">報料好西</span>
+          <span class="sm:hidden">報料</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== 前台視圖 (FRONTEND) ==================== -->
+  <main id="front-view" class="flex-1">
+    <!-- Hero 搜尋與標題區 -->
+    <section class="bg-gradient-to-b from-orange-50 via-amber-50/40 to-transparent pt-8 pb-6 px-4 sm:px-6 lg:px-8 border-b border-orange-100/60">
+      <div class="max-w-4xl mx-auto text-center">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold mb-3">
+          <i data-lucide="flame" class="w-3.5 h-3.5"></i> 全港十八區地道美食資料庫
+        </span>
+        <h2 class="text-2xl sm:text-4xl font-black text-gray-900 tracking-tight mb-2">
+          今日想喺邊區<span class="text-orange-600">食好西</span>？
+        </h2>
+        <p class="text-sm sm:text-base text-gray-600 mb-6">
+          由街頭小食、懷舊冰室到隱世小店，嚴選全港高質搵食好去處
+        </p>
+
+        <!-- 搜尋與地區篩選列 -->
+        <div class="bg-white p-2 rounded-2xl shadow-md border border-gray-200/80 flex flex-col sm:flex-row gap-2">
+          <div class="flex-1 flex items-center px-3 gap-2">
+            <i data-lucide="search" class="w-5 h-5 text-gray-400 shrink-0"></i>
+            <input id="search-input" type="text" oninput="renderFrontCards()" placeholder="搜尋餐廳名稱、招牌菜（例如：菠蘿油、雲吞麵、拉麵）..." class="w-full py-2 text-sm focus:outline-none text-gray-800 placeholder-gray-400" />
+          </div>
+          <div class="h-px sm:h-8 sm:w-px bg-gray-200 my-auto"></div>
+          <div class="flex items-center px-3 gap-2 sm:w-44">
+            <i data-lucide="map-pin" class="w-4 h-4 text-orange-500 shrink-0"></i>
+            <select id="district-filter" onchange="renderFrontCards()" class="w-full py-2 text-sm font-medium text-gray-700 bg-transparent focus:outline-none cursor-pointer">
+              <option value="ALL">全部地區</option>
+              <option value="中西區">中西區</option>
+              <option value="灣仔">灣仔</option>
+              <option value="油尖旺">油尖旺</option>
+              <option value="深水埗">深水埗</option>
+              <option value="九龍城">九龍城</option>
+              <option value="觀塘">觀塘</option>
+              <option value="沙田">沙田</option>
+              <option value="元朗">元朗</option>
+              <option value="荃灣">荃灣</option>
+            </select>
+          </div>
+          <div class="h-px sm:h-8 sm:w-px bg-gray-200 my-auto"></div>
+          <div class="flex items-center px-3 gap-2 sm:w-36">
+            <i data-lucide="dollar-sign" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+            <select id="price-filter" onchange="renderFrontCards()" class="w-full py-2 text-sm font-medium text-gray-700 bg-transparent focus:outline-none cursor-pointer">
+              <option value="ALL">所有價位</option>
+              <option value="$">$ ($50以下)</option>
+              <option value="$$">$$ ($51-$150)</option>
+              <option value="$$$">$$$ ($151-$300)</option>
+              <option value="$$$$">$$$$ ($300以上)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- 菜式分類膠囊標籤 -->
+      <div class="max-w-7xl mx-auto mt-6">
+        <div id="category-tabs" class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 justify-start sm:justify-center"></div>
+      </div>
+    </section>
+
+    <!-- 餐廳列表區 -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="flex items-center justify-between mb-5">
+        <div class="flex items-center gap-2">
+          <h3 class="text-lg font-bold text-gray-900">精選美食推介</h3>
+          <span id="result-count" class="px-2.5 py-0.5 rounded-full bg-gray-200 text-gray-700 text-xs font-bold">0 間</span>
+        </div>
+        <div class="flex items-center gap-2 text-xs text-gray-500">
+          <span>排序：</span>
+          <select id="sort-select" onchange="renderFrontCards()" class="bg-white border border-gray-200 rounded-lg px-2.5 py-1.5 font-medium text-gray-700 focus:outline-none">
+            <option value="featured">編輯精選優先</option>
+            <option value="rating">最高評分</option>
+            <option value="likes">最多街坊讚好</option>
+            <option value="newest">最新收錄</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 卡片網格 -->
+      <div id="restaurant-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+
+      <!-- 空狀態 -->
+      <div id="empty-state" class="hidden text-center py-16 bg-white rounded-2xl border border-dashed border-gray-300">
+        <div class="w-14 h-14 bg-orange-50 text-orange-500 rounded-full flex items-center justify-center mx-auto mb-3">
+          <i data-lucide="search-x" class="w-7 h-7"></i>
+        </div>
+        <h4 class="text-base font-bold text-gray-900">搵唔到符合條件嘅餐廳</h4>
+        <p class="text-sm text-gray-500 mt-1 mb-4">試下清除篩選條件，或者自己報料新增呢間好西！</p>
+        <button onclick="resetFilters()" class="px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-xl hover:bg-gray-800">
+          重設所有篩選
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==================== 後台視圖 (ADMIN CMS) ==================== -->
+  <main id="admin-view" class="hidden flex-1 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- 後台頂部狀態列 -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+        <div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="px-2.5 py-0.5 rounded bg-slate-900 text-white text-[11px] font-bold tracking-wider">CMS ADMIN</span>
+            <h2 class="text-xl sm:text-2xl font-black text-slate-900">美食資料庫管理後台</h2>
+            <span id="current-admin-badge" class="px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold flex items-center gap-1">
+              <i data-lucide="user-check" class="w-3.5 h-3.5"></i> 已登入：主管理員
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-500 mt-1">管理全站餐廳收錄、審核街坊報料，以及新增或管理多位後台 Admin 帳號</p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <button onclick="openAdminFormModal()" class="px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs sm:text-sm font-bold flex items-center gap-1.5 shadow-sm transition-colors">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            <span>新增餐廳</span>
+          </button>
+          <button onclick="resetDemoData()" class="px-3 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition-colors">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+            <span>重設示範資料</span>
+          </button>
+          <button onclick="logoutAdmin()" class="px-3 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold flex items-center gap-1.5 transition-colors">
+            <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+            <span>登出後台</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 後台功能分頁切換 (餐廳管理 vs Admin 帳號管理) -->
+      <div class="flex items-center gap-2 mb-6 border-b border-slate-200 pb-3">
+        <button id="subtab-restaurants" onclick="switchAdminSubTab('restaurants')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 text-white flex items-center gap-2 shadow-sm">
+          <i data-lucide="utensils" class="w-4 h-4"></i>
+          <span>餐廳資料庫管理</span>
+        </button>
+        <button id="subtab-admins" onclick="switchAdminSubTab('admins')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 flex items-center gap-2">
+          <i data-lucide="users" class="w-4 h-4"></i>
+          <span>管理員帳號設定 (增加 Admin)</span>
+          <span id="admin-count-pill" class="px-1.5 py-0.2 rounded-full bg-slate-200 text-slate-700 text-[11px]">1</span>
+        </button>
+      </div>
+
+      <!-- ========== 子分頁 1：餐廳資料庫管理 ========== -->
+      <div id="admin-panel-restaurants">
+        <!-- 數據統計卡片 (KPIs) -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+            <div class="flex items-center justify-between text-slate-500 text-xs font-bold mb-2">
+              <span>總收錄餐廳</span>
+              <div class="w-8 h-8 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center">
+                <i data-lucide="store" class="w-4 h-4"></i>
+              </div>
+            </div>
+            <div id="stat-total" class="text-2xl sm:text-3xl font-black text-slate-900">0</div>
+            <p class="text-[11px] text-emerald-600 font-medium mt-1" id="stat-published-sub">已發佈 0 間</p>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+            <div class="flex items-center justify-between text-slate-500 text-xs font-bold mb-2">
+              <span>待審核報料</span>
+              <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+                <i data-lucide="clock" class="w-4 h-4"></i>
+              </div>
+            </div>
+            <div id="stat-pending" class="text-2xl sm:text-3xl font-black text-amber-600">0</div>
+            <p class="text-[11px] text-slate-400 font-medium mt-1">需管理員批核上架</p>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+            <div class="flex items-center justify-between text-slate-500 text-xs font-bold mb-2">
+              <span>最多餐廳地區</span>
+              <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                <i data-lucide="map" class="w-4 h-4"></i>
+              </div>
+            </div>
+            <div id="stat-top-district" class="text-2xl sm:text-3xl font-black text-slate-900">-</div>
+            <p class="text-[11px] text-slate-400 font-medium mt-1" id="stat-district-count">共 0 間好西</p>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+            <div class="flex items-center justify-between text-slate-500 text-xs font-bold mb-2">
+              <span>全站平均評分</span>
+              <div class="w-8 h-8 rounded-lg bg-yellow-50 text-yellow-600 flex items-center justify-center">
+                <i data-lucide="star" class="w-4 h-4"></i>
+              </div>
+            </div>
+            <div id="stat-avg-rating" class="text-2xl sm:text-3xl font-black text-slate-900">0.0</div>
+            <p class="text-[11px] text-slate-400 font-medium mt-1">滿分 5.0 分</p>
+          </div>
+        </div>
+
+        <!-- 表格容器 -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+          <div class="p-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/50">
+            <div class="flex items-center gap-2">
+              <button onclick="setAdminStatusFilter('ALL')" id="tab-admin-all" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white">全部資料</button>
+              <button onclick="setAdminStatusFilter('published')" id="tab-admin-published" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-200/70">已發佈</button>
+              <button onclick="setAdminStatusFilter('pending')" id="tab-admin-pending" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-200/70 flex items-center gap-1">
+                <span>待審核</span>
+                <span id="admin-tab-pending-count" class="px-1.5 py-0.2 rounded-full bg-amber-100 text-amber-700 text-[10px]">0</span>
+              </button>
+            </div>
+            <div class="relative w-full sm:w-64">
+              <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+              <input id="admin-search" type="text" oninput="renderAdminTable()" placeholder="搜尋餐廳、地區或菜式..." class="w-full pl-9 pr-3 py-1.5 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:border-slate-500" />
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase bg-slate-50">
+                  <th class="py-3.5 px-4">餐廳資訊</th>
+                  <th class="py-3.5 px-4">地區 / 分類</th>
+                  <th class="py-3.5 px-4">價位 / 評分</th>
+                  <th class="py-3.5 px-4 text-center">編輯精選</th>
+                  <th class="py-3.5 px-4 text-center">狀態</th>
+                  <th class="py-3.5 px-4 text-right">操作</th>
+                </tr>
+              </thead>
+              <tbody id="admin-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== 子分頁 2：管理員帳號管理 (增加 Admin) ========== -->
+      <div id="admin-panel-admins" class="hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- 左側：新增 Admin 表單 -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm h-fit">
+            <div class="flex items-center gap-2 mb-4">
+              <div class="w-9 h-9 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center">
+                <i data-lucide="user-plus" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-base text-slate-900">增加新 Admin 管理員</h3>
+                <p class="text-xs text-slate-500">建立新帳號俾團隊成員一齊管理</p>
+              </div>
+            </div>
+
+            <form onsubmit="handleAddAdmin(event)" class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">顯示名稱 / 稱呼 *</label>
+                <input id="new-admin-name" type="text" required placeholder="例如：九龍區美食編輯阿明" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl focus:outline-none focus:border-orange-500" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">登入帳號 (Username) *</label>
+                <input id="new-admin-username" type="text" required placeholder="例如：editor_ming" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl focus:outline-none focus:border-orange-500" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">登入密碼 *</label>
+                <input id="new-admin-password" type="text" required minlength="4" placeholder="至少 4 個字元" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl focus:outline-none focus:border-orange-500" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">管理員角色權限</label>
+                <select id="new-admin-role" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl bg-white focus:outline-none focus:border-orange-500">
+                  <option value="超級管理員 (Super Admin)">超級管理員 (可增刪其他 Admin)</option>
+                  <option value="美食編輯 (Editor)">美食編輯 (負責審核及新增餐廳)</option>
+                </select>
+              </div>
+              <button type="submit" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold rounded-xl shadow-sm transition-colors flex items-center justify-center gap-1.5">
+                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                <span>確認新增 Admin</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- 右側：現有 Admin 列表 -->
+          <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+            <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+              <div>
+                <h3 class="font-bold text-base text-slate-900">現有後台管理員名單</h3>
+                <p class="text-xs text-slate-500 mt-0.5">以下帳號均可用於登入本網站後台管理系統</p>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase bg-slate-50">
+                    <th class="py-3.5 px-5">管理員名稱</th>
+                    <th class="py-3.5 px-5">登入帳號</th>
+                    <th class="py-3.5 px-5">登入密碼</th>
+                    <th class="py-3.5 px-5">權限角色</th>
+                    <th class="py-3.5 px-5 text-right">操作</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-accounts-tbody" class="divide-y divide-slate-100 text-sm"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ==================== 後台登入驗證 Modal ==================== -->
+  <div id="login-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl">
+      <div class="p-6 bg-slate-900 text-white text-center relative">
+        <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+        <div class="w-12 h-12 rounded-2xl bg-orange-600 text-white flex items-center justify-center mx-auto mb-3 shadow-lg">
+          <i data-lucide="lock" class="w-6 h-6"></i>
+        </div>
+        <h3 class="text-lg font-black">後台管理員登入</h3>
+        <p class="text-xs text-slate-400 mt-1">請輸入 Admin 帳號及密碼以進入 CMS 系統</p>
+      </div>
+
+      <form onsubmit="handleAdminLogin(event)" class="p-6 space-y-4">
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-800">
+          💡 <strong>預設主管理員帳號：</strong> <code class="bg-white px-1.5 py-0.5 rounded font-bold">admin</code> ｜ <strong>密碼：</strong> <code class="bg-white px-1.5 py-0.5 rounded font-bold">123456</code>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">Admin 帳號</label>
+          <input id="login-username" type="text" required placeholder="請輸入帳號" class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">登入密碼</label>
+          <input id="login-password" type="password" required placeholder="請輸入密碼" class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500" />
+        </div>
+
+        <p id="login-error" class="hidden text-xs font-bold text-rose-600 flex items-center gap-1">
+          <i data-lucide="alert-circle" class="w-4 h-4"></i> 帳號或密碼不正確，請重試！
+        </p>
+
+        <button type="submit" class="w-full py-2.5 bg-orange-600 hover:bg-orange-700 text-white text-sm font-bold rounded-xl shadow-sm transition-colors">
+          登入後台
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== 餐廳詳情 Modal ==================== -->
+  <div id="detail-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl my-auto">
+      <div class="relative h-56 sm:h-64 bg-gray-200">
+        <img id="modal-img" src="" alt="" class="w-full h-full object-cover" />
+        <button onclick="closeDetailModal()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center backdrop-blur-sm transition-colors">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+        <div id="modal-featured-tag" class="hidden absolute top-4 left-4 px-3 py-1 rounded-full bg-orange-600 text-white text-xs font-bold shadow-md flex items-center gap-1">
+          <i data-lucide="award" class="w-3.5 h-3.5"></i> 編輯精選
+        </div>
+      </div>
+
+      <div class="p-6">
+        <div class="flex flex-wrap items-start justify-between gap-2 mb-3">
+          <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-orange-600 mb-1">
+              <span id="modal-district">地區</span>
+              <span>•</span>
+              <span id="modal-category">分類</span>
+              <span>•</span>
+              <span id="modal-price" class="text-emerald-600">$$</span>
+            </div>
+            <h3 id="modal-name" class="text-2xl font-black text-gray-900">餐廳名稱</h3>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200">
+              <i data-lucide="star" class="w-4 h-4 text-amber-500 fill-amber-500"></i>
+              <span id="modal-rating" class="font-black text-amber-800 text-sm">4.8</span>
+            </div>
+            <button id="modal-like-btn" onclick="toggleLikeCurrent()" class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-sm transition-colors">
+              <i data-lucide="heart" class="w-4 h-4 fill-rose-500"></i>
+              <span id="modal-likes">0</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <span class="text-xs font-bold text-gray-400 block mb-1.5">必食招牌菜：</span>
+          <div id="modal-dishes" class="flex flex-wrap gap-1.5"></div>
+        </div>
+
+        <p id="modal-desc" class="text-sm text-gray-700 leading-relaxed bg-orange-50/50 p-4 rounded-2xl border border-orange-100 mb-4"></p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-gray-600 mb-6 bg-gray-50 p-3.5 rounded-2xl">
+          <div class="flex items-start gap-2">
+            <i data-lucide="map-pin" class="w-4 h-4 text-orange-500 shrink-0 mt-0.5"></i>
+            <div>
+              <span class="font-bold text-gray-900 block">詳細地址</span>
+              <span id="modal-address">-</span>
+            </div>
+          </div>
+          <div class="flex items-start gap-2">
+            <i data-lucide="train" class="w-4 h-4 text-blue-500 shrink-0 mt-0.5"></i>
+            <div>
+              <span class="font-bold text-gray-900 block">港鐵 / 交通</span>
+              <span id="modal-mtr">-</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-t border-gray-100 pt-4">
+          <h4 class="text-sm font-bold text-gray-900 mb-3 flex items-center gap-1.5">
+            <i data-lucide="message-square" class="w-4 h-4 text-orange-500"></i> 街坊食評留言
+          </h4>
+          <div id="modal-comments" class="space-y-2 max-h-36 overflow-y-auto mb-3 pr-1"></div>
+          <form onsubmit="addComment(event)" class="flex gap-2">
+            <input id="comment-input" type="text" required placeholder="留低你嘅食後感..." class="flex-1 text-xs border border-gray-300 rounded-xl px-3.5 py-2 focus:outline-none focus:border-orange-500" />
+            <button type="submit" class="px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-xl hover:bg-gray-800">發佈</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 新增 / 編輯餐廳 Modal ==================== -->
+  <div id="form-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-xl w-full overflow-hidden shadow-2xl my-auto">
+      <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <i data-lucide="utensils-crossed" class="w-5 h-5 text-orange-400"></i>
+          <h3 id="form-modal-title" class="font-bold text-base">新增餐廳資料</h3>
+        </div>
+        <button onclick="closeFormModal()" class="text-slate-400 hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="restaurant-form" onsubmit="handleFormSubmit(event)" class="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+        <input type="hidden" id="form-id" />
+        <input type="hidden" id="form-mode" value="admin" />
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">餐廳名稱 *</label>
+            <input id="form-name" type="text" required placeholder="例如：華嫂冰室" class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">所屬地區 *</label>
+            <select id="form-district" required class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500 bg-white">
+              <option value="中西區">中西區</option>
+              <option value="灣仔">灣仔</option>
+              <option value="油尖旺">油尖旺</option>
+              <option value="深水埗">深水埗</option>
+              <option value="九龍城">九龍城</option>
+              <option value="觀塘">觀塘</option>
+              <option value="沙田">沙田</option>
+              <option value="元朗">元朗</option>
+              <option value="荃灣">荃灣</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">菜式分類 *</label>
+            <select id="form-category" required class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500 bg-white">
+              <option value="茶餐廳/冰室">茶餐廳/冰室</option>
+              <option value="街頭小食">街頭小食</option>
+              <option value="點心/酒樓">點心/酒樓</option>
+              <option value="車仔麵/粉麵">車仔麵/粉麵</option>
+              <option value="日本菜">日本菜</option>
+              <option value="火鍋/打邊爐">火鍋/打邊爐</option>
+              <option value="甜品/糖水">甜品/糖水</option>
+              <option value="Cafe/西餐">Cafe/西餐</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">人均消費 *</label>
+            <select id="form-price" required class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500 bg-white">
+              <option value="$">$ ($50以下)</option>
+              <option value="$$">$$ ($51-$150)</option>
+              <option value="$$$">$$$ ($151-$300)</option>
+              <option value="$$$$">$$$$ ($300以上)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">推薦評分 (1-5)</label>
+            <input id="form-rating" type="number" step="0.1" min="1" max="5" value="4.5" required class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">招牌菜式 (用逗號分隔) *</label>
+          <input id="form-dishes" type="text" required placeholder="例如：招牌菠蘿包, 鮮茄牛肉通粉, 樽仔奶茶" class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">詳細地址 *</label>
+            <input id="form-address" type="text" required placeholder="例如：灣仔謝斐道272號地下" class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">最近港鐵站/出口</label>
+            <input id="form-mtr" type="text" placeholder="例如：灣仔站 A1 出口步行 5 分鐘" class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">美食簡介 / 食評 *</label>
+          <textarea id="form-desc" rows="3" required placeholder="寫低呢間餐廳有咩特別、必食推介或者排隊貼士..." class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">食物圖片 URL (留空將自動配對美食靚相)</label>
+          <input id="form-image" type="url" placeholder="https://..." class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500" />
+        </div>
+
+        <!-- 管理員專屬選項 -->
+        <div id="admin-only-fields" class="pt-2 border-t border-gray-100 flex flex-wrap items-center justify-between gap-4">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input id="form-featured" type="checkbox" class="w-4 h-4 text-orange-600 rounded focus:ring-orange-500" />
+            <span class="text-xs font-bold text-gray-700">設為「編輯精選」置頂推介</span>
+          </label>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold text-gray-700">發佈狀態：</span>
+            <select id="form-status" class="text-xs border border-gray-300 rounded-lg px-2.5 py-1.5 font-bold bg-white">
+              <option value="published">已發佈 (前台顯示)</option>
+              <option value="pending">待審核 (僅後台可見)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 訪客報料提示 -->
+        <div id="user-submit-notice" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-800 flex items-center justify-between gap-2">
+          <span>💡 報料後資料會進入後台「待審核」列隊，需 Admin 登入批核後才會公開上架！</span>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3">
+          <button type="button" onclick="closeFormModal()" class="px-4 py-2 text-xs font-bold text-gray-600 hover:bg-gray-100 rounded-xl">取消</button>
+          <button type="submit" id="form-submit-btn" class="px-5 py-2.5 bg-orange-600 hover:bg-orange-700 text-white text-xs sm:text-sm font-bold rounded-xl shadow-sm">儲存資料</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast 提示訊息 -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-gray-900 text-white px-4 py-3 rounded-xl shadow-lg text-xs font-bold flex items-center gap-2">
+    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+    <span id="toast-msg">操作成功</span>
+  </div>
+
+  <script>
+    // 預設管理員帳號資料
+    const DEFAULT_ADMINS = [
+      {
+        id: 'adm-1',
+        name: '主管理員 (創辦人)',
+        username: 'admin',
+        password: '123456',
+        role: '超級管理員 (Super Admin)',
+        isPrimary: true
+      }
+    ];
+
+    // 預設香港美食示範資料庫
+    const DEFAULT_RESTAURANTS = [
+      {
+        id: 'hk-1',
+        name: '華嫂冰室 (灣仔店)',
+        district: '灣仔',
+        category: '茶餐廳/冰室',
+        price: '$',
+        rating: 4.8,
+        likes: 342,
+        featured: true,
+        status: 'published',
+        dishes: ['招牌菠蘿包', '鮮茄牛肉通粉', '樽仔冰花奶茶', '皮蛋芫茜豬潤湯米粉'],
+        address: '灣仔謝斐道272號杜智臺地下3-4號舖',
+        mtr: '灣仔站 A1 出口步行約 6 分鐘',
+        desc: '由元朗屏山起家嘅人氣冰室，招牌菠蘿包夾住厚切牛油同半熟煎蛋，外脆內軟；湯底濃郁嘅鮮茄牛肉通粉同冰花奶茶亦係每枱必點！建議避開平日午市高峰期。',
+        image: 'https://images.unsplash.com/photo-1555126634-323283e090fa?auto=format&fit=crop&w=800&q=80',
+        comments: ['菠蘿包加蛋真係無敵，每次都要排隊但值得！', '樽仔奶茶夠滑夠茶味。']
+      },
+      {
+        id: 'hk-2',
+        name: '合益泰小食',
+        district: '深水埗',
+        category: '街頭小食',
+        price: '$',
+        rating: 4.7,
+        likes: 518,
+        featured: true,
+        status: 'published',
+        dishes: ['滑溜豬腸粉', '魚蛋燒賣', '牛肉粥', '秘製甜醬麻醬'],
+        address: '深水埗桂林街121號地下',
+        mtr: '深水埗站 C2 出口步行 1 分鐘',
+        desc: '連續多年榮獲米芝蓮街頭小食推介！腸粉每日新鮮石磨米漿蒸製，口感極致滑溜，配上靈魂混醬（甜醬、花生醬、麻醬、豉油）同白芝麻，幾十蚊食到飽。',
+        image: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80',
+        comments: ['腸粉真係全港數一數二滑，麻醬好香！']
+      },
+      {
+        id: 'hk-3',
+        name: '方榮記沙爹牛肉專家',
+        district: '九龍城',
+        category: '火鍋/打邊爐',
+        price: '$$$',
+        rating: 4.6,
+        likes: 289,
+        featured: true,
+        status: 'published',
+        dishes: ['秘製沙爹湯底', '手切本地肥牛', '大光麵', '炸響鈴'],
+        address: '九龍城侯王道85-87號地下',
+        mtr: '宋皇臺站 B2 出口步行 4 分鐘',
+        desc: '超過六十年歷史嘅老字號炭爐/明火打邊爐，鎮店之寶係濃稠到掛匙嘅秘製沙爹湯底，花生香氣撲鼻，最後落埋大光麵吸盡沙爹精華，簡直係邪惡天花板。',
+        image: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=800&q=80',
+        comments: ['沙爹湯底濃到好似醬咁，大光麵必點！']
+      },
+      {
+        id: 'hk-4',
+        name: '一樂燒鵝',
+        district: '中西區',
+        category: '點心/酒樓',
+        price: '$$',
+        rating: 4.5,
+        likes: 410,
+        featured: false,
+        status: 'published',
+        dishes: ['脆皮燒鵝瀨粉', '叉燒燒鵝雙拼飯', '郊外油菜'],
+        address: '中環士丹利街34-38號地舖',
+        mtr: '中環站 D2 出口步行 3 分鐘',
+        desc: '中環打工仔同遊客嘅燒味聖地，燒鵝皮脆肉嫩、油脂甘香而不膩，配埋吸滿鵝油香氣嘅瀨粉同酸梅醬，風味一絕。',
+        image: 'https://images.unsplash.com/photo-1518492104633-130d0cc84637?auto=format&fit=crop&w=800&q=80',
+        comments: ['燒鵝髀瀨粉正到爆，記得早啲去如果唔係賣晒髀。']
+      },
+      {
+        id: 'hk-5',
+        name: '佳佳甜品',
+        district: '油尖旺',
+        category: '甜品/糖水',
+        price: '$',
+        rating: 4.8,
+        likes: 475,
+        featured: true,
+        status: 'published',
+        dishes: ['寧波薑汁湯丸', '香滑芝麻糊', '核桃露', '木瓜雪耳'],
+        address: '佐敦寧波街29號地舖',
+        mtr: '佐敦站 A 出口步行 2 分鐘',
+        desc: '發哥都成日幫襯嘅傳統中式糖水舖，石磨芝麻糊同核桃露香氣濃郁、甜度適中，加埋手搓寧波黑芝麻湯丸，秋冬暖胃首選。',
+        image: 'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=800&q=80',
+        comments: ['芝麻糊拼合桃露加湯丸係標準配置！']
+      },
+      {
+        id: 'hk-6',
+        name: '工廈隱世手工意粉屋',
+        district: '觀塘',
+        category: 'Cafe/西餐',
+        price: '$$',
+        rating: 4.6,
+        likes: 94,
+        featured: false,
+        status: 'pending',
+        dishes: ['海膽蟹肉手工寬條麵', '黑松露野菌意大利飯', 'Tiramisu'],
+        address: '觀塘開源道60號駱駝漆大廈3期',
+        mtr: '觀塘站 B1 出口步行 4 分鐘',
+        desc: '【街坊報料待審核】藏身於駱駝漆大廈嘅高質西餐廳，每日新鮮手打意粉煙韌有蛋香，午市套餐仲包埋餐湯同飲品。',
+        image: 'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=800&q=80',
+        comments: []
+      }
+    ];
+
+    const CATEGORIES = ['全部', '茶餐廳/冰室', '街頭小食', '點心/酒樓', '車仔麵/粉麵', '日本菜', '火鍋/打邊爐', '甜品/糖水', 'Cafe/西餐'];
+
+    const FALLBACK_IMAGES = {
+      '茶餐廳/冰室': 'https://images.unsplash.com/photo-1555126634-323283e090fa?auto=format&fit=crop&w=800&q=80',
+      '街頭小食': 'https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80',
+      '點心/酒樓': 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?auto=format&fit=crop&w=800&q=80',
+      '車仔麵/粉麵': 'https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=800&q=80',
+      '日本菜': 'https://images.unsplash.com/photo-1557872943-16a5ac26437e?auto=format&fit=crop&w=800&q=80',
+      '火鍋/打邊爐': 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=800&q=80',
+      '甜品/糖水': 'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=800&q=80',
+      'Cafe/西餐': 'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=800&q=80'
+    };
+
+    // 狀態變數
+    let restaurants = [];
+    let admins = [];
+    let currentAdmin = null;
+    let selectedCategory = '全部';
+    let adminStatusFilter = 'ALL';
+    let currentDetailId = null;
+
+    // 初始化資料
+    function initData() {
+      const savedRest = localStorage.getItem('hk_foodie_guide_data_v2');
+      if (savedRest) {
+        try { restaurants = JSON.parse(savedRest); } catch (e) { restaurants = [...DEFAULT_RESTAURANTS]; }
+      } else {
+        restaurants = [...DEFAULT_RESTAURANTS];
+        saveData();
+      }
+
+      const savedAdmins = localStorage.getItem('hk_foodie_guide_admins_v2');
+      if (savedAdmins) {
+        try { admins = JSON.parse(savedAdmins); } catch (e) { admins = [...DEFAULT_ADMINS]; }
+      } else {
+        admins = [...DEFAULT_ADMINS];
+        saveAdmins();
+      }
+
+      const sessionAdmin = sessionStorage.getItem('hk_foodie_logged_admin');
+      if (sessionAdmin) {
+        try { currentAdmin = JSON.parse(sessionAdmin); } catch (e) { currentAdmin = null; }
+      }
+    }
+
+    function saveData() {
+      localStorage.setItem('hk_foodie_guide_data_v2', JSON.stringify(restaurants));
+      updateBadges();
+    }
+
+    function saveAdmins() {
+      localStorage.setItem('hk_foodie_guide_admins_v2', JSON.stringify(admins));
+      const pill = document.getElementById('admin-count-pill');
+      if (pill) pill.textContent = admins.length;
+    }
+
+    function resetDemoData() {
+      if (confirm('確定要還原至初始香港美食示範資料嗎？')) {
+        restaurants = JSON.parse(JSON.stringify(DEFAULT_RESTAURANTS));
+        saveData();
+        renderAll();
+        showToast('已還原初始示範資料');
+      }
+    }
+
+    // ==================== Admin 登入與權限控制 ====================
+    function handleAdminNavClick() {
+      if (currentAdmin) {
+        switchView('admin');
+      } else {
+        document.getElementById('login-error').classList.add('hidden');
+        document.getElementById('login-username').value = '';
+        document.getElementById('login-password').value = '';
+        document.getElementById('login-modal').classList.remove('hidden');
+        lucide.createIcons();
+      }
+    }
+
+    function closeLoginModal() {
+      document.getElementById('login-modal').classList.add('hidden');
+    }
+
+    function handleAdminLogin(e) {
+      e.preventDefault();
+      const user = document.getElementById('login-username').value.trim();
+      const pass = document.getElementById('login-password').value;
+
+      const matched = admins.find(a => a.username === user && a.password === pass);
+      if (matched) {
+        currentAdmin = matched;
+        sessionStorage.setItem('hk_foodie_logged_admin', JSON.stringify(matched));
+        closeLoginModal();
+        switchView('admin');
+        showToast(`歡迎返嚟，${matched.name}！`);
+      } else {
+        document.getElementById('login-error').classList.remove('hidden');
+      }
+    }
+
+    function logoutAdmin() {
+      currentAdmin = null;
+      sessionStorage.removeItem('hk_foodie_logged_admin');
+      switchView('front');
+      showToast('已安全登出後台系統');
+    }
+
+    function switchAdminSubTab(tab) {
+      const panelRest = document.getElementById('admin-panel-restaurants');
+      const panelAdmins = document.getElementById('admin-panel-admins');
+      const btnRest = document.getElementById('subtab-restaurants');
+      const btnAdmins = document.getElementById('subtab-admins');
+
+      if (tab === 'restaurants') {
+        panelRest.classList.remove('hidden');
+        panelAdmins.classList.add('hidden');
+        btnRest.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 text-white flex items-center gap-2 shadow-sm';
+        btnAdmins.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 flex items-center gap-2';
+        renderAdminDashboard();
+      } else {
+        panelRest.classList.add('hidden');
+        panelAdmins.classList.remove('hidden');
+        btnAdmins.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 text-white flex items-center gap-2 shadow-sm';
+        btnRest.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 flex items-center gap-2';
+        renderAdminAccountsTable();
+      }
+      lucide.createIcons();
+    }
+
+    function handleAddAdmin(e) {
+      e.preventDefault();
+      const name = document.getElementById('new-admin-name').value.trim();
+      const username = document.getElementById('new-admin-username').value.trim();
+      const password = document.getElementById('new-admin-password').value.trim();
+      const role = document.getElementById('new-admin-role').value;
+
+      if (admins.some(a => a.username.toLowerCase() === username.toLowerCase())) {
+        alert('呢個登入帳號已經存在，請用另一個帳號名稱！');
+        return;
+      }
+
+      admins.push({
+        id: 'adm-' + Date.now(),
+        name,
+        username,
+        password,
+        role,
+        isPrimary: false
+      });
+
+      saveAdmins();
+      renderAdminAccountsTable();
+      e.target.reset();
+      showToast(`已成功新增管理員「${name}」！`);
+    }
+
+    function deleteAdminAccount(id) {
+      const target = admins.find(a => a.id === id);
+      if (!target) return;
+      if (target.isPrimary) {
+        alert('主管理員帳號受保護，唔可以刪除！');
+        return;
+      }
+      if (currentAdmin && currentAdmin.id === id) {
+        alert('你唔可以刪除自己目前登入緊嘅帳號！');
+        return;
+      }
+      if (confirm(`確定要移除管理員「${target.name} (${target.username})」嘅後台權限嗎？`)) {
+        admins = admins.filter(a => a.id !== id);
+        saveAdmins();
+        renderAdminAccountsTable();
+        showToast(`已移除管理員「${target.name}」`);
+      }
+    }
+
+    function renderAdminAccountsTable() {
+      const tbody = document.getElementById('admin-accounts-tbody');
+      document.getElementById('admin-count-pill').textContent = admins.length;
+
+      tbody.innerHTML = admins.map(a => `
+        <tr class="hover:bg-slate-50/80">
+          <td class="py-3.5 px-5">
+            <div class="font-bold text-slate-900 flex items-center gap-1.5">
+              <span>${a.name}</span>
+              ${a.isPrimary ? '<span class="px-2 py-0.5 rounded bg-orange-100 text-orange-700 text-[10px] font-bold">創辦人</span>' : ''}
+            </div>
+          </td>
+          <td class="py-3.5 px-5 font-mono text-xs text-slate-700 font-bold">${a.username}</td>
+          <td class="py-3.5 px-5 font-mono text-xs text-slate-500">${a.password}</td>
+          <td class="py-3.5 px-5">
+            <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-[11px] font-bold">${a.role}</span>
+          </td>
+          <td class="py-3.5 px-5 text-right">
+            ${a.isPrimary
+              ? '<span class="text-xs text-slate-400 italic">系統預設</span>'
+              : `<button onclick="deleteAdminAccount('${a.id}')" class="p-2 rounded-lg text-rose-600 hover:bg-rose-50 transition-colors" title="移除管理員"><i data-lucide="trash-2" class="w-4 h-4"></i></button>`
+            }
+          </td>
+        </tr>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    // 切換前後台視圖
+    function switchView(view) {
+      const frontView = document.getElementById('front-view');
+      const adminView = document.getElementById('admin-view');
+      const btnFront = document.getElementById('btn-view-front');
+      const btnAdmin = document.getElementById('btn-view-admin');
+
+      if (view === 'front') {
+        frontView.classList.remove('hidden');
+        adminView.classList.add('hidden');
+        btnFront.className = 'flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-white text-orange-600 shadow-sm';
+        btnAdmin.className = 'flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-gray-600 hover:text-gray-900 relative';
+        renderFrontCards();
+      } else {
+        if (!currentAdmin) {
+          handleAdminNavClick();
+          return;
+        }
+        frontView.classList.add('hidden');
+        adminView.classList.remove('hidden');
+        btnAdmin.className = 'flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-slate-900 text-white shadow-sm relative';
+        btnFront.className = 'flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-gray-600 hover:text-gray-900';
+        document.getElementById('current-admin-badge').innerHTML = `<i data-lucide="user-check" class="w-3.5 h-3.5"></i> 已登入：${currentAdmin.name}`;
+        renderAdminDashboard();
+        renderAdminAccountsTable();
+      }
+      lucide.createIcons();
+    }
+
+    // 渲染分類標籤
+    function renderCategoryTabs() {
+      const container = document.getElementById('category-tabs');
+      container.innerHTML = CATEGORIES.map(cat => {
+        const active = selectedCategory === cat;
+        return `
+          <button onclick="selectCategory('${cat}')" class="px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
+            active
+              ? 'bg-orange-600 text-white shadow-sm'
+              : 'bg-white text-gray-600 border border-gray-200 hover:border-orange-300 hover:text-orange-600'
+          }">
+            ${cat}
+          </button>
+        `;
+      }).join('');
+    }
+
+    function selectCategory(cat) {
+      selectedCategory = cat;
+      renderCategoryTabs();
+      renderFrontCards();
+    }
+
+    function resetFilters() {
+      document.getElementById('search-input').value = '';
+      document.getElementById('district-filter').value = 'ALL';
+      document.getElementById('price-filter').value = 'ALL';
+      selectedCategory = '全部';
+      renderCategoryTabs();
+      renderFrontCards();
+    }
+
+    // 渲染前台餐廳卡片
+    function renderFrontCards() {
+      const keyword = document.getElementById('search-input').value.trim().toLowerCase();
+      const district = document.getElementById('district-filter').value;
+      const price = document.getElementById('price-filter').value;
+      const sortBy = document.getElementById('sort-select').value;
+
+      let filtered = restaurants.filter(r => {
+        if (r.status !== 'published') return false;
+        if (selectedCategory !== '全部' && r.category !== selectedCategory) return false;
+        if (district !== 'ALL' && r.district !== district) return false;
+        if (price !== 'ALL' && r.price !== price) return false;
+        if (keyword) {
+          const matchName = r.name.toLowerCase().includes(keyword);
+          const matchDishes = r.dishes.some(d => d.toLowerCase().includes(keyword));
+          const matchDesc = r.desc.toLowerCase().includes(keyword);
+          const matchDistrict = r.district.toLowerCase().includes(keyword);
+          if (!matchName && !matchDishes && !matchDesc && !matchDistrict) return false;
+        }
+        return true;
+      });
+
+      filtered.sort((a, b) => {
+        if (sortBy === 'featured') {
+          if (a.featured !== b.featured) return b.featured ? 1 : -1;
+          return b.rating - a.rating;
+        } else if (sortBy === 'rating') {
+          return b.rating - a.rating;
+        } else if (sortBy === 'likes') {
+          return b.likes - a.likes;
+        } else {
+          return b.id.localeCompare(a.id);
+        }
+      });
+
+      document.getElementById('result-count').textContent = `${filtered.length} 間`;
+      const grid = document.getElementById('restaurant-grid');
+      const emptyState = document.getElementById('empty-state');
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+      } else {
+        emptyState.classList.add('hidden');
+        grid.innerHTML = filtered.map(r => `
+          <article onclick="openDetailModal('${r.id}')" class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm card-hover cursor-pointer flex flex-col">
+            <div class="relative h-48 bg-gray-100 overflow-hidden">
+              <img src="${r.image}" alt="${r.name}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" onerror="this.src='${FALLBACK_IMAGES[r.category] || FALLBACK_IMAGES['茶餐廳/冰室']}'" />
+              <div class="absolute top-3 left-3 flex flex-wrap gap-1.5">
+                <span class="px-2.5 py-1 rounded-lg bg-black/65 backdrop-blur-sm text-white text-[11px] font-bold">
+                  ${r.district}
+                </span>
+                ${r.featured ? `
+                  <span class="px-2.5 py-1 rounded-lg bg-orange-600 text-white text-[11px] font-bold flex items-center gap-1 shadow">
+                    <i data-lucide="award" class="w-3 h-3"></i> 精選
+                  </span>
+                ` : ''}
+              </div>
+              <div class="absolute bottom-3 right-3 px-2 py-1 rounded-lg bg-white/95 backdrop-blur-sm text-xs font-black text-amber-600 flex items-center gap-1 shadow-sm">
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i>
+                <span>${Number(r.rating).toFixed(1)}</span>
+              </div>
+            </div>
+
+            <div class="p-4 flex-1 flex flex-col">
+              <div class="flex items-center justify-between text-[11px] font-bold text-gray-400 mb-1">
+                <span>${r.category}</span>
+                <span class="text-emerald-600 font-black">${r.price}</span>
+              </div>
+              <h4 class="font-bold text-base text-gray-900 mb-2 line-clamp-1">${r.name}</h4>
+
+              <div class="flex flex-wrap gap-1 mb-3">
+                ${r.dishes.slice(0, 3).map(d => `
+                  <span class="px-2 py-0.5 rounded-md bg-orange-50 text-orange-700 text-[11px] font-medium">${d}</span>
+                `).join('')}
+              </div>
+
+              <p class="text-xs text-gray-500 line-clamp-2 mb-4 flex-1">${r.desc}</p>
+
+              <div class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
+                <span class="truncate max-w-[65%] flex items-center gap-1">
+                  <i data-lucide="map-pin" class="w-3.5 h-3.5 text-gray-400 shrink-0"></i>
+                  <span class="truncate">${r.address}</span>
+                </span>
+                <span class="flex items-center gap-1 font-bold text-rose-500">
+                  <i data-lucide="heart" class="w-3.5 h-3.5 fill-rose-500"></i> ${r.likes}
+                </span>
+              </div>
+            </div>
+          </article>
+        `).join('');
+      }
+      lucide.createIcons();
+    }
+
+    // ==================== 詳情 Modal 邏輯 ====================
+    function openDetailModal(id) {
+      const r = restaurants.find(item => item.id === id);
+      if (!r) return;
+      currentDetailId = id;
+
+      document.getElementById('modal-img').src = r.image;
+      document.getElementById('modal-district').textContent = r.district;
+      document.getElementById('modal-category').textContent = r.category;
+      document.getElementById('modal-price').textContent = r.price;
+      document.getElementById('modal-name').textContent = r.name;
+      document.getElementById('modal-rating').textContent = Number(r.rating).toFixed(1);
+      document.getElementById('modal-likes').textContent = r.likes;
+      document.getElementById('modal-desc').textContent = r.desc;
+      document.getElementById('modal-address').textContent = r.address;
+      document.getElementById('modal-mtr').textContent = r.mtr || '請參考地圖路線';
+
+      const featTag = document.getElementById('modal-featured-tag');
+      if (r.featured) featTag.classList.remove('hidden');
+      else featTag.classList.add('hidden');
+
+      document.getElementById('modal-dishes').innerHTML = r.dishes.map(d => `
+        <span class="px-2.5 py-1 rounded-lg bg-orange-100 text-orange-800 text-xs font-bold">${d}</span>
+      `).join('');
+
+      renderModalComments(r);
+      document.getElementById('detail-modal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeDetailModal() {
+      document.getElementById('detail-modal').classList.add('hidden');
+      currentDetailId = null;
+    }
+
+    function toggleLikeCurrent() {
+      if (!currentDetailId) return;
+      const r = restaurants.find(item => item.id === currentDetailId);
+      if (r) {
+        r.likes += 1;
+        document.getElementById('modal-likes').textContent = r.likes;
+        saveData();
+        renderFrontCards();
+        showToast(`已讚好「${r.name}」！`);
+      }
+    }
+
+    function renderModalComments(r) {
+      const box = document.getElementById('modal-comments');
+      if (!r.comments || r.comments.length === 0) {
+        box.innerHTML = `<p class="text-xs text-gray-400 italic">暫時未有留言，快啲做第一個留食評嘅街坊！</p>`;
+      } else {
+        box.innerHTML = r.comments.map(c => `
+          <div class="bg-gray-50 px-3 py-2 rounded-xl text-xs text-gray-700 flex items-start gap-2">
+            <span class="font-bold text-orange-600 shrink-0">街坊食客：</span>
+            <span>${c}</span>
+          </div>
+        `).join('');
+      }
+    }
+
+    function addComment(e) {
+      e.preventDefault();
+      if (!currentDetailId) return;
+      const input = document.getElementById('comment-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const r = restaurants.find(item => item.id === currentDetailId);
+      if (r) {
+        if (!r.comments) r.comments = [];
+        r.comments.push(text);
+        input.value = '';
+        saveData();
+        renderModalComments(r);
+        showToast('留言已發佈！');
+      }
+    }
+
+    // ==================== 後台 CMS 餐廳管理邏輯 ====================
+    function updateBadges() {
+      const pendingCount = restaurants.filter(r => r.status === 'pending').length;
+      const badge = document.getElementById('pending-badge');
+      const tabBadge = document.getElementById('admin-tab-pending-count');
+
+      if (pendingCount > 0) {
+        badge.textContent = pendingCount;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+      if (tabBadge) tabBadge.textContent = pendingCount;
+    }
+
+    function renderAdminDashboard() {
+      const total = restaurants.length;
+      const published = restaurants.filter(r => r.status === 'published').length;
+      const pending = restaurants.filter(r => r.status === 'pending').length;
+
+      const districtMap = {};
+      restaurants.forEach(r => {
+        districtMap[r.district] = (districtMap[r.district] || 0) + 1;
+      });
+      let topDistrict = '-';
+      let maxCount = 0;
+      for (const [d, count] of Object.entries(districtMap)) {
+        if (count > maxCount) {
+          maxCount = count;
+          topDistrict = d;
+        }
+      }
+
+      const avgRating = total > 0
+        ? (restaurants.reduce((sum, r) => sum + Number(r.rating), 0) / total).toFixed(1)
+        : '0.0';
+
+      document.getElementById('stat-total').textContent = total;
+      document.getElementById('stat-published-sub').textContent = `已發佈 ${published} 間`;
+      document.getElementById('stat-pending').textContent = pending;
+      document.getElementById('stat-top-district').textContent = topDistrict;
+      document.getElementById('stat-district-count').textContent = `共 ${maxCount} 間好西`;
+      document.getElementById('stat-avg-rating').textContent = avgRating;
+
+      renderAdminTable();
+    }
+
+    function setAdminStatusFilter(status) {
+      adminStatusFilter = status;
+      ['ALL', 'published', 'pending'].forEach(st => {
+        const btn = document.getElementById(`tab-admin-${st.toLowerCase()}`);
+        if (st === status) {
+          btn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white flex items-center gap-1';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-200/70 flex items-center gap-1';
+        }
+      });
+      renderAdminTable();
+    }
+
+    function renderAdminTable() {
+      const q = document.getElementById('admin-search').value.trim().toLowerCase();
+      const filtered = restaurants.filter(r => {
+        if (adminStatusFilter !== 'ALL' && r.status !== adminStatusFilter) return false;
+        if (q) {
+          return r.name.toLowerCase().includes(q) ||
+                 r.district.toLowerCase().includes(q) ||
+                 r.category.toLowerCase().includes(q) ||
+                 r.dishes.some(d => d.toLowerCase().includes(q));
+        }
+        return true;
+      });
+
+      const tbody = document.getElementById('admin-table-body');
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-10 text-center text-xs text-slate-400">冇符合條件嘅資料庫紀錄</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(r => `
+        <tr class="hover:bg-slate-50/80 transition-colors">
+          <td class="py-3.5 px-4">
+            <div class="flex items-center gap-3">
+              <img src="${r.image}" alt="" class="w-11 h-11 rounded-xl object-cover bg-slate-200 shrink-0" onerror="this.src='${FALLBACK_IMAGES[r.category] || FALLBACK_IMAGES['茶餐廳/冰室']}'" />
+              <div>
+                <div class="font-bold text-slate-900 text-sm">${r.name}</div>
+                <div class="text-[11px] text-slate-400 truncate max-w-[200px]">${r.dishes.join('、')}</div>
+              </div>
+            </div>
+          </td>
+          <td class="py-3.5 px-4">
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-xs font-bold">${r.district}</span>
+            <div class="text-[11px] text-slate-500 mt-1">${r.category}</div>
+          </td>
+          <td class="py-3.5 px-4">
+            <div class="text-xs font-black text-emerald-600">${r.price}</div>
+            <div class="text-xs font-bold text-amber-600 flex items-center gap-1 mt-0.5">
+              <i data-lucide="star" class="w-3 h-3 fill-amber-400 text-amber-400"></i> ${Number(r.rating).toFixed(1)}
+            </div>
+          </td>
+          <td class="py-3.5 px-4 text-center">
+            <button onclick="toggleFeatured('${r.id}')" class="p-1.5 rounded-lg transition-colors ${r.featured ? 'bg-orange-100 text-orange-600' : 'bg-slate-100 text-slate-400 hover:text-slate-600'}" title="切換編輯精選">
+              <i data-lucide="award" class="w-4 h-4"></i>
+            </button>
+          </td>
+          <td class="py-3.5 px-4 text-center">
+            <button onclick="toggleStatus('${r.id}')" class="px-2.5 py-1 rounded-full text-[11px] font-bold transition-colors ${
+              r.status === 'published'
+                ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'
+                : 'bg-amber-100 text-amber-700 hover:bg-amber-200'
+            }">
+              ${r.status === 'published' ? '● 已發佈' : '⏳ 待審核 (點擊批核)'}
+            </button>
+          </td>
+          <td class="py-3.5 px-4 text-right">
+            <div class="flex items-center justify-end gap-1.5">
+              <button onclick="openAdminFormModal('${r.id}')" class="p-2 rounded-lg text-slate-600 hover:bg-slate-200/70 transition-colors" title="編輯資料">
+                <i data-lucide="pencil" class="w-4 h-4"></i>
+              </button>
+              <button onclick="deleteRestaurant('${r.id}')" class="p-2 rounded-lg text-rose-600 hover:bg-rose-50 transition-colors" title="刪除">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function toggleFeatured(id) {
+      const r = restaurants.find(item => item.id === id);
+      if (r) {
+        r.featured = !r.featured;
+        saveData();
+        renderAdminDashboard();
+        showToast(r.featured ? `已將「${r.name}」設為編輯精選` : `已取消「${r.name}」精選狀態`);
+      }
+    }
+
+    function toggleStatus(id) {
+      const r = restaurants.find(item => item.id === id);
+      if (r) {
+        r.status = r.status === 'published' ? 'pending' : 'published';
+        saveData();
+        renderAdminDashboard();
+        showToast(r.status === 'published' ? `「${r.name}」已批核並於前台發佈！` : `「${r.name}」已轉為待審核狀態`);
+      }
+    }
+
+    function deleteRestaurant(id) {
+      const r = restaurants.find(item => item.id === id);
+      if (!r) return;
+      if (confirm(`確定要從資料庫永久刪除「${r.name}」嗎？`)) {
+        restaurants = restaurants.filter(item => item.id !== id);
+        saveData();
+        renderAdminDashboard();
+        showToast(`已刪除「${r.name}」`);
+      }
+    }
+
+    // ==================== 表單 Modal (新增 / 編輯 / 報料) ====================
+    function openAdminFormModal(editId = null) {
+      document.getElementById('restaurant-form').reset();
+      document.getElementById('form-mode').value = 'admin';
+      document.getElementById('admin-only-fields').classList.remove('hidden');
+      document.getElementById('user-submit-notice').classList.add('hidden');
+
+      if (editId) {
+        const r = restaurants.find(item => item.id === editId);
+        if (!r) return;
+        document.getElementById('form-modal-title').textContent = `編輯餐廳：${r.name}`;
+        document.getElementById('form-submit-btn').textContent = '更新資料';
+        document.getElementById('form-id').value = r.id;
+        document.getElementById('form-name').value = r.name;
+        document.getElementById('form-district').value = r.district;
+        document.getElementById('form-category').value = r.category;
+        document.getElementById('form-price').value = r.price;
+        document.getElementById('form-rating').value = r.rating;
+        document.getElementById('form-dishes').value = r.dishes.join(', ');
+        document.getElementById('form-address').value = r.address;
+        document.getElementById('form-mtr').value = r.mtr || '';
+        document.getElementById('form-desc').value = r.desc;
+        document.getElementById('form-image').value = r.image;
+        document.getElementById('form-featured').checked = r.featured;
+        document.getElementById('form-status').value = r.status;
+      } else {
+        document.getElementById('form-modal-title').textContent = '新增香港好西餐廳';
+        document.getElementById('form-submit-btn').textContent = '新增並儲存';
+        document.getElementById('form-id').value = '';
+        document.getElementById('form-rating').value = '4.6';
+        document.getElementById('form-status').value = 'published';
+      }
+
+      document.getElementById('form-modal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function openSubmitModal() {
+      document.getElementById('restaurant-form').reset();
+      document.getElementById('form-id').value = '';
+      document.getElementById('form-mode').value = 'submit';
+      document.getElementById('form-modal-title').textContent = '街坊報料：推介香港好西';
+      document.getElementById('form-submit-btn').textContent = '提交報料';
+      document.getElementById('form-rating').value = '4.5';
+      document.getElementById('admin-only-fields').classList.add('hidden');
+      document.getElementById('user-submit-notice').classList.remove('hidden');
+      document.getElementById('form-modal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeFormModal() {
+      document.getElementById('form-modal').classList.add('hidden');
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('form-id').value;
+      const mode = document.getElementById('form-mode').value;
+      const category = document.getElementById('form-category').value;
+      const rawImage = document.getElementById('form-image').value.trim();
+
+      const dishesArray = document.getElementById('form-dishes').value
+        .split(/[,，、]/)
+        .map(s => s.trim())
+        .filter(Boolean);
+
+      let status = 'pending';
+      let featured = false;
+
+      if (mode === 'admin') {
+        status = document.getElementById('form-status').value;
+        featured = document.getElementById('form-featured').checked;
+      }
+
+      const payload = {
+        name: document.getElementById('form-name').value.trim(),
+        district: document.getElementById('form-district').value,
+        category,
+        price: document.getElementById('form-price').value,
+        rating: parseFloat(document.getElementById('form-rating').value) || 4.5,
+        dishes: dishesArray.length > 0 ? dishesArray : ['招牌推介'],
+        address: document.getElementById('form-address').value.trim(),
+        mtr: document.getElementById('form-mtr').value.trim(),
+        desc: document.getElementById('form-desc').value.trim(),
+        image: rawImage || FALLBACK_IMAGES[category] || FALLBACK_IMAGES['茶餐廳/冰室'],
+        featured,
+        status
+      };
+
+      if (id) {
+        const idx = restaurants.findIndex(item => item.id === id);
+        if (idx !== -1) {
+          restaurants[idx] = { ...restaurants[idx], ...payload };
+          showToast(`已成功更新「${payload.name}」`);
+        }
+      } else {
+        const newItem = {
+          id: 'hk-' + Date.now(),
+          likes: 1,
+          comments: [],
+          ...payload
+        };
+        restaurants.unshift(newItem);
+        if (status === 'pending') {
+          showToast(`報料已送出！請登入後台審核「${payload.name}」上架。`);
+        } else {
+          showToast(`「${payload.name}」已成功發佈至指南！`);
+        }
+      }
+
+      saveData();
+      closeFormModal();
+      renderAll();
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3000);
+    }
+
+    function renderAll() {
+      renderCategoryTabs();
+      renderFrontCards();
+      if (currentAdmin) {
+        renderAdminDashboard();
+        renderAdminAccountsTable();
+      }
+      updateBadges();
+    }
+
+    // 啟動應用
+    initData();
+    renderAll();
+  </script>
+</body>
+</html>
