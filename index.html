@@ -35,7 +35,7 @@
           <i data-lucide="utensils" class="w-5 h-5"></i>
         </div>
         <div>
-          <h1 class="font-black text-lg sm:text-xl tracking-tight text-gray-900 leading-none">
+          <h1 id="brand-title" class="font-black text-base sm:text-xl tracking-tight text-gray-900 leading-none">
             香港食好西<span class="text-orange-600">指南</span>
           </h1>
           <p class="text-[11px] text-gray-400 font-medium hidden sm:block mt-0.5">
@@ -45,22 +45,29 @@
       </div>
 
       <div class="flex items-center bg-gray-100 p-1 rounded-xl border border-gray-200">
-        <button type="button" id="btn-view-front" onclick="switchView('front')" class="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-white text-orange-600 shadow-sm">
+        <button type="button" id="btn-view-front" onclick="switchView('front')" class="flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-white text-orange-600 shadow-sm">
           <i data-lucide="compass" class="w-4 h-4"></i>
-          <span>前台搵食</span>
+          <span id="nav-front-label">前台搵食</span>
         </button>
-        <button type="button" id="btn-view-admin" onclick="handleAdminNavClick()" class="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-gray-600 hover:text-gray-900 relative">
+        <button type="button" id="btn-view-admin" onclick="handleAdminNavClick()" class="flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-gray-600 hover:text-gray-900 relative">
           <i data-lucide="shield-check" class="w-4 h-4"></i>
-          <span>後台 Admin</span>
+          <span id="nav-admin-label">後台 Admin</span>
           <span id="pending-badge" class="hidden absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[10px] flex items-center justify-center font-bold">0</span>
         </button>
       </div>
 
-      <button type="button" onclick="openSubmitModal()" class="flex items-center gap-1.5 bg-orange-600 hover:bg-orange-700 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold shadow-sm transition-colors">
-        <i data-lucide="plus-circle" class="w-4 h-4"></i>
-        <span class="hidden sm:inline">報料好西</span>
-        <span class="sm:hidden">報料</span>
-      </button>
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <button type="button" id="btn-lang-toggle" onclick="toggleLanguage()" title="Switch Language / 切換語言" class="flex items-center gap-1 px-2.5 py-2 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-800 text-xs font-black transition-colors">
+          <i data-lucide="languages" class="w-4 h-4 text-orange-600"></i>
+          <span id="lang-toggle-label">EN</span>
+        </button>
+
+        <button type="button" onclick="openSubmitModal()" class="flex items-center gap-1.5 bg-orange-600 hover:bg-orange-700 text-white px-3 sm:px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold shadow-sm transition-colors">
+          <i data-lucide="plus-circle" class="w-4 h-4"></i>
+          <span id="submit-btn-label" class="hidden sm:inline">報料好西</span>
+          <span id="submit-btn-short" class="sm:hidden">報料</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -68,13 +75,13 @@
   <main id="front-view" class="flex-1">
     <section class="bg-gradient-to-b from-orange-50 via-amber-50/40 to-transparent pt-8 pb-6 px-4 sm:px-6 lg:px-8 border-b border-orange-100/60">
       <div class="max-w-4xl mx-auto text-center">
-        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold mb-3">
+        <span id="hero-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold mb-3">
           <i data-lucide="flame" class="w-3.5 h-3.5"></i> 全港十八區地道美食資料庫
         </span>
-        <h2 class="text-2xl sm:text-4xl font-black text-gray-900 tracking-tight mb-2">
+        <h2 id="hero-title" class="text-2xl sm:text-4xl font-black text-gray-900 tracking-tight mb-2">
           今日想喺邊區<span class="text-orange-600">食好西</span>？
         </h2>
-        <p class="text-sm sm:text-base text-gray-600 mb-6">
+        <p id="hero-subtitle" class="text-sm sm:text-base text-gray-600 mb-6">
           覆蓋港島、九龍、新界及離島共 18 區，隨時搜尋招牌菜同街坊食評
         </p>
 
@@ -84,43 +91,32 @@
             <input id="search-input" type="text" oninput="renderFrontCards()" placeholder="搜尋餐廳名稱、招牌菜（例如：菠蘿油、雲吞麵、車仔麵）..." class="w-full py-2 text-sm focus:outline-none text-gray-800 placeholder-gray-400" />
           </div>
           <div class="h-px sm:h-8 sm:w-px bg-gray-200 my-auto"></div>
-          <div class="flex items-center px-3 gap-2 sm:w-44">
+          <div class="flex items-center px-3 gap-2 sm:w-48">
             <i data-lucide="map-pin" class="w-4 h-4 text-orange-500 shrink-0"></i>
             <select id="district-filter" onchange="renderFrontCards()" class="w-full py-2 text-sm font-medium text-gray-700 bg-transparent focus:outline-none cursor-pointer"></select>
           </div>
           <div class="h-px sm:h-8 sm:w-px bg-gray-200 my-auto"></div>
-          <div class="flex items-center px-3 gap-2 sm:w-36">
+          <div class="flex items-center px-3 gap-2 sm:w-40">
             <i data-lucide="dollar-sign" class="w-4 h-4 text-emerald-600 shrink-0"></i>
-            <select id="price-filter" onchange="renderFrontCards()" class="w-full py-2 text-sm font-medium text-gray-700 bg-transparent focus:outline-none cursor-pointer">
-              <option value="ALL">所有價位</option>
-              <option value="$">$ ($50以下)</option>
-              <option value="$$">$$ ($51-$150)</option>
-              <option value="$$$">$$$ ($151-$300)</option>
-              <option value="$$$$">$$$$ ($300以上)</option>
-            </select>
+            <select id="price-filter" onchange="renderFrontCards()" class="w-full py-2 text-sm font-medium text-gray-700 bg-transparent focus:outline-none cursor-pointer"></select>
           </div>
         </div>
       </div>
 
       <div class="max-w-7xl mx-auto mt-6">
-        <div id="category-tabs" class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 justify-start sm:justify-center"></div>
+        <div id="category-tabs" class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 justify-start"></div>
       </div>
     </section>
 
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="flex items-center justify-between mb-5">
         <div class="flex items-center gap-2">
-          <h3 class="text-lg font-bold text-gray-900">精選美食推介</h3>
+          <h3 id="section-featured-title" class="text-lg font-bold text-gray-900">精選美食推介</h3>
           <span id="result-count" class="px-2.5 py-0.5 rounded-full bg-gray-200 text-gray-700 text-xs font-bold">0 間</span>
         </div>
         <div class="flex items-center gap-2 text-xs text-gray-500">
-          <span>排序：</span>
-          <select id="sort-select" onchange="renderFrontCards()" class="bg-white border border-gray-200 rounded-lg px-2.5 py-1.5 font-medium text-gray-700 focus:outline-none">
-            <option value="featured">編輯精選優先</option>
-            <option value="rating">最高評分</option>
-            <option value="likes">最多街坊讚好</option>
-            <option value="newest">最新收錄</option>
-          </select>
+          <span id="sort-label">排序：</span>
+          <select id="sort-select" onchange="renderFrontCards()" class="bg-white border border-gray-200 rounded-lg px-2.5 py-1.5 font-medium text-gray-700 focus:outline-none"></select>
         </div>
       </div>
 
@@ -130,9 +126,9 @@
         <div class="w-14 h-14 bg-orange-50 text-orange-500 rounded-full flex items-center justify-center mx-auto mb-3">
           <i data-lucide="search-x" class="w-7 h-7"></i>
         </div>
-        <h4 class="text-base font-bold text-gray-900">搵唔到符合條件嘅餐廳</h4>
-        <p class="text-sm text-gray-500 mt-1 mb-4">試下清除篩選條件，或者自己報料新增呢間好西！</p>
-        <button type="button" onclick="resetFilters()" class="px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-xl hover:bg-gray-800">重設所有篩選</button>
+        <h4 id="empty-title" class="text-base font-bold text-gray-900">搵唔到符合條件嘅餐廳</h4>
+        <p id="empty-desc" class="text-sm text-gray-500 mt-1 mb-4">試下清除篩選條件，或者自己報料新增呢間好西！</p>
+        <button type="button" id="reset-filters-btn" onclick="resetFilters()" class="px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-xl hover:bg-gray-800">重設所有篩選</button>
       </div>
     </section>
   </main>
@@ -144,26 +140,26 @@
         <div>
           <div class="flex items-center gap-2 flex-wrap">
             <span class="px-2.5 py-0.5 rounded bg-slate-900 text-white text-[11px] font-bold tracking-wider">CMS ADMIN</span>
-            <h2 class="text-xl sm:text-2xl font-black text-slate-900">美食資料庫管理後台</h2>
+            <h2 id="admin-heading" class="text-xl sm:text-2xl font-black text-slate-900">美食資料庫管理後台</h2>
             <span id="current-admin-badge" class="px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold flex items-center gap-1">
               <i data-lucide="user-check" class="w-3.5 h-3.5"></i> 已登入
             </span>
           </div>
-          <p class="text-xs sm:text-sm text-slate-500 mt-1">管理全站餐廳收錄、審核街坊報料，以及新增或管理多位後台 Admin 帳號</p>
+          <p id="admin-subheading" class="text-xs sm:text-sm text-slate-500 mt-1">管理全站餐廳收錄、審核街坊報料，以及新增或管理多位後台 Admin 帳號</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
           <button type="button" onclick="openAdminFormModal()" class="px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs sm:text-sm font-bold flex items-center gap-1.5 shadow-sm">
             <i data-lucide="plus" class="w-4 h-4"></i>
-            <span>新增餐廳</span>
+            <span id="admin-add-restaurant-btn">新增餐廳</span>
           </button>
           <button type="button" onclick="resetDemoData()" class="px-3 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold flex items-center gap-1.5">
             <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
-            <span>重設示範資料</span>
+            <span id="admin-reset-demo-btn">重設示範資料</span>
           </button>
           <button type="button" onclick="logoutAdmin()" class="px-3 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold flex items-center gap-1.5">
             <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
-            <span>登出後台</span>
+            <span id="admin-logout-btn">登出後台</span>
           </button>
         </div>
       </div>
@@ -171,11 +167,11 @@
       <div class="flex items-center gap-2 mb-6 border-b border-slate-200 pb-3">
         <button type="button" id="subtab-restaurants" onclick="switchAdminSubTab('restaurants')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 text-white flex items-center gap-2 shadow-sm">
           <i data-lucide="utensils" class="w-4 h-4"></i>
-          <span>餐廳資料庫管理</span>
+          <span id="subtab-restaurants-label">餐廳資料庫管理</span>
         </button>
         <button type="button" id="subtab-admins" onclick="switchAdminSubTab('admins')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 flex items-center gap-2">
           <i data-lucide="users" class="w-4 h-4"></i>
-          <span>管理員帳號設定 (增加 Admin)</span>
+          <span id="subtab-admins-label">管理員帳號設定 (增加 Admin)</span>
           <span id="admin-count-pill" class="px-1.5 py-0.2 rounded-full bg-slate-200 text-slate-700 text-[11px]">1</span>
         </button>
       </div>
@@ -184,7 +180,7 @@
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
             <div class="flex items-center justify-between text-slate-500 text-xs font-bold mb-2">
-              <span>總收錄餐廳</span>
+              <span id="stat-total-label">總收錄餐廳</span>
               <div class="w-8 h-8 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center"><i data-lucide="store" class="w-4 h-4"></i></div>
             </div>
             <div id="stat-total" class="text-2xl sm:text-3xl font-black text-slate-900">0</div>
@@ -193,16 +189,16 @@
 
           <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
             <div class="flex items-center justify-between text-slate-500 text-xs font-bold mb-2">
-              <span>待審核報料</span>
+              <span id="stat-pending-label">待審核報料</span>
               <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center"><i data-lucide="clock" class="w-4 h-4"></i></div>
             </div>
             <div id="stat-pending" class="text-2xl sm:text-3xl font-black text-amber-600">0</div>
-            <p class="text-[11px] text-slate-400 font-medium mt-1">需管理員批核上架</p>
+            <p id="stat-pending-sub" class="text-[11px] text-slate-400 font-medium mt-1">需管理員批核上架</p>
           </div>
 
           <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
             <div class="flex items-center justify-between text-slate-500 text-xs font-bold mb-2">
-              <span>最多餐廳地區</span>
+              <span id="stat-top-district-label">最多餐廳地區</span>
               <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center"><i data-lucide="map" class="w-4 h-4"></i></div>
             </div>
             <div id="stat-top-district" class="text-2xl sm:text-3xl font-black text-slate-900">-</div>
@@ -211,11 +207,11 @@
 
           <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
             <div class="flex items-center justify-between text-slate-500 text-xs font-bold mb-2">
-              <span>全站平均評分</span>
+              <span id="stat-avg-rating-label">全站平均評分</span>
               <div class="w-8 h-8 rounded-lg bg-yellow-50 text-yellow-600 flex items-center justify-center"><i data-lucide="star" class="w-4 h-4"></i></div>
             </div>
             <div id="stat-avg-rating" class="text-2xl sm:text-3xl font-black text-slate-900">0.0</div>
-            <p class="text-[11px] text-slate-400 font-medium mt-1">滿分 5.0 分</p>
+            <p id="stat-avg-rating-sub" class="text-[11px] text-slate-400 font-medium mt-1">滿分 5.0 分</p>
           </div>
         </div>
 
@@ -225,7 +221,7 @@
               <button type="button" onclick="setAdminStatusFilter('ALL')" id="tab-admin-all" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white">全部資料</button>
               <button type="button" onclick="setAdminStatusFilter('published')" id="tab-admin-published" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-200/70">已發佈</button>
               <button type="button" onclick="setAdminStatusFilter('pending')" id="tab-admin-pending" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-200/70 flex items-center gap-1">
-                <span>待審核</span>
+                <span id="tab-admin-pending-text">待審核</span>
                 <span id="admin-tab-pending-count" class="px-1.5 py-0.2 rounded-full bg-amber-100 text-amber-700 text-[10px]">0</span>
               </button>
             </div>
@@ -239,12 +235,12 @@
             <table class="w-full text-left border-collapse">
               <thead>
                 <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase bg-slate-50">
-                  <th class="py-3.5 px-4">餐廳資訊</th>
-                  <th class="py-3.5 px-4">地區 / 分類</th>
-                  <th class="py-3.5 px-4">價位 / 評分</th>
-                  <th class="py-3.5 px-4 text-center">編輯精選</th>
-                  <th class="py-3.5 px-4 text-center">狀態</th>
-                  <th class="py-3.5 px-4 text-right">操作</th>
+                  <th id="th-restaurant" class="py-3.5 px-4">餐廳資訊</th>
+                  <th id="th-district-cat" class="py-3.5 px-4">地區 / 分類</th>
+                  <th id="th-price-rating" class="py-3.5 px-4">價位 / 評分</th>
+                  <th id="th-featured" class="py-3.5 px-4 text-center">編輯精選</th>
+                  <th id="th-status" class="py-3.5 px-4 text-center">狀態</th>
+                  <th id="th-actions" class="py-3.5 px-4 text-right">操作</th>
                 </tr>
               </thead>
               <tbody id="admin-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
@@ -259,52 +255,49 @@
             <div class="flex items-center gap-2 mb-4">
               <div class="w-9 h-9 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center"><i data-lucide="user-plus" class="w-5 h-5"></i></div>
               <div>
-                <h3 class="font-bold text-base text-slate-900">增加新 Admin 管理員</h3>
-                <p class="text-xs text-slate-500">建立新帳號俾團隊成員一齊管理</p>
+                <h3 id="add-admin-title" class="font-bold text-base text-slate-900">增加新 Admin 管理員</h3>
+                <p id="add-admin-desc" class="text-xs text-slate-500">建立新帳號俾團隊成員一齊管理</p>
               </div>
             </div>
 
             <form onsubmit="handleAddAdmin(event)" novalidate class="space-y-4">
               <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">顯示名稱 / 稱呼 *</label>
+                <label id="lbl-new-admin-name" class="block text-xs font-bold text-slate-700 mb-1">顯示名稱 / 稱呼 *</label>
                 <input id="new-admin-name" type="text" placeholder="例如：九龍區美食編輯阿明" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl focus:outline-none focus:border-orange-500" />
               </div>
               <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">登入帳號 (Username) *</label>
+                <label id="lbl-new-admin-user" class="block text-xs font-bold text-slate-700 mb-1">登入帳號 (Username) *</label>
                 <input id="new-admin-username" type="text" placeholder="例如：editor_ming" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl focus:outline-none focus:border-orange-500" />
               </div>
               <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">登入密碼 *</label>
+                <label id="lbl-new-admin-pass" class="block text-xs font-bold text-slate-700 mb-1">登入密碼 *</label>
                 <input id="new-admin-password" type="text" placeholder="至少 4 個字元" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl focus:outline-none focus:border-orange-500" />
               </div>
               <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">管理員角色權限</label>
-                <select id="new-admin-role" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl bg-white focus:outline-none focus:border-orange-500">
-                  <option value="超級管理員 (Super Admin)">超級管理員 (可增刪其他 Admin)</option>
-                  <option value="美食編輯 (Editor)">美食編輯 (負責審核及新增餐廳)</option>
-                </select>
+                <label id="lbl-new-admin-role" class="block text-xs font-bold text-slate-700 mb-1">管理員角色權限</label>
+                <select id="new-admin-role" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl bg-white focus:outline-none focus:border-orange-500"></select>
               </div>
               <button type="submit" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold rounded-xl shadow-sm transition-colors flex items-center justify-center gap-1.5">
                 <i data-lucide="plus-circle" class="w-4 h-4"></i>
-                <span>確認新增 Admin</span>
+                <span id="btn-confirm-add-admin">確認新增 Admin</span>
               </button>
             </form>
           </div>
 
           <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
             <div class="p-5 border-b border-slate-200">
-              <h3 class="font-bold text-base text-slate-900">現有後台管理員名單</h3>
-              <p class="text-xs text-slate-500 mt-0.5">以下帳號均可用於登入本網站後台管理系統</p>
+              <h3 id="admin-list-title" class="font-bold text-base text-slate-900">現有後台管理員名單</h3>
+              <p id="admin-list-desc" class="text-xs text-slate-500 mt-0.5">以下帳號均可用於登入本網站後台管理系統</p>
             </div>
             <div class="overflow-x-auto">
               <table class="w-full text-left border-collapse">
                 <thead>
                   <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase bg-slate-50">
-                    <th class="py-3.5 px-5">管理員名稱</th>
-                    <th class="py-3.5 px-5">登入帳號</th>
-                    <th class="py-3.5 px-5">登入密碼</th>
-                    <th class="py-3.5 px-5">權限角色</th>
-                    <th class="py-3.5 px-5 text-right">操作</th>
+                    <th id="th-adm-name" class="py-3.5 px-5">管理員名稱</th>
+                    <th id="th-adm-user" class="py-3.5 px-5">登入帳號</th>
+                    <th id="th-adm-pass" class="py-3.5 px-5">登入密碼</th>
+                    <th id="th-adm-role" class="py-3.5 px-5">權限角色</th>
+                    <th id="th-adm-op" class="py-3.5 px-5 text-right">操作</th>
                   </tr>
                 </thead>
                 <tbody id="admin-accounts-tbody" class="divide-y divide-slate-100 text-sm"></tbody>
@@ -322,23 +315,23 @@
       <div class="p-6 bg-slate-900 text-white text-center relative">
         <button type="button" onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
         <div class="w-12 h-12 rounded-2xl bg-orange-600 text-white flex items-center justify-center mx-auto mb-3 shadow-lg"><i data-lucide="lock" class="w-6 h-6"></i></div>
-        <h3 class="text-lg font-black">後台管理員登入</h3>
-        <p class="text-xs text-slate-400 mt-1">請輸入 Admin 帳號及密碼以進入 CMS 系統</p>
+        <h3 id="login-title" class="text-lg font-black">後台管理員登入</h3>
+        <p id="login-desc" class="text-xs text-slate-400 mt-1">請輸入 Admin 帳號及密碼以進入 CMS 系統</p>
       </div>
 
       <form onsubmit="handleAdminLogin(event)" novalidate class="p-6 space-y-4">
         <div>
-          <label class="block text-xs font-bold text-gray-700 mb-1">Admin 帳號</label>
+          <label id="lbl-login-user" class="block text-xs font-bold text-gray-700 mb-1">Admin 帳號</label>
           <input id="login-username" type="text" placeholder="請輸入帳號" class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500" />
         </div>
         <div>
-          <label class="block text-xs font-bold text-gray-700 mb-1">登入密碼</label>
+          <label id="lbl-login-pass" class="block text-xs font-bold text-gray-700 mb-1">登入密碼</label>
           <input id="login-password" type="password" placeholder="請輸入密碼" class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500" />
         </div>
         <p id="login-error" class="hidden text-xs font-bold text-rose-600 flex items-center gap-1">
-          <i data-lucide="alert-circle" class="w-4 h-4"></i> 帳號或密碼不正確，請重試！
+          <i data-lucide="alert-circle" class="w-4 h-4"></i> <span id="login-error-text">帳號或密碼不正確，請重試！</span>
         </p>
-        <button type="submit" class="w-full py-2.5 bg-orange-600 hover:bg-orange-700 text-white text-sm font-bold rounded-xl shadow-sm transition-colors">登入後台</button>
+        <button type="submit" id="btn-login-submit" class="w-full py-2.5 bg-orange-600 hover:bg-orange-700 text-white text-sm font-bold rounded-xl shadow-sm transition-colors">登入後台</button>
       </form>
     </div>
   </div>
@@ -350,7 +343,7 @@
         <img id="modal-img" src="" alt="" class="w-full h-full object-cover" />
         <button type="button" onclick="closeDetailModal()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center"><i data-lucide="x" class="w-5 h-5"></i></button>
         <div id="modal-featured-tag" class="hidden absolute top-4 left-4 px-3 py-1 rounded-full bg-orange-600 text-white text-xs font-bold shadow-md flex items-center gap-1">
-          <i data-lucide="award" class="w-3.5 h-3.5"></i> 編輯精選
+          <i data-lucide="award" class="w-3.5 h-3.5"></i> <span id="modal-featured-text">編輯精選</span>
         </div>
       </div>
 
@@ -375,7 +368,7 @@
         </div>
 
         <div class="mb-4">
-          <span class="text-xs font-bold text-gray-400 block mb-1.5">必食招牌菜：</span>
+          <span id="modal-dishes-label" class="text-xs font-bold text-gray-400 block mb-1.5">必食招牌菜：</span>
           <div id="modal-dishes" class="flex flex-wrap gap-1.5"></div>
         </div>
 
@@ -384,20 +377,20 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-gray-600 mb-6 bg-gray-50 p-3.5 rounded-2xl">
           <div class="flex items-start gap-2">
             <i data-lucide="map-pin" class="w-4 h-4 text-orange-500 shrink-0 mt-0.5"></i>
-            <div><span class="font-bold text-gray-900 block">詳細地址</span><span id="modal-address">-</span></div>
+            <div><span id="modal-address-label" class="font-bold text-gray-900 block">詳細地址</span><span id="modal-address">-</span></div>
           </div>
           <div class="flex items-start gap-2">
             <i data-lucide="train" class="w-4 h-4 text-blue-500 shrink-0 mt-0.5"></i>
-            <div><span class="font-bold text-gray-900 block">港鐵 / 交通</span><span id="modal-mtr">-</span></div>
+            <div><span id="modal-mtr-label" class="font-bold text-gray-900 block">港鐵 / 交通</span><span id="modal-mtr">-</span></div>
           </div>
         </div>
 
         <div class="border-t border-gray-100 pt-4">
-          <h4 class="text-sm font-bold text-gray-900 mb-3 flex items-center gap-1.5"><i data-lucide="message-square" class="w-4 h-4 text-orange-500"></i> 街坊食評留言</h4>
+          <h4 id="modal-comments-title" class="text-sm font-bold text-gray-900 mb-3 flex items-center gap-1.5"><i data-lucide="message-square" class="w-4 h-4 text-orange-500"></i> 街坊食評留言</h4>
           <div id="modal-comments" class="space-y-2 max-h-36 overflow-y-auto mb-3 pr-1"></div>
           <form onsubmit="addComment(event)" novalidate class="flex gap-2">
             <input id="comment-input" type="text" placeholder="留低你嘅食後感..." class="flex-1 text-xs border border-gray-300 rounded-xl px-3.5 py-2 focus:outline-none focus:border-orange-500" />
-            <button type="submit" class="px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-xl hover:bg-gray-800">發佈</button>
+            <button type="submit" id="btn-post-comment" class="px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-xl hover:bg-gray-800">發佈</button>
           </form>
         </div>
       </div>
@@ -421,90 +414,73 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-bold text-gray-700 mb-1">餐廳名稱 *</label>
+            <label id="lbl-form-name" class="block text-xs font-bold text-gray-700 mb-1">餐廳名稱 *</label>
             <input id="form-name" type="text" placeholder="例如：華嫂冰室" class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500" />
           </div>
           <div>
-            <label class="block text-xs font-bold text-gray-700 mb-1">所屬地區 (全港18區) *</label>
+            <label id="lbl-form-district" class="block text-xs font-bold text-gray-700 mb-1">所屬地區 (全港18區) *</label>
             <select id="form-district" class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500 bg-white"></select>
           </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label class="block text-xs font-bold text-gray-700 mb-1">菜式分類 *</label>
-            <select id="form-category" class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500 bg-white">
-              <option value="茶餐廳/冰室">茶餐廳/冰室</option>
-              <option value="街頭小食">街頭小食</option>
-              <option value="點心/酒樓">點心/酒樓</option>
-              <option value="車仔麵/粉麵">車仔麵/粉麵</option>
-              <option value="日本菜">日本菜</option>
-              <option value="火鍋/打邊爐">火鍋/打邊爐</option>
-              <option value="甜品/糖水">甜品/糖水</option>
-              <option value="Cafe/西餐">Cafe/西餐</option>
-            </select>
+            <label id="lbl-form-category" class="block text-xs font-bold text-gray-700 mb-1">菜式分類 *</label>
+            <select id="form-category" class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500 bg-white"></select>
           </div>
           <div>
-            <label class="block text-xs font-bold text-gray-700 mb-1">人均消費 *</label>
-            <select id="form-price" class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500 bg-white">
-              <option value="$">$ ($50以下)</option>
-              <option value="$$">$$ ($51-$150)</option>
-              <option value="$$$">$$$ ($151-$300)</option>
-              <option value="$$$$">$$$$ ($300以上)</option>
-            </select>
+            <label id="lbl-form-price" class="block text-xs font-bold text-gray-700 mb-1">人均消費 *</label>
+            <select id="form-price" class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500 bg-white"></select>
           </div>
           <div>
-            <label class="block text-xs font-bold text-gray-700 mb-1">推薦評分 (1-5)</label>
+            <label id="lbl-form-rating" class="block text-xs font-bold text-gray-700 mb-1">推薦評分 (1-5)</label>
             <input id="form-rating" type="number" step="0.1" min="1" max="5" value="4.5" class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500" />
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-gray-700 mb-1">招牌菜式 (用逗號分隔) *</label>
+          <label id="lbl-form-dishes" class="block text-xs font-bold text-gray-700 mb-1">招牌菜式 (用逗號分隔) *</label>
           <input id="form-dishes" type="text" placeholder="例如：招牌菠蘿包, 鮮茄牛肉通粉, 樽仔奶茶" class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500" />
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-bold text-gray-700 mb-1">詳細地址 *</label>
+            <label id="lbl-form-address" class="block text-xs font-bold text-gray-700 mb-1">詳細地址 *</label>
             <input id="form-address" type="text" placeholder="例如：灣仔謝斐道272號地下" class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500" />
           </div>
           <div>
-            <label class="block text-xs font-bold text-gray-700 mb-1">最近港鐵站/出口</label>
+            <label id="lbl-form-mtr" class="block text-xs font-bold text-gray-700 mb-1">最近港鐵站/出口</label>
             <input id="form-mtr" type="text" placeholder="例如：灣仔站 A1 出口步行 5 分鐘" class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500" />
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-gray-700 mb-1">美食簡介 / 食評 *</label>
+          <label id="lbl-form-desc" class="block text-xs font-bold text-gray-700 mb-1">美食簡介 / 食評 *</label>
           <textarea id="form-desc" rows="3" placeholder="寫低呢間餐廳有咩特別、必食推介或者排隊貼士..." class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500"></textarea>
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-gray-700 mb-1">食物圖片網址 (留空將自動配對美食靚相)</label>
+          <label id="lbl-form-image" class="block text-xs font-bold text-gray-700 mb-1">食物圖片網址 (留空將自動配對美食靚相)</label>
           <input id="form-image" type="text" placeholder="https://...（可留空）" class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500" />
         </div>
 
         <div id="admin-only-fields" class="pt-2 border-t border-gray-100 flex flex-wrap items-center justify-between gap-4">
           <label class="flex items-center gap-2 cursor-pointer">
             <input id="form-featured" type="checkbox" class="w-4 h-4 text-orange-600 rounded focus:ring-orange-500" />
-            <span class="text-xs font-bold text-gray-700">設為「編輯精選」置頂推介</span>
+            <span id="lbl-form-featured" class="text-xs font-bold text-gray-700">設為「編輯精選」置頂推介</span>
           </label>
           <div class="flex items-center gap-2">
-            <span class="text-xs font-bold text-gray-700">發佈狀態：</span>
-            <select id="form-status" class="text-xs border border-gray-300 rounded-lg px-2.5 py-1.5 font-bold bg-white">
-              <option value="published">已發佈 (前台顯示)</option>
-              <option value="pending">待審核 (僅後台可見)</option>
-            </select>
+            <span id="lbl-form-status" class="text-xs font-bold text-gray-700">發佈狀態：</span>
+            <select id="form-status" class="text-xs border border-gray-300 rounded-lg px-2.5 py-1.5 font-bold bg-white"></select>
           </div>
         </div>
 
         <div id="user-submit-notice" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-800">
-          💡 報料後資料會進入後台「待審核」列隊，需 Admin 批核後才會公開上架！
+          💡 報料後資料會進入後台「待審核」列隊，需 Admin 登入批核後才會公開上架！
         </div>
 
         <div class="flex items-center justify-end gap-2 pt-3">
-          <button type="button" onclick="closeFormModal()" class="px-4 py-2 text-xs font-bold text-gray-600 hover:bg-gray-100 rounded-xl">取消</button>
+          <button type="button" id="btn-form-cancel" onclick="closeFormModal()" class="px-4 py-2 text-xs font-bold text-gray-600 hover:bg-gray-100 rounded-xl">取消</button>
           <button type="submit" id="form-submit-btn" class="px-5 py-2.5 bg-orange-600 hover:bg-orange-700 text-white text-xs sm:text-sm font-bold rounded-xl shadow-sm">提交報料</button>
         </div>
       </form>
@@ -531,14 +507,309 @@
       }
     }
 
-    const HK_18_DISTRICTS = [
-      '中西區', '灣仔', '東區', '南區',
-      '油尖旺', '深水埗', '九龍城', '黃大仙', '觀塘',
-      '荃灣', '屯門', '元朗', '北區', '大埔', '沙田', '西貢', '離島'
+    const DISTRICT_LABELS = [
+      { value: '中西區', zh: '中西區', en: 'Central & Western' },
+      { value: '灣仔', zh: '灣仔', en: 'Wan Chai' },
+      { value: '東區', zh: '東區', en: 'Eastern' },
+      { value: '南區', zh: '南區', en: 'Southern' },
+      { value: '油尖旺', zh: '油尖旺', en: 'Yau Tsim Mong' },
+      { value: '深水埗', zh: '深水埗', en: 'Sham Shui Po' },
+      { value: '九龍城', zh: '九龍城', en: 'Kowloon City' },
+      { value: '黃大仙', zh: '黃大仙', en: 'Wong Tai Sin' },
+      { value: '觀塘', zh: '觀塘', en: 'Kwun Tong' },
+      { value: '荃灣', zh: '荃灣', en: 'Tsuen Wan' },
+      { value: '屯門', zh: '屯門', en: 'Tuen Mun' },
+      { value: '元朗', zh: '元朗', en: 'Yuen Long' },
+      { value: '北區', zh: '北區', en: 'North' },
+      { value: '大埔', zh: '大埔', en: 'Tai Po' },
+      { value: '沙田', zh: '沙田', en: 'Sha Tin' },
+      { value: '西貢', zh: '西貢', en: 'Sai Kung' },
+      { value: '離島', zh: '離島', en: 'Islands' }
     ];
 
+    const CATEGORY_LABELS = [
+      { value: '全部', zh: '全部', en: 'All' },
+      { value: '茶餐廳/冰室', zh: '茶餐廳/冰室', en: 'Cha Chaan Teng' },
+      { value: '街頭小食', zh: '街頭小食', en: 'Street Snacks' },
+      { value: '點心/酒樓', zh: '點心/酒樓', en: 'Dim Sum & Tea House' },
+      { value: '車仔麵/粉麵', zh: '車仔麵/粉麵', en: 'Cart Noodles & Congee/Noodles' },
+      { value: '燒味/臘味', zh: '燒味/臘味', en: 'Roast Meats (Siu Mei)' },
+      { value: '粥品/生滾粥', zh: '粥品/生滾粥', en: 'Cantonese Congee' },
+      { value: '海鮮/大牌檔', zh: '海鮮/大牌檔', en: 'Seafood & Dai Pai Dong' },
+      { value: '懷舊菜/私房菜', zh: '懷舊菜/私房菜', en: 'Heritage & Private Kitchen' },
+      { value: '素食/齋菜', zh: '素食/齋菜', en: 'Vegetarian' },
+      { value: '中菜/京川滬', zh: '中菜/京川滬', en: 'Chinese & Regional' },
+      { value: '日本菜', zh: '日本菜', en: 'Japanese' },
+      { value: '韓國菜', zh: '韓國菜', en: 'Korean' },
+      { value: '泰國/東南亞菜', zh: '泰國/東南亞菜', en: 'Thai & Southeast Asian' },
+      { value: '台灣菜', zh: '台灣菜', en: 'Taiwanese' },
+      { value: '西餐/扒房', zh: '西餐/扒房', en: 'Western & Steakhouse' },
+      { value: '意大利菜/薄餅', zh: '意大利菜/薄餅', en: 'Italian & Pizza' },
+      { value: '火鍋/打邊爐', zh: '火鍋/打邊爐', en: 'Hotpot' },
+      { value: '燒肉/放題', zh: '燒肉/放題', en: 'BBQ & All-You-Can-Eat' },
+      { value: '甜品/糖水', zh: '甜品/糖水', en: 'Desserts & Tong Sui' },
+      { value: '烘焙/麵包/蛋撻', zh: '烘焙/麵包/蛋撻', en: 'Bakery & Egg Tarts' },
+      { value: 'Cafe/輕食', zh: 'Cafe/輕食', en: 'Cafe & Light Bites' },
+      { value: '台式飲品/茶飲', zh: '台式飲品/茶飲', en: 'Bubble Tea & Drinks' }
+    ];
+
+    const I18N = {
+      zh: {
+        pageTitle: '香港十八區食好西指南 | HK 18 Districts Foodie Guide & CMS',
+        brandHtml: '香港食好西<span class="text-orange-600">指南</span>',
+        navFront: '前台搵食',
+        navAdmin: '後台 Admin',
+        langToggle: 'EN',
+        submitFull: '報料好西',
+        submitShort: '報料',
+        heroBadge: '全港十八區地道美食資料庫',
+        heroTitleHtml: '今日想喺邊區<span class="text-orange-600">食好西</span>？',
+        heroSubtitle: '覆蓋港島、九龍、新界及離島共 18 區，隨時搜尋招牌菜同街坊食評',
+        searchPlaceholder: '搜尋餐廳名稱、招牌菜（例如：菠蘿油、雲吞麵、車仔麵）...',
+        allDistricts: '全部地區 (18區)',
+        allPrices: '所有價位',
+        priceUnder50: '$ ($50以下)',
+        price51to150: '$$ ($51-$150)',
+        price151to300: '$$$ ($151-$300)',
+        priceOver300: '$$$$ ($300以上)',
+        featuredTitle: '精選美食推介',
+        countUnit: (n) => `${n} 間`,
+        sortLabel: '排序：',
+        sortFeatured: '編輯精選優先',
+        sortRating: '最高評分',
+        sortLikes: '最多街坊讚好',
+        sortNewest: '最新收錄',
+        emptyTitle: '搵唔到符合條件嘅餐廳',
+        emptyDesc: '試下清除篩選條件，或者自己報料新增呢間好西！',
+        resetFilters: '重設所有篩選',
+        adminHeading: '美食資料庫管理後台',
+        adminSubheading: '管理全站餐廳收錄、審核街坊報料，以及新增或管理多位後台 Admin 帳號',
+        loggedInBadge: (name) => `已登入：${name}`,
+        addRestaurant: '新增餐廳',
+        resetDemo: '重設示範資料',
+        logout: '登出後台',
+        subtabRestaurants: '餐廳資料庫管理',
+        subtabAdmins: '管理員帳號設定 (增加 Admin)',
+        statTotal: '總收錄餐廳',
+        statPublishedSub: (n) => `已發佈 ${n} 間`,
+        statPending: '待審核報料',
+        statPendingSub: '需管理員批核上架',
+        statTopDistrict: '最多餐廳地區',
+        statDistrictCount: (n) => `共 ${n} 間好西`,
+        statAvgRating: '全站平均評分',
+        statAvgRatingSub: '滿分 5.0 分',
+        tabAll: '全部資料',
+        tabPublished: '已發佈',
+        tabPending: '待審核',
+        adminSearchPlaceholder: '搜尋餐廳、地區或菜式...',
+        thRestaurant: '餐廳資訊',
+        thDistrictCat: '地區 / 分類',
+        thPriceRating: '價位 / 評分',
+        thFeatured: '編輯精選',
+        thStatus: '狀態',
+        thActions: '操作',
+        statusPublished: '● 已發佈',
+        statusPending: '⏳ 待審核',
+        noAdminRows: '冇符合條件嘅資料庫紀錄',
+        addAdminTitle: '增加新 Admin 管理員',
+        addAdminDesc: '建立新帳號俾團隊成員一齊管理',
+        lblNewAdminName: '顯示名稱 / 稱呼 *',
+        phNewAdminName: '例如：九龍區美食編輯阿明',
+        lblNewAdminUser: '登入帳號 (Username) *',
+        phNewAdminUser: '例如：editor_ming',
+        lblNewAdminPass: '登入密碼 *',
+        phNewAdminPass: '至少 4 個字元',
+        lblNewAdminRole: '管理員角色權限',
+        roleSuper: '超級管理員 (可增刪其他 Admin)',
+        roleEditor: '美食編輯 (負責審核及新增餐廳)',
+        btnConfirmAddAdmin: '確認新增 Admin',
+        adminListTitle: '現有後台管理員名單',
+        adminListDesc: '以下帳號均可用於登入本網站後台管理系統',
+        thAdmName: '管理員名稱',
+        thAdmUser: '登入帳號',
+        thAdmPass: '登入密碼',
+        thAdmRole: '權限角色',
+        thAdmOp: '操作',
+        founderTag: '創辦人',
+        systemDefault: '系統預設',
+        loginTitle: '後台管理員登入',
+        loginDesc: '請輸入 Admin 帳號及密碼以進入 CMS 系統',
+        lblLoginUser: 'Admin 帳號',
+        phLoginUser: '請輸入帳號',
+        lblLoginPass: '登入密碼',
+        phLoginPass: '請輸入密碼',
+        loginError: '帳號或密碼不正確，請重試！',
+        btnLoginSubmit: '登入後台',
+        modalFeaturedText: '編輯精選',
+        modalDishesLabel: '必食招牌菜：',
+        modalAddressLabel: '詳細地址',
+        modalMtrLabel: '港鐵 / 交通',
+        modalMtrFallback: '請參考地圖路線',
+        modalCommentsTitle: '街坊食評留言',
+        modalNoComments: '暫時未有留言，快啲做第一個留食評嘅街坊！',
+        modalReviewerPrefix: '街坊食客：',
+        commentPlaceholder: '留低你嘅食後感...',
+        btnPostComment: '發佈',
+        formAddTitle: '新增香港好西餐廳',
+        formAddSubmit: '新增並儲存',
+        formEditTitle: (name) => `編輯餐廳：${name}`,
+        formEditSubmit: '更新資料',
+        formReportTitle: '街坊報料：推介香港好西',
+        formReportSubmit: '提交報料',
+        lblFormName: '餐廳名稱 *',
+        phFormName: '例如：華嫂冰室',
+        lblFormDistrict: '所屬地區 (全港18區) *',
+        lblFormCategory: '菜式分類 *',
+        lblFormPrice: '人均消費 *',
+        lblFormRating: '推薦評分 (1-5)',
+        lblFormDishes: '招牌菜式 (用逗號分隔) *',
+        phFormDishes: '例如：招牌菠蘿包, 鮮茄牛肉通粉, 樽仔奶茶',
+        lblFormAddress: '詳細地址 *',
+        phFormAddress: '例如：灣仔謝斐道272號地下',
+        lblFormMtr: '最近港鐵站/出口',
+        phFormMtr: '例如：灣仔站 A1 出口步行 5 分鐘',
+        lblFormDesc: '美食簡介 / 食評 *',
+        phFormDesc: '寫低呢間餐廳有咩特別、必食推介或者排隊貼士...',
+        lblFormImage: '食物圖片網址 (留空將自動配對美食靚相)',
+        phFormImage: 'https://...（可留空）',
+        lblFormFeatured: '設為「編輯精選」置頂推介',
+        lblFormStatus: '發佈狀態：',
+        statusOptPublished: '已發佈 (前台顯示)',
+        statusOptPending: '待審核 (僅後台可見)',
+        userSubmitNotice: '💡 報料後資料會進入後台「待審核」列隊，需 Admin 登入批核後才會公開上架！',
+        btnCancel: '取消',
+        defaultDish: '招牌推介'
+      },
+      en: {
+        pageTitle: 'HK 18 Districts Foodie Guide & CMS',
+        brandHtml: 'HK Foodie<span class="text-orange-600">Guide</span>',
+        navFront: 'Explore',
+        navAdmin: 'Admin CMS',
+        langToggle: '中',
+        submitFull: 'Submit Spot',
+        submitShort: 'Submit',
+        heroBadge: 'Hong Kong 18 Districts Food Directory',
+        heroTitleHtml: 'Where to <span class="text-orange-600">eat well</span> today?',
+        heroSubtitle: 'Covering all 18 districts across Hong Kong Island, Kowloon, New Territories & Islands',
+        searchPlaceholder: 'Search restaurant name, signature dish (e.g. Pineapple Bun, Wonton Noodle)...',
+        allDistricts: 'All Districts (18)',
+        allPrices: 'All Budgets',
+        priceUnder50: '$ (Under HK$50)',
+        price51to150: '$$ (HK$51–150)',
+        price151to300: '$$$ (HK$151–300)',
+        priceOver300: '$$$$ (HK$300+)',
+        featuredTitle: 'Featured Food Picks',
+        countUnit: (n) => `${n} ${n === 1 ? 'spot' : 'spots'}`,
+        sortLabel: 'Sort:',
+        sortFeatured: 'Featured First',
+        sortRating: 'Highest Rated',
+        sortLikes: 'Most Liked',
+        sortNewest: 'Newest Added',
+        emptyTitle: 'No matching restaurants found',
+        emptyDesc: 'Try clearing your filters or submit a new food spot!',
+        resetFilters: 'Reset All Filters',
+        adminHeading: 'Food Database Admin CMS',
+        adminSubheading: 'Manage listings, review user submissions, and add or manage admin accounts',
+        loggedInBadge: (name) => `Signed in: ${name}`,
+        addRestaurant: 'Add Restaurant',
+        resetDemo: 'Reset Demo Data',
+        logout: 'Sign Out',
+        subtabRestaurants: 'Restaurants CMS',
+        subtabAdmins: 'Admin Accounts',
+        statTotal: 'Total Restaurants',
+        statPublishedSub: (n) => `${n} published`,
+        statPending: 'Pending Review',
+        statPendingSub: 'Awaiting admin approval',
+        statTopDistrict: 'Top District',
+        statDistrictCount: (n) => `${n} ${n === 1 ? 'spot' : 'spots'}`,
+        statAvgRating: 'Average Rating',
+        statAvgRatingSub: 'Out of 5.0',
+        tabAll: 'All',
+        tabPublished: 'Published',
+        tabPending: 'Pending',
+        adminSearchPlaceholder: 'Search restaurant, district or dish...',
+        thRestaurant: 'Restaurant',
+        thDistrictCat: 'District / Category',
+        thPriceRating: 'Price / Rating',
+        thFeatured: 'Featured',
+        thStatus: 'Status',
+        thActions: 'Actions',
+        statusPublished: '● Published',
+        statusPending: '⏳ Pending',
+        noAdminRows: 'No matching records found',
+        addAdminTitle: 'Add New Admin',
+        addAdminDesc: 'Create an account for team members',
+        lblNewAdminName: 'Display Name *',
+        phNewAdminName: 'e.g. Kowloon Editor Ming',
+        lblNewAdminUser: 'Username *',
+        phNewAdminUser: 'e.g. editor_ming',
+        lblNewAdminPass: 'Password *',
+        phNewAdminPass: 'At least 4 characters',
+        lblNewAdminRole: 'Role Permission',
+        roleSuper: 'Super Admin (Manage admins & spots)',
+        roleEditor: 'Food Editor (Review & add spots)',
+        btnConfirmAddAdmin: 'Add Admin',
+        adminListTitle: 'Current Admin Accounts',
+        adminListDesc: 'Accounts authorized to access the CMS',
+        thAdmName: 'Name',
+        thAdmUser: 'Username',
+        thAdmPass: 'Password',
+        thAdmRole: 'Role',
+        thAdmOp: 'Action',
+        founderTag: 'Founder',
+        systemDefault: 'Default',
+        loginTitle: 'Admin Sign In',
+        loginDesc: 'Enter your admin username and password to access CMS',
+        lblLoginUser: 'Admin Username',
+        phLoginUser: 'Enter username',
+        lblLoginPass: 'Password',
+        phLoginPass: 'Enter password',
+        loginError: 'Invalid username or password. Please try again.',
+        btnLoginSubmit: 'Sign In',
+        modalFeaturedText: 'Featured',
+        modalDishesLabel: 'Signature Dishes:',
+        modalAddressLabel: 'Address',
+        modalMtrLabel: 'MTR / Transit',
+        modalMtrFallback: 'See map for directions',
+        modalCommentsTitle: 'Visitor Reviews',
+        modalNoComments: 'No reviews yet. Be the first to leave a comment!',
+        modalReviewerPrefix: 'Visitor:',
+        commentPlaceholder: 'Write your review...',
+        btnPostComment: 'Post',
+        formAddTitle: 'Add New Restaurant',
+        formAddSubmit: 'Save & Publish',
+        formEditTitle: (name) => `Edit: ${name}`,
+        formEditSubmit: 'Update',
+        formReportTitle: 'Submit a Food Spot',
+        formReportSubmit: 'Submit Spot',
+        lblFormName: 'Restaurant Name *',
+        phFormName: 'e.g. Wah So Cafe',
+        lblFormDistrict: 'District (18 Districts) *',
+        lblFormCategory: 'Category *',
+        lblFormPrice: 'Price Range *',
+        lblFormRating: 'Rating (1-5)',
+        lblFormDishes: 'Signature Dishes (comma separated) *',
+        phFormDishes: 'e.g. Pineapple Bun, Tomato Beef Macaroni, Milk Tea',
+        lblFormAddress: 'Address *',
+        phFormAddress: 'e.g. G/F, 272 Jaffe Road, Wan Chai',
+        lblFormMtr: 'Nearest MTR Exit',
+        phFormMtr: 'e.g. Wan Chai Exit A1, 5 mins walk',
+        lblFormDesc: 'Description / Review *',
+        phFormDesc: 'Share highlights, must-try items, or queue tips...',
+        lblFormImage: 'Photo URL (optional, auto-matched if blank)',
+        phFormImage: 'https://... (optional)',
+        lblFormFeatured: 'Mark as Featured Pick',
+        lblFormStatus: 'Status:',
+        statusOptPublished: 'Published (Visible)',
+        statusOptPending: 'Pending (Admin only)',
+        userSubmitNotice: '💡 Submissions go to Pending review and appear publicly once approved by an admin.',
+        btnCancel: 'Cancel',
+        defaultDish: 'Recommended'
+      }
+    };
+
     const DEFAULT_ADMINS = [
-      { id: 'adm-1', name: '主管理員 (創辦人)', username: 'admin', password: '你嘅密碼', role: '超級管理員 (Super Admin)', is_primary: true }
+      { id: 'adm-1', name: '主管理員 (創辦人)', username: 'admin', password: 'z54060437K', role: '超級管理員 (Super Admin)', is_primary: true }
     ];
 
     const DEFAULT_RESTAURANTS = [
@@ -572,18 +843,33 @@
       }
     ];
 
-    const CATEGORIES = ['全部', '茶餐廳/冰室', '街頭小食', '點心/酒樓', '車仔麵/粉麵', '日本菜', '火鍋/打邊爐', '甜品/糖水', 'Cafe/西餐'];
+    const DEFAULT_FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1555126634-323283e090fa?auto=format&fit=crop&w=800&q=80';
     const FALLBACK_IMAGES = {
       '茶餐廳/冰室': 'https://images.unsplash.com/photo-1555126634-323283e090fa?auto=format&fit=crop&w=800&q=80',
       '街頭小食': 'https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80',
       '點心/酒樓': 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?auto=format&fit=crop&w=800&q=80',
       '車仔麵/粉麵': 'https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=800&q=80',
+      '燒味/臘味': 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80',
+      '粥品/生滾粥': 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=800&q=80',
+      '海鮮/大牌檔': 'https://images.unsplash.com/photo-1559737558-2bf22b2f1712?auto=format&fit=crop&w=800&q=80',
+      '懷舊菜/私房菜': 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80',
+      '素食/齋菜': 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80',
+      '中菜/京川滬': 'https://images.unsplash.com/photo-1525755662778-989d0524087e?auto=format&fit=crop&w=800&q=80',
       '日本菜': 'https://images.unsplash.com/photo-1557872943-16a5ac26437e?auto=format&fit=crop&w=800&q=80',
+      '韓國菜': 'https://images.unsplash.com/photo-1590301157890-4810ed352733?auto=format&fit=crop&w=800&q=80',
+      '泰國/東南亞菜': 'https://images.unsplash.com/photo-1559314809-0d155014e29e?auto=format&fit=crop&w=800&q=80',
+      '台灣菜': 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?auto=format&fit=crop&w=800&q=80',
+      '西餐/扒房': 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80',
+      '意大利菜/薄餅': 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80',
       '火鍋/打邊爐': 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=800&q=80',
+      '燒肉/放題': 'https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?auto=format&fit=crop&w=800&q=80',
       '甜品/糖水': 'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=800&q=80',
-      'Cafe/西餐': 'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=800&q=80'
+      '烘焙/麵包/蛋撻': 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80',
+      'Cafe/輕食': 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=800&q=80',
+      '台式飲品/茶飲': 'https://images.unsplash.com/photo-1558857563-b371033873b8?auto=format&fit=crop&w=800&q=80'
     };
 
+    let currentLang = localStorage.getItem('hk_foodie_lang') === 'en' ? 'en' : 'zh';
     let restaurants = [];
     let admins = [];
     let currentAdmin = null;
@@ -591,22 +877,219 @@
     let adminStatusFilter = 'ALL';
     let currentDetailId = null;
 
+    function t() {
+      return I18N[currentLang];
+    }
+
+    function getDistrictName(val) {
+      const found = DISTRICT_LABELS.find(d => d.value === val);
+      return found ? found[currentLang] : val;
+    }
+
+    function getCategoryName(val) {
+      const found = CATEGORY_LABELS.find(c => c.value === val);
+      return found ? found[currentLang] : val;
+    }
+
+    function getFallbackImage(category) {
+      return FALLBACK_IMAGES[category] || DEFAULT_FALLBACK_IMAGE;
+    }
+
     function refreshIcons() {
       if (window.lucide && typeof window.lucide.createIcons === 'function') {
         window.lucide.createIcons();
       }
     }
 
-    function initDistrictSelects() {
+    function applyStaticTranslations() {
+      const l = t();
+      document.documentElement.lang = currentLang === 'en' ? 'en' : 'zh-HK';
+      document.title = l.pageTitle;
+      document.getElementById('brand-title').innerHTML = l.brandHtml;
+      document.getElementById('nav-front-label').textContent = l.navFront;
+      document.getElementById('nav-admin-label').textContent = l.navAdmin;
+      document.getElementById('lang-toggle-label').textContent = l.langToggle;
+      document.getElementById('submit-btn-label').textContent = l.submitFull;
+      document.getElementById('submit-btn-short').textContent = l.submitShort;
+
+      document.getElementById('hero-badge').innerHTML = `<i data-lucide="flame" class="w-3.5 h-3.5"></i> ${l.heroBadge}`;
+      document.getElementById('hero-title').innerHTML = l.heroTitleHtml;
+      document.getElementById('hero-subtitle').textContent = l.heroSubtitle;
+      document.getElementById('search-input').placeholder = l.searchPlaceholder;
+      document.getElementById('section-featured-title').textContent = l.featuredTitle;
+      document.getElementById('sort-label').textContent = l.sortLabel;
+      document.getElementById('empty-title').textContent = l.emptyTitle;
+      document.getElementById('empty-desc').textContent = l.emptyDesc;
+      document.getElementById('reset-filters-btn').textContent = l.resetFilters;
+
+      document.getElementById('admin-heading').textContent = l.adminHeading;
+      document.getElementById('admin-subheading').textContent = l.adminSubheading;
+      if (currentAdmin) {
+        document.getElementById('current-admin-badge').innerHTML = `<i data-lucide="user-check" class="w-3.5 h-3.5"></i> ${l.loggedInBadge(currentAdmin.name)}`;
+      }
+      document.getElementById('admin-add-restaurant-btn').textContent = l.addRestaurant;
+      document.getElementById('admin-reset-demo-btn').textContent = l.resetDemo;
+      document.getElementById('admin-logout-btn').textContent = l.logout;
+      document.getElementById('subtab-restaurants-label').textContent = l.subtabRestaurants;
+      document.getElementById('subtab-admins-label').textContent = l.subtabAdmins;
+
+      document.getElementById('stat-total-label').textContent = l.statTotal;
+      document.getElementById('stat-pending-label').textContent = l.statPending;
+      document.getElementById('stat-pending-sub').textContent = l.statPendingSub;
+      document.getElementById('stat-top-district-label').textContent = l.statTopDistrict;
+      document.getElementById('stat-avg-rating-label').textContent = l.statAvgRating;
+      document.getElementById('stat-avg-rating-sub').textContent = l.statAvgRatingSub;
+
+      document.getElementById('tab-admin-all').textContent = l.tabAll;
+      document.getElementById('tab-admin-published').textContent = l.tabPublished;
+      document.getElementById('tab-admin-pending-text').textContent = l.tabPending;
+      document.getElementById('admin-search').placeholder = l.adminSearchPlaceholder;
+
+      document.getElementById('th-restaurant').textContent = l.thRestaurant;
+      document.getElementById('th-district-cat').textContent = l.thDistrictCat;
+      document.getElementById('th-price-rating').textContent = l.thPriceRating;
+      document.getElementById('th-featured').textContent = l.thFeatured;
+      document.getElementById('th-status').textContent = l.thStatus;
+      document.getElementById('th-actions').textContent = l.thActions;
+
+      document.getElementById('add-admin-title').textContent = l.addAdminTitle;
+      document.getElementById('add-admin-desc').textContent = l.addAdminDesc;
+      document.getElementById('lbl-new-admin-name').textContent = l.lblNewAdminName;
+      document.getElementById('new-admin-name').placeholder = l.phNewAdminName;
+      document.getElementById('lbl-new-admin-user').textContent = l.lblNewAdminUser;
+      document.getElementById('new-admin-username').placeholder = l.phNewAdminUser;
+      document.getElementById('lbl-new-admin-pass').textContent = l.lblNewAdminPass;
+      document.getElementById('new-admin-password').placeholder = l.phNewAdminPass;
+      document.getElementById('lbl-new-admin-role').textContent = l.lblNewAdminRole;
+      document.getElementById('btn-confirm-add-admin').textContent = l.btnConfirmAddAdmin;
+
+      const roleSel = document.getElementById('new-admin-role');
+      const prevRole = roleSel.value;
+      roleSel.innerHTML = `
+        <option value="超級管理員 (Super Admin)">${l.roleSuper}</option>
+        <option value="美食編輯 (Editor)">${l.roleEditor}</option>
+      `;
+      if (prevRole) roleSel.value = prevRole;
+
+      document.getElementById('admin-list-title').textContent = l.adminListTitle;
+      document.getElementById('admin-list-desc').textContent = l.adminListDesc;
+      document.getElementById('th-adm-name').textContent = l.thAdmName;
+      document.getElementById('th-adm-user').textContent = l.thAdmUser;
+      document.getElementById('th-adm-pass').textContent = l.thAdmPass;
+      document.getElementById('th-adm-role').textContent = l.thAdmRole;
+      document.getElementById('th-adm-op').textContent = l.thAdmOp;
+
+      document.getElementById('login-title').textContent = l.loginTitle;
+      document.getElementById('login-desc').textContent = l.loginDesc;
+      document.getElementById('lbl-login-user').textContent = l.lblLoginUser;
+      document.getElementById('login-username').placeholder = l.phLoginUser;
+      document.getElementById('lbl-login-pass').textContent = l.lblLoginPass;
+      document.getElementById('login-password').placeholder = l.phLoginPass;
+      document.getElementById('login-error-text').textContent = l.loginError;
+      document.getElementById('btn-login-submit').textContent = l.btnLoginSubmit;
+
+      document.getElementById('modal-featured-text').textContent = l.modalFeaturedText;
+      document.getElementById('modal-dishes-label').textContent = l.modalDishesLabel;
+      document.getElementById('modal-address-label').textContent = l.modalAddressLabel;
+      document.getElementById('modal-mtr-label').textContent = l.modalMtrLabel;
+      document.getElementById('modal-comments-title').innerHTML = `<i data-lucide="message-square" class="w-4 h-4 text-orange-500"></i> ${l.modalCommentsTitle}`;
+      document.getElementById('comment-input').placeholder = l.commentPlaceholder;
+      document.getElementById('btn-post-comment').textContent = l.btnPostComment;
+
+      document.getElementById('lbl-form-name').textContent = l.lblFormName;
+      document.getElementById('form-name').placeholder = l.phFormName;
+      document.getElementById('lbl-form-district').textContent = l.lblFormDistrict;
+      document.getElementById('lbl-form-category').textContent = l.lblFormCategory;
+      document.getElementById('lbl-form-price').textContent = l.lblFormPrice;
+      document.getElementById('lbl-form-rating').textContent = l.lblFormRating;
+      document.getElementById('lbl-form-dishes').textContent = l.lblFormDishes;
+      document.getElementById('form-dishes').placeholder = l.phFormDishes;
+      document.getElementById('lbl-form-address').textContent = l.lblFormAddress;
+      document.getElementById('form-address').placeholder = l.phFormAddress;
+      document.getElementById('lbl-form-mtr').textContent = l.lblFormMtr;
+      document.getElementById('form-mtr').placeholder = l.phFormMtr;
+      document.getElementById('lbl-form-desc').textContent = l.lblFormDesc;
+      document.getElementById('form-desc').placeholder = l.phFormDesc;
+      document.getElementById('lbl-form-image').textContent = l.lblFormImage;
+      document.getElementById('form-image').placeholder = l.phFormImage;
+      document.getElementById('lbl-form-featured').textContent = l.lblFormFeatured;
+      document.getElementById('lbl-form-status').textContent = l.lblFormStatus;
+      document.getElementById('user-submit-notice').textContent = l.userSubmitNotice;
+      document.getElementById('btn-form-cancel').textContent = l.btnCancel;
+
+      const priceFilter = document.getElementById('price-filter');
+      const prevPriceFilter = priceFilter.value || 'ALL';
+      priceFilter.innerHTML = `
+        <option value="ALL">${l.allPrices}</option>
+        <option value="$">${l.priceUnder50}</option>
+        <option value="$$">${l.price51to150}</option>
+        <option value="$$$">${l.price151to300}</option>
+        <option value="$$$$">${l.priceOver300}</option>
+      `;
+      priceFilter.value = prevPriceFilter;
+
+      const formPrice = document.getElementById('form-price');
+      const prevFormPrice = formPrice.value || '$';
+      formPrice.innerHTML = `
+        <option value="$">${l.priceUnder50}</option>
+        <option value="$$">${l.price51to150}</option>
+        <option value="$$$">${l.price151to300}</option>
+        <option value="$$$$">${l.priceOver300}</option>
+      `;
+      formPrice.value = prevFormPrice;
+
+      const formStatus = document.getElementById('form-status');
+      const prevFormStatus = formStatus.value || 'published';
+      formStatus.innerHTML = `
+        <option value="published">${l.statusOptPublished}</option>
+        <option value="pending">${l.statusOptPending}</option>
+      `;
+      formStatus.value = prevFormStatus;
+
+      const sortSel = document.getElementById('sort-select');
+      const prevSort = sortSel.value || 'featured';
+      sortSel.innerHTML = `
+        <option value="featured">${l.sortFeatured}</option>
+        <option value="rating">${l.sortRating}</option>
+        <option value="likes">${l.sortLikes}</option>
+        <option value="newest">${l.sortNewest}</option>
+      `;
+      sortSel.value = prevSort;
+    }
+
+    function populateDistrictAndCategorySelects() {
+      const l = t();
       const filterSel = document.getElementById('district-filter');
-      const formSel = document.getElementById('form-district');
-      filterSel.innerHTML = `<option value="ALL">全部地區 (18區)</option>` + HK_18_DISTRICTS.map(d => `<option value="${d}">${d}</option>`).join('');
-      formSel.innerHTML = HK_18_DISTRICTS.map(d => `<option value="${d}">${d}</option>`).join('');
+      const formDistrictSel = document.getElementById('form-district');
+      const formCatSel = document.getElementById('form-category');
+
+      const prevFilterDist = filterSel.value || 'ALL';
+      const prevFormDist = formDistrictSel.value || DISTRICT_LABELS[0].value;
+      const prevFormCat = formCatSel.value || CATEGORY_LABELS[1].value;
+
+      filterSel.innerHTML = `<option value="ALL">${l.allDistricts}</option>` +
+        DISTRICT_LABELS.map(d => `<option value="${d.value}">${d[currentLang]}</option>`).join('');
+      filterSel.value = prevFilterDist;
+
+      formDistrictSel.innerHTML = DISTRICT_LABELS
+        .map(d => `<option value="${d.value}">${d[currentLang]}</option>`).join('');
+      formDistrictSel.value = prevFormDist;
+
+      formCatSel.innerHTML = CATEGORY_LABELS.filter(c => c.value !== '全部')
+        .map(c => `<option value="${c.value}">${c[currentLang]}</option>`).join('');
+      formCatSel.value = prevFormCat;
+    }
+
+    function toggleLanguage() {
+      currentLang = currentLang === 'zh' ? 'en' : 'zh';
+      localStorage.setItem('hk_foodie_lang', currentLang);
+      renderAll();
+      if (currentDetailId) {
+        openDetailModal(currentDetailId);
+      }
     }
 
     async function initData() {
-      initDistrictSelects();
-
       const sessionAdmin = sessionStorage.getItem('hk_foodie_logged_admin');
       if (sessionAdmin) {
         try { currentAdmin = JSON.parse(sessionAdmin); } catch (e) { currentAdmin = null; }
@@ -679,7 +1162,7 @@
     }
 
     async function resetDemoData() {
-      if (!confirm('確定要還原至初始香港美食示範資料嗎？')) return;
+      if (!confirm(currentLang === 'en' ? 'Reset to initial demo restaurants?' : '確定要還原至初始香港美食示範資料嗎？')) return;
       restaurants = JSON.parse(JSON.stringify(DEFAULT_RESTAURANTS));
       localStorage.setItem('hk_foodie_guide_data_v3', JSON.stringify(restaurants));
       if (supabaseClient) {
@@ -687,7 +1170,7 @@
         await supabaseClient.from('restaurants').upsert(restaurants);
       }
       renderAll();
-      showToast('已還原初始示範資料');
+      showToast(currentLang === 'en' ? 'Demo data restored' : '已還原初始示範資料');
     }
 
     function handleAdminNavClick() {
@@ -716,7 +1199,7 @@
         sessionStorage.setItem('hk_foodie_logged_admin', JSON.stringify(matched));
         closeLoginModal();
         switchView('admin');
-        showToast(`歡迎返嚟，${matched.name}！`);
+        showToast(currentLang === 'en' ? `Welcome, ${matched.name}!` : `歡迎返嚟，${matched.name}！`);
       } else {
         document.getElementById('login-error').classList.remove('hidden');
       }
@@ -726,7 +1209,7 @@
       currentAdmin = null;
       sessionStorage.removeItem('hk_foodie_logged_admin');
       switchView('front');
-      showToast('已安全登出後台系統');
+      showToast(currentLang === 'en' ? 'Signed out of CMS' : '已安全登出後台系統');
     }
 
     function switchAdminSubTab(tab) {
@@ -759,12 +1242,12 @@
       const role = document.getElementById('new-admin-role').value;
 
       if (!name || !username || password.length < 4) {
-        alert('請填寫完整資料，密碼最少 4 個字元！');
+        alert(currentLang === 'en' ? 'Please complete all fields (password min 4 chars).' : '請填寫完整資料，密碼最少 4 個字元！');
         return;
       }
 
       if (admins.some(a => a.username.toLowerCase() === username.toLowerCase())) {
-        alert('呢個登入帳號已經存在，請用另一個帳號名稱！');
+        alert(currentLang === 'en' ? 'Username already exists.' : '呢個登入帳號已經存在，請用另一個帳號名稱！');
         return;
       }
 
@@ -773,36 +1256,43 @@
       await persistAdmin(newAdm, false);
       renderAdminAccountsTable();
       e.target.reset();
-      showToast(`已成功新增管理員「${name}」！`);
+      showToast(currentLang === 'en' ? `Added admin "${name}"` : `已成功新增管理員「${name}」！`);
     }
 
     async function deleteAdminAccount(id) {
       const target = admins.find(a => a.id === id);
       if (!target) return;
-      if (target.is_primary) { alert('主管理員帳號受保護，唔可以刪除！'); return; }
-      if (currentAdmin && currentAdmin.id === id) { alert('你唔可以刪除自己目前登入緊嘅帳號！'); return; }
-      if (confirm(`確定要移除管理員「${target.name} (${target.username})」嘅後台權限嗎？`)) {
+      if (target.is_primary) {
+        alert(currentLang === 'en' ? 'Primary admin cannot be removed.' : '主管理員帳號受保護，唔可以刪除！');
+        return;
+      }
+      if (currentAdmin && currentAdmin.id === id) {
+        alert(currentLang === 'en' ? 'Cannot delete your active account.' : '你唔可以刪除自己目前登入緊嘅帳號！');
+        return;
+      }
+      if (confirm(currentLang === 'en' ? `Remove admin "${target.name}"?` : `確定要移除管理員「${target.name} (${target.username})」嘅後台權限嗎？`)) {
         admins = admins.filter(a => a.id !== id);
         await persistAdmin(target, true);
         renderAdminAccountsTable();
-        showToast(`已移除管理員「${target.name}」`);
+        showToast(currentLang === 'en' ? `Removed "${target.name}"` : `已移除管理員「${target.name}」`);
       }
     }
 
     function renderAdminAccountsTable() {
+      const l = t();
       const tbody = document.getElementById('admin-accounts-tbody');
       document.getElementById('admin-count-pill').textContent = admins.length;
       tbody.innerHTML = admins.map(a => `
         <tr class="hover:bg-slate-50/80">
           <td class="py-3.5 px-5 font-bold text-slate-900">
-            ${a.name} ${a.is_primary ? '<span class="ml-1 px-2 py-0.5 rounded bg-orange-100 text-orange-700 text-[10px]">創辦人</span>' : ''}
+            ${a.name} ${a.is_primary ? `<span class="ml-1 px-2 py-0.5 rounded bg-orange-100 text-orange-700 text-[10px]">${l.founderTag}</span>` : ''}
           </td>
           <td class="py-3.5 px-5 font-mono text-xs text-slate-700 font-bold">${a.username}</td>
           <td class="py-3.5 px-5 font-mono text-xs text-slate-500">${a.password}</td>
           <td class="py-3.5 px-5"><span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-[11px] font-bold">${a.role}</span></td>
           <td class="py-3.5 px-5 text-right">
             ${a.is_primary
-              ? '<span class="text-xs text-slate-400 italic">系統預設</span>'
+              ? `<span class="text-xs text-slate-400 italic">${l.systemDefault}</span>`
               : `<button type="button" onclick="deleteAdminAccount('${a.id}')" class="p-2 rounded-lg text-rose-600 hover:bg-rose-50"><i data-lucide="trash-2" class="w-4 h-4"></i></button>`}
           </td>
         </tr>
@@ -819,16 +1309,16 @@
       if (view === 'front') {
         frontView.classList.remove('hidden');
         adminView.classList.add('hidden');
-        btnFront.className = 'flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-white text-orange-600 shadow-sm';
-        btnAdmin.className = 'flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-gray-600 hover:text-gray-900 relative';
+        btnFront.className = 'flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-white text-orange-600 shadow-sm';
+        btnAdmin.className = 'flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-gray-600 hover:text-gray-900 relative';
         renderFrontCards();
       } else {
         if (!currentAdmin) { handleAdminNavClick(); return; }
         frontView.classList.add('hidden');
         adminView.classList.remove('hidden');
-        btnAdmin.className = 'flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-slate-900 text-white shadow-sm relative';
-        btnFront.className = 'flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-gray-600 hover:text-gray-900';
-        document.getElementById('current-admin-badge').innerHTML = `<i data-lucide="user-check" class="w-3.5 h-3.5"></i> 已登入：${currentAdmin.name}`;
+        btnAdmin.className = 'flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-slate-900 text-white shadow-sm relative';
+        btnFront.className = 'flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-gray-600 hover:text-gray-900';
+        document.getElementById('current-admin-badge').innerHTML = `<i data-lucide="user-check" class="w-3.5 h-3.5"></i> ${t().loggedInBadge(currentAdmin.name)}`;
         renderAdminDashboard();
         renderAdminAccountsTable();
       }
@@ -836,10 +1326,10 @@
     }
 
     function renderCategoryTabs() {
-      document.getElementById('category-tabs').innerHTML = CATEGORIES.map(cat => `
-        <button type="button" onclick="selectCategory('${cat}')" class="px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
-          selectedCategory === cat ? 'bg-orange-600 text-white shadow-sm' : 'bg-white text-gray-600 border border-gray-200 hover:border-orange-300 hover:text-orange-600'
-        }">${cat}</button>
+      document.getElementById('category-tabs').innerHTML = CATEGORY_LABELS.map(cat => `
+        <button type="button" onclick="selectCategory('${cat.value}')" class="px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
+          selectedCategory === cat.value ? 'bg-orange-600 text-white shadow-sm' : 'bg-white text-gray-600 border border-gray-200 hover:border-orange-300 hover:text-orange-600'
+        }">${cat[currentLang]}</button>
       `).join('');
     }
 
@@ -855,6 +1345,7 @@
     }
 
     function renderFrontCards() {
+      const l = t();
       const keyword = document.getElementById('search-input').value.trim().toLowerCase();
       const district = document.getElementById('district-filter').value;
       const price = document.getElementById('price-filter').value;
@@ -866,10 +1357,14 @@
         if (district !== 'ALL' && r.district !== district) return false;
         if (price !== 'ALL' && r.price !== price) return false;
         if (keyword) {
+          const distEn = getDistrictName(r.district).toLowerCase();
+          const catEn = getCategoryName(r.category).toLowerCase();
           const ok = r.name.toLowerCase().includes(keyword)
             || (r.dishes || []).some(d => d.toLowerCase().includes(keyword))
             || (r.desc || '').toLowerCase().includes(keyword)
-            || (r.district || '').toLowerCase().includes(keyword);
+            || (r.district || '').toLowerCase().includes(keyword)
+            || distEn.includes(keyword)
+            || catEn.includes(keyword);
           if (!ok) return false;
         }
         return true;
@@ -882,7 +1377,7 @@
         return String(b.id).localeCompare(String(a.id));
       });
 
-      document.getElementById('result-count').textContent = `${filtered.length} 間`;
+      document.getElementById('result-count').textContent = l.countUnit(filtered.length);
       const grid = document.getElementById('restaurant-grid');
       const empty = document.getElementById('empty-state');
 
@@ -894,10 +1389,10 @@
         grid.innerHTML = filtered.map(r => `
           <article onclick="openDetailModal('${r.id}')" class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm card-hover cursor-pointer flex flex-col">
             <div class="relative h-48 bg-gray-100 overflow-hidden">
-              <img src="${r.image}" alt="${r.name}" class="w-full h-full object-cover" onerror="this.src='${FALLBACK_IMAGES[r.category] || FALLBACK_IMAGES['茶餐廳/冰室']}'" />
+              <img src="${r.image}" alt="${r.name}" class="w-full h-full object-cover" onerror="this.src='${getFallbackImage(r.category)}'" />
               <div class="absolute top-3 left-3 flex gap-1.5">
-                <span class="px-2.5 py-1 rounded-lg bg-black/65 text-white text-[11px] font-bold">${r.district}</span>
-                ${r.featured ? `<span class="px-2.5 py-1 rounded-lg bg-orange-600 text-white text-[11px] font-bold flex items-center gap-1"><i data-lucide="award" class="w-3 h-3"></i> 精選</span>` : ''}
+                <span class="px-2.5 py-1 rounded-lg bg-black/65 text-white text-[11px] font-bold">${getDistrictName(r.district)}</span>
+                ${r.featured ? `<span class="px-2.5 py-1 rounded-lg bg-orange-600 text-white text-[11px] font-bold flex items-center gap-1"><i data-lucide="award" class="w-3 h-3"></i> ${l.modalFeaturedText}</span>` : ''}
               </div>
               <div class="absolute bottom-3 right-3 px-2 py-1 rounded-lg bg-white/95 text-xs font-black text-amber-600 flex items-center gap-1 shadow-sm">
                 <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i> ${Number(r.rating).toFixed(1)}
@@ -905,7 +1400,7 @@
             </div>
             <div class="p-4 flex-1 flex flex-col">
               <div class="flex items-center justify-between text-[11px] font-bold text-gray-400 mb-1">
-                <span>${r.category}</span><span class="text-emerald-600 font-black">${r.price}</span>
+                <span>${getCategoryName(r.category)}</span><span class="text-emerald-600 font-black">${r.price}</span>
               </div>
               <h4 class="font-bold text-base text-gray-900 mb-2 line-clamp-1">${r.name}</h4>
               <div class="flex flex-wrap gap-1 mb-3">
@@ -924,19 +1419,20 @@
     }
 
     function openDetailModal(id) {
+      const l = t();
       const r = restaurants.find(item => item.id === id);
       if (!r) return;
       currentDetailId = id;
       document.getElementById('modal-img').src = r.image;
-      document.getElementById('modal-district').textContent = r.district;
-      document.getElementById('modal-category').textContent = r.category;
+      document.getElementById('modal-district').textContent = getDistrictName(r.district);
+      document.getElementById('modal-category').textContent = getCategoryName(r.category);
       document.getElementById('modal-price').textContent = r.price;
       document.getElementById('modal-name').textContent = r.name;
       document.getElementById('modal-rating').textContent = Number(r.rating).toFixed(1);
       document.getElementById('modal-likes').textContent = r.likes;
       document.getElementById('modal-desc').textContent = r.desc;
       document.getElementById('modal-address').textContent = r.address;
-      document.getElementById('modal-mtr').textContent = r.mtr || '請參考地圖路線';
+      document.getElementById('modal-mtr').textContent = r.mtr || l.modalMtrFallback;
       document.getElementById('modal-featured-tag').classList.toggle('hidden', !r.featured);
       document.getElementById('modal-dishes').innerHTML = (r.dishes || []).map(d => `<span class="px-2.5 py-1 rounded-lg bg-orange-100 text-orange-800 text-xs font-bold">${d}</span>`).join('');
       renderModalComments(r);
@@ -954,15 +1450,16 @@
         document.getElementById('modal-likes').textContent = r.likes;
         await persistRestaurant(r, false);
         renderFrontCards();
-        showToast(`已讚好「${r.name}」！`);
+        showToast(currentLang === 'en' ? `Liked "${r.name}"` : `已讚好「${r.name}」！`);
       }
     }
 
     function renderModalComments(r) {
+      const l = t();
       const box = document.getElementById('modal-comments');
       box.innerHTML = (!r.comments || r.comments.length === 0)
-        ? `<p class="text-xs text-gray-400 italic">暫時未有留言，快啲做第一個留食評嘅街坊！</p>`
-        : r.comments.map(c => `<div class="bg-gray-50 px-3 py-2 rounded-xl text-xs text-gray-700"><span class="font-bold text-orange-600">街坊食客：</span>${c}</div>`).join('');
+        ? `<p class="text-xs text-gray-400 italic">${l.modalNoComments}</p>`
+        : r.comments.map(c => `<div class="bg-gray-50 px-3 py-2 rounded-xl text-xs text-gray-700"><span class="font-bold text-orange-600">${l.modalReviewerPrefix}</span> ${c}</div>`).join('');
     }
 
     async function addComment(e) {
@@ -977,7 +1474,7 @@
         input.value = '';
         await persistRestaurant(r, false);
         renderModalComments(r);
-        showToast('留言已發佈！');
+        showToast(currentLang === 'en' ? 'Review posted' : '留言已發佈！');
       }
     }
 
@@ -991,21 +1488,22 @@
     }
 
     function renderAdminDashboard() {
+      const l = t();
       const total = restaurants.length;
       const published = restaurants.filter(r => r.status === 'published').length;
       const pending = restaurants.filter(r => r.status === 'pending').length;
       const districtMap = {};
       restaurants.forEach(r => { districtMap[r.district] = (districtMap[r.district] || 0) + 1; });
-      let topDistrict = '-', maxCount = 0;
+      let topDistrictVal = '', maxCount = 0;
       for (const [d, count] of Object.entries(districtMap)) {
-        if (count > maxCount) { maxCount = count; topDistrict = d; }
+        if (count > maxCount) { maxCount = count; topDistrictVal = d; }
       }
       const avgRating = total > 0 ? (restaurants.reduce((s, r) => s + Number(r.rating), 0) / total).toFixed(1) : '0.0';
       document.getElementById('stat-total').textContent = total;
-      document.getElementById('stat-published-sub').textContent = `已發佈 ${published} 間`;
+      document.getElementById('stat-published-sub').textContent = l.statPublishedSub(published);
       document.getElementById('stat-pending').textContent = pending;
-      document.getElementById('stat-top-district').textContent = topDistrict;
-      document.getElementById('stat-district-count').textContent = `共 ${maxCount} 間好西`;
+      document.getElementById('stat-top-district').textContent = topDistrictVal ? getDistrictName(topDistrictVal) : '-';
+      document.getElementById('stat-district-count').textContent = l.statDistrictCount(maxCount);
       document.getElementById('stat-avg-rating').textContent = avgRating;
       renderAdminTable();
     }
@@ -1022,32 +1520,38 @@
     }
 
     function renderAdminTable() {
+      const l = t();
       const q = document.getElementById('admin-search').value.trim().toLowerCase();
       const filtered = restaurants.filter(r => {
         if (adminStatusFilter !== 'ALL' && r.status !== adminStatusFilter) return false;
-        if (q) return r.name.toLowerCase().includes(q) || r.district.toLowerCase().includes(q) || r.category.toLowerCase().includes(q) || (r.dishes || []).some(d => d.toLowerCase().includes(q));
+        if (q) return r.name.toLowerCase().includes(q)
+          || r.district.toLowerCase().includes(q)
+          || getDistrictName(r.district).toLowerCase().includes(q)
+          || r.category.toLowerCase().includes(q)
+          || getCategoryName(r.category).toLowerCase().includes(q)
+          || (r.dishes || []).some(d => d.toLowerCase().includes(q));
         return true;
       });
       const tbody = document.getElementById('admin-table-body');
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="py-10 text-center text-xs text-slate-400">冇符合條件嘅資料庫紀錄</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="py-10 text-center text-xs text-slate-400">${l.noAdminRows}</td></tr>`;
         return;
       }
       tbody.innerHTML = filtered.map(r => `
         <tr class="hover:bg-slate-50/80">
           <td class="py-3.5 px-4">
             <div class="flex items-center gap-3">
-              <img src="${r.image}" alt="" class="w-11 h-11 rounded-xl object-cover bg-slate-200 shrink-0" onerror="this.src='${FALLBACK_IMAGES[r.category] || FALLBACK_IMAGES['茶餐廳/冰室']}'" />
+              <img src="${r.image}" alt="" class="w-11 h-11 rounded-xl object-cover bg-slate-200 shrink-0" onerror="this.src='${getFallbackImage(r.category)}'" />
               <div>
                 <div class="font-bold text-slate-900 text-sm">${r.name}</div>
-                <div class="text-[11px] text-slate-400 truncate max-w-[200px]">${(r.dishes || []).join('、')}</div>
+                <div class="text-[11px] text-slate-400 truncate max-w-[200px]">${(r.dishes || []).join(', ')}</div>
               </div>
             </div>
           </td>
-          <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-xs font-bold">${r.district}</span><div class="text-[11px] text-slate-500 mt-1">${r.category}</div></td>
+          <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-xs font-bold">${getDistrictName(r.district)}</span><div class="text-[11px] text-slate-500 mt-1">${getCategoryName(r.category)}</div></td>
           <td class="py-3.5 px-4"><div class="text-xs font-black text-emerald-600">${r.price}</div><div class="text-xs font-bold text-amber-600 flex items-center gap-1 mt-0.5"><i data-lucide="star" class="w-3 h-3 fill-amber-400 text-amber-400"></i> ${Number(r.rating).toFixed(1)}</div></td>
           <td class="py-3.5 px-4 text-center"><button type="button" onclick="toggleFeatured('${r.id}')" class="p-1.5 rounded-lg ${r.featured ? 'bg-orange-100 text-orange-600' : 'bg-slate-100 text-slate-400'}"><i data-lucide="award" class="w-4 h-4"></i></button></td>
-          <td class="py-3.5 px-4 text-center"><button type="button" onclick="toggleStatus('${r.id}')" class="px-2.5 py-1 rounded-full text-[11px] font-bold ${r.status === 'published' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">${r.status === 'published' ? '● 已發佈' : '⏳ 待審核'}</button></td>
+          <td class="py-3.5 px-4 text-center"><button type="button" onclick="toggleStatus('${r.id}')" class="px-2.5 py-1 rounded-full text-[11px] font-bold ${r.status === 'published' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">${r.status === 'published' ? l.statusPublished : l.statusPending}</button></td>
           <td class="py-3.5 px-4 text-right">
             <div class="flex items-center justify-end gap-1.5">
               <button type="button" onclick="openAdminFormModal('${r.id}')" class="p-2 rounded-lg text-slate-600 hover:bg-slate-200/70"><i data-lucide="pencil" class="w-4 h-4"></i></button>
@@ -1061,24 +1565,39 @@
 
     async function toggleFeatured(id) {
       const r = restaurants.find(item => item.id === id);
-      if (r) { r.featured = !r.featured; await persistRestaurant(r, false); renderAdminDashboard(); showToast(r.featured ? `已設為精選：${r.name}` : `已取消精選：${r.name}`); }
+      if (r) {
+        r.featured = !r.featured;
+        await persistRestaurant(r, false);
+        renderAdminDashboard();
+        showToast(r.featured
+          ? (currentLang === 'en' ? `Featured: ${r.name}` : `已設為精選：${r.name}`)
+          : (currentLang === 'en' ? `Unfeatured: ${r.name}` : `已取消精選：${r.name}`));
+      }
     }
 
     async function toggleStatus(id) {
       const r = restaurants.find(item => item.id === id);
-      if (r) { r.status = r.status === 'published' ? 'pending' : 'published'; await persistRestaurant(r, false); renderAdminDashboard(); showToast(r.status === 'published' ? `已批核上架：${r.name}` : `已轉為待審核：${r.name}`); }
+      if (r) {
+        r.status = r.status === 'published' ? 'pending' : 'published';
+        await persistRestaurant(r, false);
+        renderAdminDashboard();
+        showToast(r.status === 'published'
+          ? (currentLang === 'en' ? `Published: ${r.name}` : `已批核上架：${r.name}`)
+          : (currentLang === 'en' ? `Moved to pending: ${r.name}` : `已轉為待審核：${r.name}`));
+      }
     }
 
     async function deleteRestaurant(id) {
       const r = restaurants.find(item => item.id === id);
-      if (!r || !confirm(`確定要永久刪除「${r.name}」嗎？`)) return;
+      if (!r || !confirm(currentLang === 'en' ? `Delete "${r.name}"?` : `確定要永久刪除「${r.name}」嗎？`)) return;
       restaurants = restaurants.filter(item => item.id !== id);
       await persistRestaurant(r, true);
       renderAdminDashboard();
-      showToast(`已刪除「${r.name}」`);
+      showToast(currentLang === 'en' ? `Deleted "${r.name}"` : `已刪除「${r.name}」`);
     }
 
     function openAdminFormModal(editId = null) {
+      const l = t();
       document.getElementById('restaurant-form').reset();
       document.getElementById('form-mode').value = 'admin';
       document.getElementById('admin-only-fields').classList.remove('hidden');
@@ -1086,8 +1605,8 @@
       if (editId) {
         const r = restaurants.find(item => item.id === editId);
         if (!r) return;
-        document.getElementById('form-modal-title').textContent = `編輯餐廳：${r.name}`;
-        document.getElementById('form-submit-btn').textContent = '更新資料';
+        document.getElementById('form-modal-title').textContent = l.formEditTitle(r.name);
+        document.getElementById('form-submit-btn').textContent = l.formEditSubmit;
         document.getElementById('form-id').value = r.id;
         document.getElementById('form-name').value = r.name;
         document.getElementById('form-district').value = r.district;
@@ -1102,8 +1621,8 @@
         document.getElementById('form-featured').checked = r.featured;
         document.getElementById('form-status').value = r.status;
       } else {
-        document.getElementById('form-modal-title').textContent = '新增香港好西餐廳';
-        document.getElementById('form-submit-btn').textContent = '新增並儲存';
+        document.getElementById('form-modal-title').textContent = l.formAddTitle;
+        document.getElementById('form-submit-btn').textContent = l.formAddSubmit;
         document.getElementById('form-id').value = '';
         document.getElementById('form-rating').value = '4.6';
         document.getElementById('form-status').value = 'published';
@@ -1113,11 +1632,12 @@
     }
 
     function openSubmitModal() {
+      const l = t();
       document.getElementById('restaurant-form').reset();
       document.getElementById('form-id').value = '';
       document.getElementById('form-mode').value = 'submit';
-      document.getElementById('form-modal-title').textContent = '街坊報料：推介香港好西';
-      document.getElementById('form-submit-btn').textContent = '提交報料';
+      document.getElementById('form-modal-title').textContent = l.formReportTitle;
+      document.getElementById('form-submit-btn').textContent = l.formReportSubmit;
       document.getElementById('form-rating').value = '4.5';
       document.getElementById('admin-only-fields').classList.add('hidden');
       document.getElementById('user-submit-notice').classList.remove('hidden');
@@ -1130,6 +1650,7 @@
     async function handleFormSubmit(e) {
       e.preventDefault();
       try {
+        const l = t();
         const id = document.getElementById('form-id').value;
         const mode = document.getElementById('form-mode').value;
         const name = document.getElementById('form-name').value.trim();
@@ -1147,15 +1668,15 @@
           .filter(Boolean);
 
         if (!name || !address || !desc) {
-          alert('請填寫「餐廳名稱」、「詳細地址」同「美食簡介 / 食評」！');
+          alert(currentLang === 'en'
+            ? 'Please enter Restaurant Name, Address, and Description.'
+            : '請填寫「餐廳名稱」、「詳細地址」同「美食簡介 / 食評」！');
           return;
         }
 
         const status = mode === 'admin' ? document.getElementById('form-status').value : 'pending';
         const featured = mode === 'admin' ? document.getElementById('form-featured').checked : false;
-        const validImage = /^https?:\/\//i.test(rawImage)
-          ? rawImage
-          : (FALLBACK_IMAGES[category] || FALLBACK_IMAGES['茶餐廳/冰室']);
+        const validImage = /^https?:\/\//i.test(rawImage) ? rawImage : getFallbackImage(category);
 
         const payload = {
           name,
@@ -1163,7 +1684,7 @@
           category,
           price,
           rating,
-          dishes: dishesArray.length > 0 ? dishesArray : ['招牌推介'],
+          dishes: dishesArray.length > 0 ? dishesArray : [l.defaultDish],
           address,
           mtr,
           desc,
@@ -1197,14 +1718,14 @@
         renderAll();
         showToast(
           id
-            ? `已成功更新「${payload.name}」`
+            ? (currentLang === 'en' ? `Updated "${payload.name}"` : `已成功更新「${payload.name}」`)
             : (status === 'pending'
-                ? `報料已送出！可去後台「待審核」批核「${payload.name}」`
-                : `「${payload.name}」已發佈！`)
+                ? (currentLang === 'en' ? `Submitted "${payload.name}" for review` : `報料已送出！可去後台「待審核」批核「${payload.name}」`)
+                : (currentLang === 'en' ? `Published "${payload.name}"` : `「${payload.name}」已發佈！`))
         );
       } catch (err) {
         console.error('提交表單失敗：', err);
-        alert('提交時發生錯誤：' + err.message);
+        alert((currentLang === 'en' ? 'Submission error: ' : '提交時發生錯誤：') + err.message);
       }
     }
 
@@ -1216,6 +1737,8 @@
     }
 
     function renderAll() {
+      applyStaticTranslations();
+      populateDistrictAndCategorySelects();
       renderCategoryTabs();
       renderFrontCards();
       if (currentAdmin) {
@@ -1223,6 +1746,7 @@
         renderAdminAccountsTable();
       }
       updateBadges();
+      refreshIcons();
     }
 
     initData();
