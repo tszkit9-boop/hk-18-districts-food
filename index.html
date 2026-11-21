@@ -74,7 +74,7 @@
   <!-- ==================== 前台視圖 ==================== -->
   <main id="front-view" class="flex-1">
     <section class="bg-gradient-to-b from-orange-50 via-amber-50/40 to-transparent pt-8 pb-6 px-4 sm:px-6 lg:px-8 border-b border-orange-100/60">
-      <div class="max-w-4xl mx-auto text-center">
+      <div class="max-w-5xl mx-auto text-center">
         <span id="hero-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold mb-3">
           <i data-lucide="flame" class="w-3.5 h-3.5"></i> 全港細分地段地道美食資料庫
         </span>
@@ -82,23 +82,28 @@
           今日想喺邊區<span class="text-orange-600">食好西</span>？
         </h2>
         <p id="hero-subtitle" class="text-sm sm:text-base text-gray-600 mb-6">
-          覆蓋港島、九龍、新界及離島常用搵食地段，隨時搜尋招牌菜同街坊食評
+          覆蓋港島、九龍、新界及離島常用搵食地段，隨時搜尋招牌菜、時段同街坊食評
         </p>
 
-        <div class="bg-white p-2 rounded-2xl shadow-md border border-gray-200/80 flex flex-col sm:flex-row gap-2">
+        <div class="bg-white p-2 rounded-2xl shadow-md border border-gray-200/80 flex flex-col lg:flex-row gap-2">
           <div class="flex-1 flex items-center px-3 gap-2">
             <i data-lucide="search" class="w-5 h-5 text-gray-400 shrink-0"></i>
             <input id="search-input" type="text" oninput="renderFrontCards()" placeholder="搜尋餐廳名稱、地區、招牌菜..." class="w-full py-2 text-sm focus:outline-none text-gray-800 placeholder-gray-400" />
           </div>
-          <div class="h-px sm:h-8 sm:w-px bg-gray-200 my-auto"></div>
-          <div class="flex items-center px-3 gap-2 sm:w-48">
-            <i data-lucide="map-pin" class="w-4 h-4 text-orange-500 shrink-0"></i>
-            <select id="district-filter" onchange="renderFrontCards()" class="w-full py-2 text-sm font-medium text-gray-700 bg-transparent focus:outline-none cursor-pointer"></select>
-          </div>
-          <div class="h-px sm:h-8 sm:w-px bg-gray-200 my-auto"></div>
-          <div class="flex items-center px-3 gap-2 sm:w-40">
-            <i data-lucide="dollar-sign" class="w-4 h-4 text-emerald-600 shrink-0"></i>
-            <select id="price-filter" onchange="renderFrontCards()" class="w-full py-2 text-sm font-medium text-gray-700 bg-transparent focus:outline-none cursor-pointer"></select>
+          <div class="h-px lg:h-8 lg:w-px bg-gray-200 my-auto"></div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 lg:flex lg:items-center">
+            <div class="flex items-center px-3 gap-2 lg:w-44">
+              <i data-lucide="map-pin" class="w-4 h-4 text-orange-500 shrink-0"></i>
+              <select id="district-filter" onchange="renderFrontCards()" class="w-full py-2 text-sm font-medium text-gray-700 bg-transparent focus:outline-none cursor-pointer"></select>
+            </div>
+            <div class="flex items-center px-3 gap-2 lg:w-40 border-t sm:border-t-0 sm:border-l border-gray-200">
+              <i data-lucide="clock" class="w-4 h-4 text-blue-500 shrink-0"></i>
+              <select id="mealtime-filter" onchange="renderFrontCards()" class="w-full py-2 text-sm font-medium text-gray-700 bg-transparent focus:outline-none cursor-pointer"></select>
+            </div>
+            <div class="flex items-center px-3 gap-2 lg:w-36 border-t sm:border-t-0 sm:border-l border-gray-200">
+              <i data-lucide="dollar-sign" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+              <select id="price-filter" onchange="renderFrontCards()" class="w-full py-2 text-sm font-medium text-gray-700 bg-transparent focus:outline-none cursor-pointer"></select>
+            </div>
           </div>
         </div>
       </div>
@@ -109,10 +114,15 @@
     </section>
 
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="flex items-center justify-between mb-5">
-        <div class="flex items-center gap-2">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+        <div class="flex items-center gap-2 flex-wrap">
           <h3 id="section-featured-title" class="text-lg font-bold text-gray-900">精選美食推介</h3>
           <span id="result-count" class="px-2.5 py-0.5 rounded-full bg-gray-200 text-gray-700 text-xs font-bold">0 間</span>
+          <button type="button" id="btn-saved-only" onclick="toggleSavedFilter()" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-amber-300 bg-white text-amber-700 hover:bg-amber-50 text-xs font-bold transition-colors">
+            <i data-lucide="bookmark" class="w-3.5 h-3.5"></i>
+            <span id="saved-filter-label">我嘅收藏</span>
+            <span id="saved-count-pill" class="px-1.5 py-0.2 rounded-full bg-amber-100 text-amber-800 text-[10px]">0</span>
+          </button>
         </div>
         <div class="flex items-center gap-2 text-xs text-gray-500">
           <span id="sort-label">排序：</span>
@@ -136,7 +146,7 @@
   <!-- ==================== 後台視圖 ==================== -->
   <main id="admin-view" class="hidden flex-1 bg-slate-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm">
         <div>
           <div class="flex items-center gap-2 flex-wrap">
             <span class="px-2.5 py-0.5 rounded bg-slate-900 text-white text-[11px] font-bold tracking-wider">CMS ADMIN</span>
@@ -145,15 +155,24 @@
               <i data-lucide="user-check" class="w-3.5 h-3.5"></i> 已登入
             </span>
           </div>
-          <p id="admin-subheading" class="text-xs sm:text-sm text-slate-500 mt-1">管理全站餐廳收錄、審核街坊報料，以及新增或管理多位後台 Admin 帳號</p>
+          <p id="admin-subheading" class="text-xs sm:text-sm text-slate-500 mt-1">管理全站餐廳收錄、審核街坊報料、匯出備份，以及管理後台帳號</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
-          <button type="button" onclick="openAdminFormModal()" class="px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs sm:text-sm font-bold flex items-center gap-1.5 shadow-sm">
+          <button type="button" onclick="openAdminFormModal()" class="px-3.5 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs sm:text-sm font-bold flex items-center gap-1.5 shadow-sm">
             <i data-lucide="plus" class="w-4 h-4"></i>
             <span id="admin-add-restaurant-btn">新增餐廳</span>
           </button>
-          <button type="button" onclick="resetDemoData()" class="px-3 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold flex items-center gap-1.5">
+          <button type="button" onclick="exportBackupJson()" class="px-3 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold flex items-center gap-1.5">
+            <i data-lucide="download" class="w-3.5 h-3.5 text-blue-600"></i>
+            <span id="admin-export-btn">匯出備份</span>
+          </button>
+          <label class="cursor-pointer px-3 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold flex items-center gap-1.5">
+            <i data-lucide="upload" class="w-3.5 h-3.5 text-emerald-600"></i>
+            <span id="admin-import-btn">匯入還原</span>
+            <input id="import-backup-input" type="file" accept=".json,application/json" onchange="handleImportBackup(event)" class="hidden" />
+          </label>
+          <button type="button" id="btn-reset-demo" onclick="resetDemoData()" class="px-3 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold flex items-center gap-1.5">
             <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
             <span id="admin-reset-demo-btn">重設示範資料</span>
           </button>
@@ -164,7 +183,7 @@
         </div>
       </div>
 
-      <div class="flex items-center gap-2 mb-6 border-b border-slate-200 pb-3">
+      <div class="flex items-center gap-2 mb-6 border-b border-slate-200 pb-3 flex-wrap">
         <button type="button" id="subtab-restaurants" onclick="switchAdminSubTab('restaurants')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 text-white flex items-center gap-2 shadow-sm">
           <i data-lucide="utensils" class="w-4 h-4"></i>
           <span id="subtab-restaurants-label">餐廳資料庫管理</span>
@@ -174,6 +193,9 @@
           <span id="subtab-admins-label">管理員帳號設定 (增加 Admin)</span>
           <span id="admin-count-pill" class="px-1.5 py-0.2 rounded-full bg-slate-200 text-slate-700 text-[11px]">1</span>
         </button>
+        <span id="editor-role-hint" class="hidden text-xs text-slate-500 bg-slate-200/70 px-3 py-1.5 rounded-xl font-medium">
+          🔒 目前以「美食編輯」身份登入，僅可管理餐廳及審核報料
+        </span>
       </div>
 
       <div id="admin-panel-restaurants">
@@ -350,17 +372,22 @@
       <div class="p-6">
         <div class="flex flex-wrap items-start justify-between gap-2 mb-3">
           <div>
-            <div class="flex items-center gap-2 text-xs font-bold text-orange-600 mb-1">
+            <div class="flex items-center gap-2 text-xs font-bold text-orange-600 mb-1 flex-wrap">
               <span id="modal-district">地段</span><span>•</span><span id="modal-category">分類</span><span>•</span><span id="modal-price" class="text-emerald-600">$$</span>
+              <span id="modal-mealtime-badge" class="hidden px-2 py-0.5 rounded bg-blue-50 text-blue-700 text-[11px]"></span>
             </div>
             <h3 id="modal-name" class="text-2xl font-black text-gray-900">餐廳名稱</h3>
           </div>
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
             <div class="flex items-center gap-1 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200">
               <i data-lucide="star" class="w-4 h-4 text-amber-500 fill-amber-500"></i>
               <span id="modal-rating" class="font-black text-amber-800 text-sm">4.8</span>
             </div>
-            <button type="button" onclick="toggleLikeCurrent()" class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-sm">
+            <button type="button" id="modal-save-btn" onclick="toggleSaveCurrent()" class="flex items-center gap-1 px-3 py-1.5 rounded-xl border border-amber-300 bg-white hover:bg-amber-50 text-amber-700 font-bold text-xs sm:text-sm">
+              <i data-lucide="bookmark" class="w-4 h-4"></i>
+              <span id="modal-save-text">收藏</span>
+            </button>
+            <button type="button" onclick="toggleLikeCurrent()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-xs sm:text-sm">
               <i data-lucide="heart" class="w-4 h-4 fill-rose-500"></i>
               <span id="modal-likes">0</span>
             </button>
@@ -374,7 +401,7 @@
 
         <p id="modal-desc" class="text-sm text-gray-700 leading-relaxed bg-orange-50/50 p-4 rounded-2xl border border-orange-100 mb-4"></p>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-gray-600 mb-6 bg-gray-50 p-3.5 rounded-2xl">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-gray-600 mb-4 bg-gray-50 p-3.5 rounded-2xl">
           <div class="flex items-start gap-2">
             <i data-lucide="map-pin" class="w-4 h-4 text-orange-500 shrink-0 mt-0.5"></i>
             <div><span id="modal-address-label" class="font-bold text-gray-900 block">詳細地址</span><span id="modal-address">-</span></div>
@@ -383,6 +410,26 @@
             <i data-lucide="train" class="w-4 h-4 text-blue-500 shrink-0 mt-0.5"></i>
             <div><span id="modal-mtr-label" class="font-bold text-gray-900 block">港鐵 / 交通</span><span id="modal-mtr">-</span></div>
           </div>
+          <div class="flex items-start gap-2">
+            <i data-lucide="clock" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+            <div><span id="modal-hours-label" class="font-bold text-gray-900 block">營業時間</span><span id="modal-hours">-</span></div>
+          </div>
+        </div>
+
+        <!-- 地圖導航 / 複製地址 / 分享快捷列 -->
+        <div class="flex flex-wrap items-center gap-2 mb-6">
+          <a id="modal-gmaps-link" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition-colors">
+            <i data-lucide="navigation" class="w-3.5 h-3.5"></i>
+            <span id="btn-open-gmaps">Google Maps 導航</span>
+          </a>
+          <button type="button" onclick="copyCurrentAddress()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-bold transition-colors">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+            <span id="btn-copy-address">複製地址</span>
+          </button>
+          <button type="button" onclick="shareCurrentRestaurant()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-bold transition-colors">
+            <i data-lucide="share-2" class="w-3.5 h-3.5"></i>
+            <span id="btn-share-spot">分享推介</span>
+          </button>
         </div>
 
         <div class="border-t border-gray-100 pt-4">
@@ -408,7 +455,7 @@
         <button type="button" onclick="closeFormModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
 
-      <form id="restaurant-form" onsubmit="handleFormSubmit(event)" novalidate class="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+      <form id="restaurant-form" onsubmit="handleFormSubmit(event)" novalidate class="p-6 space-y-4 max-h-[82vh] overflow-y-auto">
         <input type="hidden" id="form-id" />
         <input type="hidden" id="form-mode" value="admin" />
 
@@ -435,6 +482,17 @@
           <div>
             <label id="lbl-form-rating" class="block text-xs font-bold text-gray-700 mb-1">推薦評分 (1-5)</label>
             <input id="form-rating" type="number" step="0.1" min="1" max="5" value="4.5" class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label id="lbl-form-mealtime" class="block text-xs font-bold text-gray-700 mb-1">適合時段</label>
+            <select id="form-mealtime" class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500 bg-white"></select>
+          </div>
+          <div>
+            <label id="lbl-form-hours" class="block text-xs font-bold text-gray-700 mb-1">營業時間</label>
+            <input id="form-hours" type="text" placeholder="例如：08:00 - 22:00（逢星期一休息）" class="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:border-orange-500" />
           </div>
         </div>
 
@@ -579,6 +637,15 @@
       { value: '坪洲', zh: '坪洲', en: 'Peng Chau', area: '離島' }
     ];
 
+    const MEALTIME_LABELS = [
+      { value: '全日供應', zh: '全日供應', en: 'All Day' },
+      { value: '早餐/早茶', zh: '早餐 / 早茶', en: 'Breakfast / Morning Tea' },
+      { value: '午市/午餐', zh: '午市 / 午餐', en: 'Lunch' },
+      { value: '下午茶', zh: '下午茶', en: 'Afternoon Tea' },
+      { value: '晚市/晚餐', zh: '晚市 / 晚餐', en: 'Dinner' },
+      { value: '宵夜/深宵', zh: '宵夜 / 深宵', en: 'Late Night / Supper' }
+    ];
+
     const CATEGORY_LABELS = [
       { value: '全部', zh: '全部', en: 'All' },
       { value: '茶餐廳/冰室', zh: '茶餐廳/冰室', en: 'Cha Chaan Teng' },
@@ -616,15 +683,17 @@
         submitShort: '報料',
         heroBadge: '全港細分地段地道美食資料庫',
         heroTitleHtml: '今日想喺邊區<span class="text-orange-600">食好西</span>？',
-        heroSubtitle: '覆蓋港島、九龍、新界及離島常用搵食地段，隨時搜尋招牌菜同街坊食評',
+        heroSubtitle: '覆蓋港島、九龍、新界及離島常用搵食地段，隨時搜尋招牌菜、時段同街坊食評',
         searchPlaceholder: '搜尋餐廳名稱、地區、招牌菜（例如：菠蘿油、雲吞麵、旺角）...',
         allDistricts: '全部地段',
+        allMealtimes: '所有時段',
         allPrices: '所有價位',
         priceUnder50: '$ ($50以下)',
         price51to150: '$$ ($51-$150)',
         price151to300: '$$$ ($151-$300)',
         priceOver300: '$$$$ ($300以上)',
         featuredTitle: '精選美食推介',
+        savedFilterLabel: '我嘅收藏',
         countUnit: (n) => `${n} 間`,
         sortLabel: '排序：',
         sortFeatured: '編輯精選優先',
@@ -635,13 +704,16 @@
         emptyDesc: '試下清除篩選條件，或者自己報料新增呢間好西！',
         resetFilters: '重設所有篩選',
         adminHeading: '美食資料庫管理後台',
-        adminSubheading: '管理全站餐廳收錄、審核街坊報料，以及新增或管理多位後台 Admin 帳號',
+        adminSubheading: '管理全站餐廳收錄、審核街坊報料、匯出備份，以及管理後台帳號',
         loggedInBadge: (name) => `已登入：${name}`,
         addRestaurant: '新增餐廳',
+        exportBtn: '匯出備份',
+        importBtn: '匯入還原',
         resetDemo: '重設示範資料',
         logout: '登出後台',
         subtabRestaurants: '餐廳資料庫管理',
         subtabAdmins: '管理員帳號設定 (增加 Admin)',
+        editorRoleHint: '🔒 目前以「美食編輯」身份登入，僅可管理餐廳及審核報料',
         statTotal: '總收錄餐廳',
         statPublishedSub: (n) => `已發佈 ${n} 間`,
         statPending: '待審核報料',
@@ -662,6 +734,7 @@
         thActions: '操作',
         statusPublished: '● 已發佈',
         statusPending: '⏳ 待審核',
+        approveQuickBtn: '批核',
         noAdminRows: '冇符合條件嘅資料庫紀錄',
         addAdminTitle: '增加新 Admin 管理員',
         addAdminDesc: '建立新帳號俾團隊成員一齊管理',
@@ -693,10 +766,17 @@
         loginError: '帳號或密碼不正確，請重試！',
         btnLoginSubmit: '登入後台',
         modalFeaturedText: '編輯精選',
+        saveSpot: '收藏',
+        savedSpot: '已收藏',
         modalDishesLabel: '必食招牌菜：',
         modalAddressLabel: '詳細地址',
         modalMtrLabel: '港鐵 / 交通',
         modalMtrFallback: '請參考地圖路線',
+        modalHoursLabel: '營業時間',
+        modalHoursFallback: '未填寫',
+        btnOpenGmaps: 'Google Maps 導航',
+        btnCopyAddress: '複製地址',
+        btnShareSpot: '分享推介',
         modalCommentsTitle: '街坊食評留言',
         modalNoComments: '暫時未有留言，快啲做第一個留食評嘅街坊！',
         modalReviewerPrefix: '街坊食客：',
@@ -714,6 +794,9 @@
         lblFormCategory: '菜式分類 *',
         lblFormPrice: '人均消費 *',
         lblFormRating: '推薦評分 (1-5)',
+        lblFormMealtime: '適合時段',
+        lblFormHours: '營業時間',
+        phFormHours: '例如：08:00 - 22:00（逢星期一休息）',
         lblFormDishes: '招牌菜式 (用逗號分隔) *',
         phFormDishes: '例如：招牌菠蘿包, 鮮茄牛肉通粉, 樽仔奶茶',
         lblFormAddress: '詳細地址 *',
@@ -747,12 +830,14 @@
         heroSubtitle: 'Covering neighborhoods across Hong Kong Island, Kowloon, New Territories & Islands',
         searchPlaceholder: 'Search restaurant name, area, dish (e.g. Pineapple Bun, Mong Kok)...',
         allDistricts: 'All Neighborhoods',
+        allMealtimes: 'All Meal Times',
         allPrices: 'All Budgets',
         priceUnder50: '$ (Under HK$50)',
         price51to150: '$$ (HK$51–150)',
         price151to300: '$$$ (HK$151–300)',
         priceOver300: '$$$$ (HK$300+)',
         featuredTitle: 'Featured Food Picks',
+        savedFilterLabel: 'My Saved',
         countUnit: (n) => `${n} ${n === 1 ? 'spot' : 'spots'}`,
         sortLabel: 'Sort:',
         sortFeatured: 'Featured First',
@@ -763,13 +848,16 @@
         emptyDesc: 'Try clearing your filters or submit a new food spot!',
         resetFilters: 'Reset All Filters',
         adminHeading: 'Food Database Admin CMS',
-        adminSubheading: 'Manage listings, review user submissions, and add or manage admin accounts',
+        adminSubheading: 'Manage listings, review submissions, export backups, and manage admin accounts',
         loggedInBadge: (name) => `Signed in: ${name}`,
         addRestaurant: 'Add Restaurant',
+        exportBtn: 'Export Backup',
+        importBtn: 'Import Restore',
         resetDemo: 'Reset Demo Data',
         logout: 'Sign Out',
         subtabRestaurants: 'Restaurants CMS',
         subtabAdmins: 'Admin Accounts',
+        editorRoleHint: '🔒 Signed in as Food Editor (Restaurant & review management only)',
         statTotal: 'Total Restaurants',
         statPublishedSub: (n) => `${n} published`,
         statPending: 'Pending Review',
@@ -790,6 +878,7 @@
         thActions: 'Actions',
         statusPublished: '● Published',
         statusPending: '⏳ Pending',
+        approveQuickBtn: 'Approve',
         noAdminRows: 'No matching records found',
         addAdminTitle: 'Add New Admin',
         addAdminDesc: 'Create an account for team members',
@@ -821,10 +910,17 @@
         loginError: 'Invalid username or password. Please try again.',
         btnLoginSubmit: 'Sign In',
         modalFeaturedText: 'Featured',
+        saveSpot: 'Save',
+        savedSpot: 'Saved',
         modalDishesLabel: 'Signature Dishes:',
         modalAddressLabel: 'Address',
         modalMtrLabel: 'MTR / Transit',
         modalMtrFallback: 'See map for directions',
+        modalHoursLabel: 'Opening Hours',
+        modalHoursFallback: 'Not specified',
+        btnOpenGmaps: 'Google Maps',
+        btnCopyAddress: 'Copy Address',
+        btnShareSpot: 'Share',
         modalCommentsTitle: 'Visitor Reviews',
         modalNoComments: 'No reviews yet. Be the first to leave a comment!',
         modalReviewerPrefix: 'Visitor:',
@@ -842,6 +938,9 @@
         lblFormCategory: 'Category *',
         lblFormPrice: 'Price Range *',
         lblFormRating: 'Rating (1-5)',
+        lblFormMealtime: 'Best Meal Time',
+        lblFormHours: 'Opening Hours',
+        phFormHours: 'e.g. 08:00 - 22:00 (Closed Mon)',
         lblFormDishes: 'Signature Dishes (comma separated) *',
         phFormDishes: 'e.g. Pineapple Bun, Tomato Beef Macaroni, Milk Tea',
         lblFormAddress: 'Address *',
@@ -871,6 +970,7 @@
     const DEFAULT_RESTAURANTS = [
       {
         id: 'hk-1', name: '華嫂冰室 (灣仔店)', district: '灣仔', category: '茶餐廳/冰室', price: '$', rating: 4.8, likes: 342, featured: true, status: 'published',
+        mealtime: '早餐/早茶', hours: '08:00 - 17:00（逢星期日休息）',
         dishes: ['招牌菠蘿包', '鮮茄牛肉通粉', '樽仔冰花奶茶'], address: '灣仔謝斐道272號杜智臺地下3-4號舖', mtr: '灣仔站 A1 出口步行約 6 分鐘',
         desc: '招牌菠蘿包夾住厚切牛油同半熟煎蛋，外脆內軟；鮮茄牛肉通粉同冰花奶茶亦係每枱必點。',
         image: 'https://images.unsplash.com/photo-1555126634-323283e090fa?auto=format&fit=crop&w=800&q=80',
@@ -878,6 +978,7 @@
       },
       {
         id: 'hk-2', name: '合益泰小食', district: '深水埗', category: '街頭小食', price: '$', rating: 4.7, likes: 518, featured: true, status: 'published',
+        mealtime: '全日供應', hours: '06:30 - 20:30',
         dishes: ['滑溜豬腸粉', '魚蛋燒賣', '牛肉粥'], address: '深水埗桂林街121號地下', mtr: '深水埗站 C2 出口步行 1 分鐘',
         desc: '腸粉口感極致滑溜，配上甜醬、花生醬、麻醬同豉油混醬，幾十蚊食到飽。',
         image: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80',
@@ -885,6 +986,7 @@
       },
       {
         id: 'hk-3', name: '方榮記沙爹牛肉專家', district: '九龍城', category: '火鍋/打邊爐', price: '$$$', rating: 4.6, likes: 289, featured: true, status: 'published',
+        mealtime: '晚市/晚餐', hours: '11:30 - 00:30',
         dishes: ['秘製沙爹湯底', '手切本地肥牛', '大光麵'], address: '九龍城侯王道85-87號地下', mtr: '宋皇臺站 B2 出口步行 4 分鐘',
         desc: '濃稠秘製沙爹湯底配大光麵吸盡湯汁，九龍城經典打邊爐好去處。',
         image: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=800&q=80',
@@ -892,6 +994,7 @@
       },
       {
         id: 'hk-4', name: '佳佳甜品', district: '佐敦', category: '甜品/糖水', price: '$', rating: 4.8, likes: 475, featured: true, status: 'published',
+        mealtime: '宵夜/深宵', hours: '12:00 - 03:30',
         dishes: ['寧波薑汁湯丸', '香滑芝麻糊', '核桃露'], address: '佐敦寧波街29號地舖', mtr: '佐敦站 A 出口步行 2 分鐘',
         desc: '石磨芝麻糊同核桃露香氣濃郁，配埋寧波黑芝麻湯丸，秋冬暖胃首選。',
         image: 'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=800&q=80',
@@ -928,6 +1031,8 @@
     let currentLang = localStorage.getItem('hk_foodie_lang') === 'en' ? 'en' : 'zh';
     let restaurants = [];
     let admins = [];
+    let savedSpotIds = [];
+    let onlySavedFilter = false;
     let currentAdmin = null;
     let selectedCategory = '全部';
     let adminStatusFilter = 'ALL';
@@ -936,6 +1041,11 @@
 
     function t() {
       return I18N[currentLang];
+    }
+
+    function isSuperAdmin() {
+      if (!currentAdmin) return false;
+      return currentAdmin.is_primary === true || String(currentAdmin.role || '').includes('Super Admin') || String(currentAdmin.role || '').includes('超級管理員');
     }
 
     function getDistrictName(val) {
@@ -948,6 +1058,12 @@
       return found ? found[currentLang] : val;
     }
 
+    function getMealtimeName(val) {
+      if (!val) return '';
+      const found = MEALTIME_LABELS.find(m => m.value === val);
+      return found ? found[currentLang] : val;
+    }
+
     function getFallbackImage(category) {
       return FALLBACK_IMAGES[category] || DEFAULT_FALLBACK_IMAGE;
     }
@@ -956,6 +1072,69 @@
       if (window.lucide && typeof window.lucide.createIcons === 'function') {
         window.lucide.createIcons();
       }
+    }
+
+    function loadSavedSpotIds() {
+      try {
+        const raw = localStorage.getItem('hk_foodie_saved_ids_v1');
+        savedSpotIds = raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        savedSpotIds = [];
+      }
+    }
+
+    function persistSavedSpotIds() {
+      localStorage.setItem('hk_foodie_saved_ids_v1', JSON.stringify(savedSpotIds));
+      updateSavedUI();
+    }
+
+    function updateSavedUI() {
+      const l = t();
+      document.getElementById('saved-count-pill').textContent = savedSpotIds.length;
+      document.getElementById('saved-filter-label').textContent = l.savedFilterLabel;
+      const btn = document.getElementById('btn-saved-only');
+      btn.className = onlySavedFilter
+        ? 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500 text-white text-xs font-bold shadow-sm transition-colors'
+        : 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-amber-300 bg-white text-amber-700 hover:bg-amber-50 text-xs font-bold transition-colors';
+    }
+
+    function toggleSavedFilter() {
+      onlySavedFilter = !onlySavedFilter;
+      updateSavedUI();
+      renderFrontCards();
+    }
+
+    function toggleSaveSpot(id, event) {
+      if (event) event.stopPropagation();
+      const idx = savedSpotIds.indexOf(id);
+      if (idx === -1) {
+        savedSpotIds.push(id);
+        showToast(currentLang === 'en' ? 'Added to My Saved' : '已加入「我嘅收藏」！');
+      } else {
+        savedSpotIds.splice(idx, 1);
+        showToast(currentLang === 'en' ? 'Removed from Saved' : '已從收藏移除');
+      }
+      persistSavedSpotIds();
+      renderFrontCards();
+      if (currentDetailId === id) {
+        updateDetailSaveButton(id);
+      }
+    }
+
+    function toggleSaveCurrent() {
+      if (!currentDetailId) return;
+      toggleSaveSpot(currentDetailId, null);
+    }
+
+    function updateDetailSaveButton(id) {
+      const l = t();
+      const isSaved = savedSpotIds.includes(id);
+      const btn = document.getElementById('modal-save-btn');
+      const txt = document.getElementById('modal-save-text');
+      txt.textContent = isSaved ? l.savedSpot : l.saveSpot;
+      btn.className = isSaved
+        ? 'flex items-center gap-1 px-3 py-1.5 rounded-xl bg-amber-500 text-white font-bold text-xs sm:text-sm shadow-sm'
+        : 'flex items-center gap-1 px-3 py-1.5 rounded-xl border border-amber-300 bg-white hover:bg-amber-50 text-amber-700 font-bold text-xs sm:text-sm';
     }
 
     function resetPhotoInputUI() {
@@ -1056,10 +1235,13 @@
         document.getElementById('current-admin-badge').innerHTML = `<i data-lucide="user-check" class="w-3.5 h-3.5"></i> ${l.loggedInBadge(currentAdmin.name)}`;
       }
       document.getElementById('admin-add-restaurant-btn').textContent = l.addRestaurant;
+      document.getElementById('admin-export-btn').textContent = l.exportBtn;
+      document.getElementById('admin-import-btn').textContent = l.importBtn;
       document.getElementById('admin-reset-demo-btn').textContent = l.resetDemo;
       document.getElementById('admin-logout-btn').textContent = l.logout;
       document.getElementById('subtab-restaurants-label').textContent = l.subtabRestaurants;
       document.getElementById('subtab-admins-label').textContent = l.subtabAdmins;
+      document.getElementById('editor-role-hint').textContent = l.editorRoleHint;
 
       document.getElementById('stat-total-label').textContent = l.statTotal;
       document.getElementById('stat-pending-label').textContent = l.statPending;
@@ -1120,6 +1302,10 @@
       document.getElementById('modal-dishes-label').textContent = l.modalDishesLabel;
       document.getElementById('modal-address-label').textContent = l.modalAddressLabel;
       document.getElementById('modal-mtr-label').textContent = l.modalMtrLabel;
+      document.getElementById('modal-hours-label').textContent = l.modalHoursLabel;
+      document.getElementById('btn-open-gmaps').textContent = l.btnOpenGmaps;
+      document.getElementById('btn-copy-address').textContent = l.btnCopyAddress;
+      document.getElementById('btn-share-spot').textContent = l.btnShareSpot;
       document.getElementById('modal-comments-title').innerHTML = `<i data-lucide="message-square" class="w-4 h-4 text-orange-500"></i> ${l.modalCommentsTitle}`;
       document.getElementById('comment-input').placeholder = l.commentPlaceholder;
       document.getElementById('btn-post-comment').textContent = l.btnPostComment;
@@ -1130,6 +1316,9 @@
       document.getElementById('lbl-form-category').textContent = l.lblFormCategory;
       document.getElementById('lbl-form-price').textContent = l.lblFormPrice;
       document.getElementById('lbl-form-rating').textContent = l.lblFormRating;
+      document.getElementById('lbl-form-mealtime').textContent = l.lblFormMealtime;
+      document.getElementById('lbl-form-hours').textContent = l.lblFormHours;
+      document.getElementById('form-hours').placeholder = l.phFormHours;
       document.getElementById('lbl-form-dishes').textContent = l.lblFormDishes;
       document.getElementById('form-dishes').placeholder = l.phFormDishes;
       document.getElementById('lbl-form-address').textContent = l.lblFormAddress;
@@ -1192,10 +1381,14 @@
       const filterSel = document.getElementById('district-filter');
       const formDistrictSel = document.getElementById('form-district');
       const formCatSel = document.getElementById('form-category');
+      const mealFilterSel = document.getElementById('mealtime-filter');
+      const formMealSel = document.getElementById('form-mealtime');
 
       const prevFilterDist = filterSel.value || 'ALL';
       const prevFormDist = formDistrictSel.value || DISTRICT_LABELS[0].value;
       const prevFormCat = formCatSel.value || CATEGORY_LABELS[1].value;
+      const prevMealFilter = mealFilterSel.value || 'ALL';
+      const prevFormMeal = formMealSel.value || MEALTIME_LABELS[0].value;
 
       filterSel.innerHTML = `<option value="ALL">${l.allDistricts}</option>` +
         DISTRICT_LABELS.map(d => `<option value="${d.value}">${d[currentLang]}</option>`).join('');
@@ -1208,6 +1401,14 @@
       formCatSel.innerHTML = CATEGORY_LABELS.filter(c => c.value !== '全部')
         .map(c => `<option value="${c.value}">${c[currentLang]}</option>`).join('');
       formCatSel.value = CATEGORY_LABELS.some(c => c.value === prevFormCat && c.value !== '全部') ? prevFormCat : CATEGORY_LABELS[1].value;
+
+      mealFilterSel.innerHTML = `<option value="ALL">${l.allMealtimes}</option>` +
+        MEALTIME_LABELS.map(m => `<option value="${m.value}">${m[currentLang]}</option>`).join('');
+      mealFilterSel.value = MEALTIME_LABELS.some(m => m.value === prevMealFilter) ? prevMealFilter : 'ALL';
+
+      formMealSel.innerHTML = MEALTIME_LABELS
+        .map(m => `<option value="${m.value}">${m[currentLang]}</option>`).join('');
+      formMealSel.value = MEALTIME_LABELS.some(m => m.value === prevFormMeal) ? prevFormMeal : MEALTIME_LABELS[0].value;
     }
 
     function toggleLanguage() {
@@ -1220,6 +1421,7 @@
     }
 
     async function initData() {
+      loadSavedSpotIds();
       const sessionAdmin = sessionStorage.getItem('hk_foodie_logged_admin');
       if (sessionAdmin) {
         try { currentAdmin = JSON.parse(sessionAdmin); } catch (e) { currentAdmin = null; }
@@ -1231,12 +1433,14 @@
           if (!rErr && Array.isArray(rData) && rData.length > 0) {
             restaurants = rData.map(row => ({
               ...row,
+              mealtime: row.mealtime || '全日供應',
+              hours: row.hours || '',
               dishes: Array.isArray(row.dishes) ? row.dishes : [],
               comments: Array.isArray(row.comments) ? row.comments : []
             }));
           } else {
             restaurants = [...DEFAULT_RESTAURANTS];
-            await supabaseClient.from('restaurants').upsert(restaurants);
+            await upsertRestaurantSupabase(restaurants);
           }
 
           const { data: aData, error: aErr } = await supabaseClient.from('admins').select('*');
@@ -1253,20 +1457,38 @@
         }
       }
 
-      const savedRest = localStorage.getItem('hk_foodie_guide_data_v4');
+      const savedRest = localStorage.getItem('hk_foodie_guide_data_v5');
       restaurants = savedRest ? JSON.parse(savedRest) : [...DEFAULT_RESTAURANTS];
-      if (!savedRest) localStorage.setItem('hk_foodie_guide_data_v4', JSON.stringify(restaurants));
+      if (!savedRest) localStorage.setItem('hk_foodie_guide_data_v5', JSON.stringify(restaurants));
 
-      const savedAdmins = localStorage.getItem('hk_foodie_guide_admins_v4');
+      const savedAdmins = localStorage.getItem('hk_foodie_guide_admins_v5');
       admins = savedAdmins ? JSON.parse(savedAdmins) : [...DEFAULT_ADMINS];
-      if (!savedAdmins) localStorage.setItem('hk_foodie_guide_admins_v4', JSON.stringify(admins));
+      if (!savedAdmins) localStorage.setItem('hk_foodie_guide_admins_v5', JSON.stringify(admins));
 
       renderAll();
     }
 
+    async function upsertRestaurantSupabase(payload) {
+      if (!supabaseClient) return null;
+      let { error } = await supabaseClient.from('restaurants').upsert(payload);
+      // 若雲端舊資料表尚未建立 mealtime / hours 欄位，自動降級相容寫入
+      if (error && /mealtime|hours|column/i.test(error.message || '')) {
+        const strip = (row) => {
+          const copy = { ...row };
+          delete copy.mealtime;
+          delete copy.hours;
+          return copy;
+        };
+        const fallbackPayload = Array.isArray(payload) ? payload.map(strip) : strip(payload);
+        const retry = await supabaseClient.from('restaurants').upsert(fallbackPayload);
+        error = retry.error;
+      }
+      return error;
+    }
+
     async function persistRestaurant(item, isDelete = false) {
       try {
-        localStorage.setItem('hk_foodie_guide_data_v4', JSON.stringify(restaurants));
+        localStorage.setItem('hk_foodie_guide_data_v5', JSON.stringify(restaurants));
       } catch (e) {
         alert(currentLang === 'en'
           ? 'Storage limit reached. Try using a smaller photo or URL.'
@@ -1275,9 +1497,9 @@
       }
       updateBadges();
       if (supabaseClient) {
-        const { error } = isDelete
-          ? await supabaseClient.from('restaurants').delete().eq('id', item.id)
-          : await supabaseClient.from('restaurants').upsert(item);
+        const error = isDelete
+          ? (await supabaseClient.from('restaurants').delete().eq('id', item.id)).error
+          : await upsertRestaurantSupabase(item);
         if (error) {
           console.error('Supabase 同步失敗：', error);
           alert('已儲存於本機瀏覽器，但雲端同步失敗：' + error.message);
@@ -1286,7 +1508,7 @@
     }
 
     async function persistAdmin(item, isDelete = false) {
-      localStorage.setItem('hk_foodie_guide_admins_v4', JSON.stringify(admins));
+      localStorage.setItem('hk_foodie_guide_admins_v5', JSON.stringify(admins));
       document.getElementById('admin-count-pill').textContent = admins.length;
       if (supabaseClient) {
         const { error } = isDelete
@@ -1298,16 +1520,100 @@
       }
     }
 
+    function exportBackupJson() {
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        version: 'hk-foodie-v5',
+        restaurants,
+        admins
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `hk-foodie-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast(currentLang === 'en' ? 'Backup JSON downloaded' : '已下載資料庫 JSON 備份檔案！');
+    }
+
+    function handleImportBackup(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = async function (ev) {
+        try {
+          const parsed = JSON.parse(ev.target.result);
+          if (!parsed || !Array.isArray(parsed.restaurants)) {
+            throw new Error('Invalid backup format');
+          }
+          if (!confirm(currentLang === 'en'
+            ? `Import ${parsed.restaurants.length} restaurants? Current list will be replaced.`
+            : `確定要匯入 ${parsed.restaurants.length} 間餐廳資料嗎？現有資料將會被覆蓋。`)) {
+            e.target.value = '';
+            return;
+          }
+          restaurants = parsed.restaurants.map(row => ({
+            ...row,
+            mealtime: row.mealtime || '全日供應',
+            hours: row.hours || '',
+            dishes: Array.isArray(row.dishes) ? row.dishes : [],
+            comments: Array.isArray(row.comments) ? row.comments : []
+          }));
+          localStorage.setItem('hk_foodie_guide_data_v5', JSON.stringify(restaurants));
+          if (isSuperAdmin() && Array.isArray(parsed.admins) && parsed.admins.length > 0) {
+            admins = parsed.admins;
+            localStorage.setItem('hk_foodie_guide_admins_v5', JSON.stringify(admins));
+          }
+          if (supabaseClient) {
+            await supabaseClient.from('restaurants').delete().neq('id', '');
+            await upsertRestaurantSupabase(restaurants);
+          }
+          e.target.value = '';
+          renderAll();
+          showToast(currentLang === 'en' ? 'Backup restored successfully' : '已成功匯入並還原資料！');
+        } catch (err) {
+          e.target.value = '';
+          alert(currentLang === 'en' ? 'Invalid JSON backup file.' : '備份檔案格式不正確，無法匯入！');
+        }
+      };
+      reader.readAsText(file);
+    }
+
     async function resetDemoData() {
+      if (!isSuperAdmin()) {
+        alert(currentLang === 'en' ? 'Super Admin permission required.' : '只有超級管理員先可以重設示範資料！');
+        return;
+      }
       if (!confirm(currentLang === 'en' ? 'Reset to initial demo restaurants?' : '確定要還原至初始香港美食示範資料嗎？')) return;
       restaurants = JSON.parse(JSON.stringify(DEFAULT_RESTAURANTS));
-      localStorage.setItem('hk_foodie_guide_data_v4', JSON.stringify(restaurants));
+      localStorage.setItem('hk_foodie_guide_data_v5', JSON.stringify(restaurants));
       if (supabaseClient) {
         await supabaseClient.from('restaurants').delete().neq('id', '');
-        await supabaseClient.from('restaurants').upsert(restaurants);
+        await upsertRestaurantSupabase(restaurants);
       }
       renderAll();
       showToast(currentLang === 'en' ? 'Demo data restored' : '已還原初始示範資料');
+    }
+
+    function applyAdminRolePermissions() {
+      const superFlag = isSuperAdmin();
+      const subtabAdminsBtn = document.getElementById('subtab-admins');
+      const resetDemoBtn = document.getElementById('btn-reset-demo');
+      const roleHint = document.getElementById('editor-role-hint');
+
+      if (superFlag) {
+        subtabAdminsBtn.classList.remove('hidden');
+        resetDemoBtn.classList.remove('hidden');
+        roleHint.classList.add('hidden');
+      } else {
+        subtabAdminsBtn.classList.add('hidden');
+        resetDemoBtn.classList.add('hidden');
+        roleHint.classList.remove('hidden');
+        switchAdminSubTab('restaurants');
+      }
     }
 
     function handleAdminNavClick() {
@@ -1350,6 +1656,10 @@
     }
 
     function switchAdminSubTab(tab) {
+      if (tab === 'admins' && !isSuperAdmin()) {
+        alert(currentLang === 'en' ? 'Super Admin permission required.' : '只有超級管理員先可以管理帳號設定！');
+        return;
+      }
       const panelRest = document.getElementById('admin-panel-restaurants');
       const panelAdmins = document.getElementById('admin-panel-admins');
       const btnRest = document.getElementById('subtab-restaurants');
@@ -1373,6 +1683,10 @@
 
     async function handleAddAdmin(e) {
       e.preventDefault();
+      if (!isSuperAdmin()) {
+        alert(currentLang === 'en' ? 'Super Admin permission required.' : '只有超級管理員先可以新增管理員！');
+        return;
+      }
       const name = document.getElementById('new-admin-name').value.trim();
       const username = document.getElementById('new-admin-username').value.trim();
       const password = document.getElementById('new-admin-password').value.trim();
@@ -1397,6 +1711,7 @@
     }
 
     async function deleteAdminAccount(id) {
+      if (!isSuperAdmin()) return;
       const target = admins.find(a => a.id === id);
       if (!target) return;
       if (target.is_primary) {
@@ -1456,6 +1771,7 @@
         btnAdmin.className = 'flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-slate-900 text-white shadow-sm relative';
         btnFront.className = 'flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-gray-600 hover:text-gray-900';
         document.getElementById('current-admin-badge').innerHTML = `<i data-lucide="user-check" class="w-3.5 h-3.5"></i> ${t().loggedInBadge(currentAdmin.name)}`;
+        applyAdminRolePermissions();
         renderAdminDashboard();
         renderAdminAccountsTable();
       }
@@ -1475,7 +1791,10 @@
     function resetFilters() {
       document.getElementById('search-input').value = '';
       document.getElementById('district-filter').value = 'ALL';
+      document.getElementById('mealtime-filter').value = 'ALL';
       document.getElementById('price-filter').value = 'ALL';
+      onlySavedFilter = false;
+      updateSavedUI();
       selectedCategory = '全部';
       renderCategoryTabs();
       renderFrontCards();
@@ -1485,13 +1804,16 @@
       const l = t();
       const keyword = document.getElementById('search-input').value.trim().toLowerCase();
       const district = document.getElementById('district-filter').value;
+      const mealtime = document.getElementById('mealtime-filter').value;
       const price = document.getElementById('price-filter').value;
       const sortBy = document.getElementById('sort-select').value;
 
       let filtered = restaurants.filter(r => {
         if (r.status !== 'published') return false;
+        if (onlySavedFilter && !savedSpotIds.includes(r.id)) return false;
         if (selectedCategory !== '全部' && r.category !== selectedCategory) return false;
         if (district !== 'ALL' && r.district !== district) return false;
+        if (mealtime !== 'ALL' && (r.mealtime || '全日供應') !== mealtime) return false;
         if (price !== 'ALL' && r.price !== price) return false;
         if (keyword) {
           const distEn = getDistrictName(r.district).toLowerCase();
@@ -1525,13 +1847,21 @@
         empty.classList.remove('hidden');
       } else {
         empty.classList.add('hidden');
-        grid.innerHTML = filtered.map(r => `
+        grid.innerHTML = filtered.map(r => {
+          const isSaved = savedSpotIds.includes(r.id);
+          return `
           <article onclick="openDetailModal('${r.id}')" class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm card-hover cursor-pointer flex flex-col">
             <div class="relative h-48 bg-gray-100 overflow-hidden">
               <img src="${r.image}" alt="${r.name}" class="w-full h-full object-cover" onerror="this.src='${getFallbackImage(r.category)}'" />
-              <div class="absolute top-3 left-3 flex gap-1.5">
+              <div class="absolute top-3 left-3 flex gap-1.5 flex-wrap pr-10">
                 <span class="px-2.5 py-1 rounded-lg bg-black/65 text-white text-[11px] font-bold">${getDistrictName(r.district)}</span>
                 ${r.featured ? `<span class="px-2.5 py-1 rounded-lg bg-orange-600 text-white text-[11px] font-bold flex items-center gap-1"><i data-lucide="award" class="w-3 h-3"></i> ${l.modalFeaturedText}</span>` : ''}
+              </div>
+              <button type="button" onclick="toggleSaveSpot('${r.id}', event)" title="${isSaved ? l.savedSpot : l.saveSpot}" class="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center shadow-sm transition-colors ${isSaved ? 'bg-amber-500 text-white' : 'bg-white/90 text-gray-600 hover:text-amber-600'}">
+                <i data-lucide="bookmark" class="w-4 h-4 ${isSaved ? 'fill-white' : ''}"></i>
+              </button>
+              <div class="absolute bottom-3 left-3 px-2 py-0.5 rounded-md bg-blue-600/90 text-white text-[10px] font-bold">
+                ${getMealtimeName(r.mealtime || '全日供應')}
               </div>
               <div class="absolute bottom-3 right-3 px-2 py-1 rounded-lg bg-white/95 text-xs font-black text-amber-600 flex items-center gap-1 shadow-sm">
                 <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i> ${Number(r.rating).toFixed(1)}
@@ -1552,7 +1882,8 @@
               </div>
             </div>
           </article>
-        `).join('');
+        `;
+        }).join('');
       }
       refreshIcons();
     }
@@ -1566,20 +1897,63 @@
       document.getElementById('modal-district').textContent = getDistrictName(r.district);
       document.getElementById('modal-category').textContent = getCategoryName(r.category);
       document.getElementById('modal-price').textContent = r.price;
+
+      const mealBadge = document.getElementById('modal-mealtime-badge');
+      if (r.mealtime) {
+        mealBadge.textContent = getMealtimeName(r.mealtime);
+        mealBadge.classList.remove('hidden');
+      } else {
+        mealBadge.classList.add('hidden');
+      }
+
       document.getElementById('modal-name').textContent = r.name;
       document.getElementById('modal-rating').textContent = Number(r.rating).toFixed(1);
       document.getElementById('modal-likes').textContent = r.likes;
       document.getElementById('modal-desc').textContent = r.desc;
       document.getElementById('modal-address').textContent = r.address;
       document.getElementById('modal-mtr').textContent = r.mtr || l.modalMtrFallback;
+      document.getElementById('modal-hours').textContent = r.hours || l.modalHoursFallback;
       document.getElementById('modal-featured-tag').classList.toggle('hidden', !r.featured);
       document.getElementById('modal-dishes').innerHTML = (r.dishes || []).map(d => `<span class="px-2.5 py-1 rounded-lg bg-orange-100 text-orange-800 text-xs font-bold">${d}</span>`).join('');
+
+      const mapsQuery = encodeURIComponent(`${r.name} ${r.address} Hong Kong`);
+      document.getElementById('modal-gmaps-link').href = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
+
+      updateDetailSaveButton(id);
       renderModalComments(r);
       document.getElementById('detail-modal').classList.remove('hidden');
       refreshIcons();
     }
 
     function closeDetailModal() { document.getElementById('detail-modal').classList.add('hidden'); currentDetailId = null; }
+
+    function copyCurrentAddress() {
+      if (!currentDetailId) return;
+      const r = restaurants.find(item => item.id === currentDetailId);
+      if (!r) return;
+      const text = `${r.name} - ${r.address}`;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast(currentLang === 'en' ? 'Address copied!' : '已複製餐廳地址！');
+        });
+      } else {
+        prompt(currentLang === 'en' ? 'Copy address:' : '請複製以下地址：', text);
+      }
+    }
+
+    function shareCurrentRestaurant() {
+      if (!currentDetailId) return;
+      const r = restaurants.find(item => item.id === currentDetailId);
+      if (!r) return;
+      const summary = `【${r.name}】(${getDistrictName(r.district)} • ${getCategoryName(r.category)})\n招牌菜：${(r.dishes || []).join(', ')}\n地址：${r.address}`;
+      if (navigator.share) {
+        navigator.share({ title: r.name, text: summary }).catch(() => {});
+      } else if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(summary).then(() => {
+          showToast(currentLang === 'en' ? 'Recommendation copied to share!' : '已複製餐廳推介內容，可貼上分享！');
+        });
+      }
+    }
 
     async function toggleLikeCurrent() {
       if (!currentDetailId) return;
@@ -1693,6 +2067,7 @@
           <td class="py-3.5 px-4 text-center"><button type="button" onclick="toggleStatus('${r.id}')" class="px-2.5 py-1 rounded-full text-[11px] font-bold ${r.status === 'published' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">${r.status === 'published' ? l.statusPublished : l.statusPending}</button></td>
           <td class="py-3.5 px-4 text-right">
             <div class="flex items-center justify-end gap-1.5">
+              ${r.status === 'pending' ? `<button type="button" onclick="toggleStatus('${r.id}')" class="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold flex items-center gap-1"><i data-lucide="check" class="w-3.5 h-3.5"></i> ${l.approveQuickBtn}</button>` : ''}
               <button type="button" onclick="openAdminFormModal('${r.id}')" class="p-2 rounded-lg text-slate-600 hover:bg-slate-200/70"><i data-lucide="pencil" class="w-4 h-4"></i></button>
               <button type="button" onclick="deleteRestaurant('${r.id}')" class="p-2 rounded-lg text-rose-600 hover:bg-rose-50"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
             </div>
@@ -1753,6 +2128,8 @@
         document.getElementById('form-category').value = r.category;
         document.getElementById('form-price').value = r.price;
         document.getElementById('form-rating').value = r.rating;
+        document.getElementById('form-mealtime').value = r.mealtime || MEALTIME_LABELS[0].value;
+        document.getElementById('form-hours').value = r.hours || '';
         document.getElementById('form-dishes').value = (r.dishes || []).join(', ');
         document.getElementById('form-address').value = r.address;
         document.getElementById('form-mtr').value = r.mtr || '';
@@ -1771,6 +2148,7 @@
         document.getElementById('form-submit-btn').textContent = l.formAddSubmit;
         document.getElementById('form-id').value = '';
         document.getElementById('form-rating').value = '4.6';
+        document.getElementById('form-mealtime').value = MEALTIME_LABELS[0].value;
         document.getElementById('form-status').value = 'published';
       }
       document.getElementById('form-modal').classList.remove('hidden');
@@ -1786,6 +2164,7 @@
       document.getElementById('form-modal-title').textContent = l.formReportTitle;
       document.getElementById('form-submit-btn').textContent = l.formReportSubmit;
       document.getElementById('form-rating').value = '4.5';
+      document.getElementById('form-mealtime').value = MEALTIME_LABELS[0].value;
       document.getElementById('admin-only-fields').classList.add('hidden');
       document.getElementById('user-submit-notice').classList.remove('hidden');
       document.getElementById('form-modal').classList.remove('hidden');
@@ -1805,6 +2184,8 @@
         const category = document.getElementById('form-category').value;
         const price = document.getElementById('form-price').value;
         const rating = parseFloat(document.getElementById('form-rating').value) || 4.5;
+        const mealtime = document.getElementById('form-mealtime').value;
+        const hours = document.getElementById('form-hours').value.trim();
         const address = document.getElementById('form-address').value.trim();
         const mtr = document.getElementById('form-mtr').value.trim();
         const desc = document.getElementById('form-desc').value.trim();
@@ -1833,6 +2214,8 @@
           category,
           price,
           rating,
+          mealtime,
+          hours,
           dishes: dishesArray.length > 0 ? dishesArray : [l.defaultDish],
           address,
           mtr,
@@ -1888,9 +2271,11 @@
     function renderAll() {
       applyStaticTranslations();
       populateDistrictAndCategorySelects();
+      updateSavedUI();
       renderCategoryTabs();
       renderFrontCards();
       if (currentAdmin) {
+        applyAdminRolePermissions();
         renderAdminDashboard();
         renderAdminAccountsTable();
       }
