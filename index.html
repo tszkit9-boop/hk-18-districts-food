@@ -2,7 +2,7 @@
 <html lang="zh-HK">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>香港食好西指南 | HK Foodie Guide & CMS</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -10,59 +10,71 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body {
-      font-family: 'Noto Sans TC', sans-serif;
+      font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
       background-color: #FAF8F5;
       color: #1F2937;
+      overflow-x: clip;
     }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .card-hover {
-      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
     }
-    .card-hover:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.12);
+    @media (hover: hover) {
+      .card-hover:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 30px -10px rgba(234, 88, 12, 0.14);
+        border-color: #FDBA74;
+      }
+    }
+    .glass-header {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .safe-bottom {
+      padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 5rem);
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col safe-bottom lg:pb-0">
 
   <!-- 頂部導航欄 -->
-  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-orange-100 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
-      <div class="flex items-center gap-2.5 cursor-pointer" onclick="switchView('front')">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center text-white shadow-md">
+  <header class="sticky top-0 z-40 glass-header border-b border-orange-100/90 shadow-xs">
+    <div class="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5 cursor-pointer min-w-0" onclick="switchView('front')">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-orange-500 via-orange-600 to-red-600 flex items-center justify-center text-white shadow-md shadow-orange-500/20 shrink-0">
           <i data-lucide="utensils" class="w-5 h-5"></i>
         </div>
-        <div>
-          <h1 id="brand-title" class="font-black text-base sm:text-xl tracking-tight text-gray-900 leading-none">
+        <div class="truncate">
+          <h1 id="brand-title" class="font-black text-base sm:text-xl tracking-tight text-gray-900 leading-none truncate">
             香港食好西<span class="text-orange-600">指南</span>
           </h1>
-          <p class="text-[11px] text-gray-400 font-medium hidden sm:block mt-0.5">
+          <p class="text-[11px] text-gray-400 font-semibold hidden md:block mt-1 tracking-wide">
             HK FOODIE GUIDE • <span id="sync-status-label">LOCAL MODE</span>
           </p>
         </div>
       </div>
 
-      <div class="flex items-center bg-gray-100 p-1 rounded-xl border border-gray-200">
-        <button type="button" id="btn-view-front" onclick="switchView('front')" class="flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-white text-orange-600 shadow-sm">
+      <!-- 桌面版視圖切換 -->
+      <div class="hidden lg:flex items-center bg-gray-100/90 p-1 rounded-2xl border border-gray-200/80">
+        <button type="button" id="btn-view-front" onclick="switchView('front')" class="flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-sm font-bold transition-all bg-white text-orange-600 shadow-xs">
           <i data-lucide="compass" class="w-4 h-4"></i>
           <span id="nav-front-label">前台搵食</span>
         </button>
-        <button type="button" id="btn-view-admin" onclick="handleAdminNavClick()" class="flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-gray-600 hover:text-gray-900 relative">
+        <button type="button" id="btn-view-admin" onclick="handleAdminNavClick()" class="flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-sm font-bold transition-all text-gray-600 hover:text-gray-900 relative">
           <i data-lucide="shield-check" class="w-4 h-4"></i>
           <span id="nav-admin-label">後台 Admin</span>
           <span id="pending-badge" class="hidden absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[10px] flex items-center justify-center font-bold">0</span>
         </button>
       </div>
 
-      <div class="flex items-center gap-1.5 sm:gap-2">
-        <button type="button" id="btn-lang-toggle" onclick="toggleLanguage()" title="Switch Language / 切換語言" class="flex items-center gap-1 px-2.5 py-2 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-800 text-xs font-black transition-colors">
+      <!-- 右側操作區：語言切換 + 報料掣 -->
+      <div class="flex items-center gap-2 shrink-0">
+        <button type="button" id="btn-lang-toggle" onclick="toggleLanguage()" title="Switch Language / 切換語言" class="flex items-center gap-1 px-2.5 sm:px-3 py-2 rounded-xl border border-gray-200 bg-white hover:bg-orange-50/60 hover:border-orange-200 text-gray-800 text-xs font-black transition-all shadow-2xs">
           <i data-lucide="languages" class="w-4 h-4 text-orange-600"></i>
           <span id="lang-toggle-label">EN</span>
         </button>
 
-        <button type="button" onclick="openSubmitModal()" class="flex items-center gap-1.5 bg-orange-600 hover:bg-orange-700 text-white px-3 sm:px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold shadow-sm transition-colors">
+        <button type="button" onclick="openSubmitModal()" class="flex items-center gap-1.5 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shadow-sm shadow-orange-600/20 transition-all active:scale-95">
           <i data-lucide="plus-circle" class="w-4 h-4"></i>
           <span id="submit-btn-label" class="hidden sm:inline">報料好西</span>
           <span id="submit-btn-short" class="sm:hidden">報料</span>
@@ -73,83 +85,85 @@
 
   <!-- ==================== 前台視圖 ==================== -->
   <main id="front-view" class="flex-1">
-    <section class="bg-gradient-to-b from-orange-50 via-amber-50/40 to-transparent pt-8 pb-6 px-4 sm:px-6 lg:px-8 border-b border-orange-100/60">
+    <section class="bg-gradient-to-b from-orange-50/90 via-amber-50/40 to-transparent pt-6 sm:pt-10 pb-6 px-4 sm:px-6 lg:px-8 border-b border-orange-100/70">
       <div class="max-w-5xl mx-auto text-center">
-        <span id="hero-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold mb-3">
+        <span id="hero-badge" class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-orange-100/90 text-orange-700 text-xs font-bold mb-3 shadow-2xs">
           <i data-lucide="flame" class="w-3.5 h-3.5"></i> 全港細分地段地道美食資料庫
         </span>
-        <h2 id="hero-title" class="text-2xl sm:text-4xl font-black text-gray-900 tracking-tight mb-2">
+        <h2 id="hero-title" class="text-2xl sm:text-4xl lg:text-[42px] font-black text-gray-900 tracking-tight mb-2.5 leading-tight">
           今日想喺邊區<span class="text-orange-600">食好西</span>？
         </h2>
-        <p id="hero-subtitle" class="text-sm sm:text-base text-gray-600 mb-6">
+        <p id="hero-subtitle" class="text-xs sm:text-base text-gray-600 mb-6 max-w-2xl mx-auto leading-relaxed">
           覆蓋港島、九龍、新界及離島常用搵食地段，隨時搜尋招牌菜、時段同街坊食評
         </p>
 
-        <div class="bg-white p-2 rounded-2xl shadow-md border border-gray-200/80 flex flex-col lg:flex-row gap-2">
-          <div class="flex-1 flex items-center px-3 gap-2">
-            <i data-lucide="search" class="w-5 h-5 text-gray-400 shrink-0"></i>
-            <input id="search-input" type="text" oninput="renderFrontCards()" placeholder="搜尋餐廳名稱、地區、招牌菜..." class="w-full py-2 text-sm focus:outline-none text-gray-800 placeholder-gray-400" />
+        <!-- 搜尋及篩選卡片 -->
+        <div class="bg-white p-2.5 sm:p-2 rounded-2xl sm:rounded-3xl shadow-md shadow-gray-900/5 border border-gray-200/80 flex flex-col lg:flex-row gap-2">
+          <div class="flex-1 flex items-center px-3 sm:px-3.5 gap-2.5 bg-gray-50/70 lg:bg-transparent rounded-xl">
+            <i data-lucide="search" class="w-5 h-5 text-orange-500 shrink-0"></i>
+            <input id="search-input" type="text" oninput="renderFrontCards()" placeholder="搜尋餐廳名稱、地區、招牌菜..." class="w-full py-2.5 lg:py-2 text-sm bg-transparent focus:outline-none text-gray-800 placeholder-gray-400" />
           </div>
-          <div class="h-px lg:h-8 lg:w-px bg-gray-200 my-auto"></div>
+          <div class="hidden lg:block h-8 w-px bg-gray-200 my-auto"></div>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 lg:flex lg:items-center">
-            <div class="flex items-center px-3 gap-2 lg:w-44">
+            <div class="flex items-center px-3 gap-2 lg:w-44 bg-gray-50/70 lg:bg-transparent rounded-xl">
               <i data-lucide="map-pin" class="w-4 h-4 text-orange-500 shrink-0"></i>
-              <select id="district-filter" onchange="renderFrontCards()" class="w-full py-2 text-sm font-medium text-gray-700 bg-transparent focus:outline-none cursor-pointer"></select>
+              <select id="district-filter" onchange="renderFrontCards()" class="w-full py-2.5 lg:py-2 text-xs sm:text-sm font-semibold text-gray-700 bg-transparent focus:outline-none cursor-pointer"></select>
             </div>
-            <div class="flex items-center px-3 gap-2 lg:w-40 border-t sm:border-t-0 sm:border-l border-gray-200">
+            <div class="flex items-center px-3 gap-2 lg:w-40 bg-gray-50/70 lg:bg-transparent rounded-xl lg:border-l lg:border-gray-200 lg:rounded-none">
               <i data-lucide="clock" class="w-4 h-4 text-blue-500 shrink-0"></i>
-              <select id="mealtime-filter" onchange="renderFrontCards()" class="w-full py-2 text-sm font-medium text-gray-700 bg-transparent focus:outline-none cursor-pointer"></select>
+              <select id="mealtime-filter" onchange="renderFrontCards()" class="w-full py-2.5 lg:py-2 text-xs sm:text-sm font-semibold text-gray-700 bg-transparent focus:outline-none cursor-pointer"></select>
             </div>
-            <div class="flex items-center px-3 gap-2 lg:w-36 border-t sm:border-t-0 sm:border-l border-gray-200">
+            <div class="flex items-center px-3 gap-2 lg:w-36 bg-gray-50/70 lg:bg-transparent rounded-xl lg:border-l lg:border-gray-200 lg:rounded-none">
               <i data-lucide="dollar-sign" class="w-4 h-4 text-emerald-600 shrink-0"></i>
-              <select id="price-filter" onchange="renderFrontCards()" class="w-full py-2 text-sm font-medium text-gray-700 bg-transparent focus:outline-none cursor-pointer"></select>
+              <select id="price-filter" onchange="renderFrontCards()" class="w-full py-2.5 lg:py-2 text-xs sm:text-sm font-semibold text-gray-700 bg-transparent focus:outline-none cursor-pointer"></select>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="max-w-7xl mx-auto mt-6">
-        <div id="category-tabs" class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 justify-start"></div>
+      <!-- 全部分類標籤：自動換行，手機與電腦一眼睇哂 -->
+      <div class="max-w-7xl mx-auto mt-5 sm:mt-6">
+        <div id="category-tabs" class="flex flex-wrap items-center gap-1.5 sm:gap-2 pb-1 justify-start"></div>
       </div>
     </section>
 
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
         <div class="flex items-center gap-2 flex-wrap">
-          <h3 id="section-featured-title" class="text-lg font-bold text-gray-900">精選美食推介</h3>
-          <span id="result-count" class="px-2.5 py-0.5 rounded-full bg-gray-200 text-gray-700 text-xs font-bold">0 間</span>
-          <button type="button" id="btn-saved-only" onclick="toggleSavedFilter()" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-amber-300 bg-white text-amber-700 hover:bg-amber-50 text-xs font-bold transition-colors">
+          <h3 id="section-featured-title" class="text-lg sm:text-xl font-black text-gray-900">精選美食推介</h3>
+          <span id="result-count" class="px-2.5 py-0.5 rounded-full bg-orange-100/80 text-orange-800 text-xs font-bold">0 間</span>
+          <button type="button" id="btn-saved-only" onclick="toggleSavedFilter()" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-amber-300 bg-white text-amber-700 hover:bg-amber-50 text-xs font-bold transition-colors shadow-2xs">
             <i data-lucide="bookmark" class="w-3.5 h-3.5"></i>
             <span id="saved-filter-label">我嘅收藏</span>
             <span id="saved-count-pill" class="px-1.5 py-0.2 rounded-full bg-amber-100 text-amber-800 text-[10px]">0</span>
           </button>
         </div>
-        <div class="flex items-center gap-2 text-xs text-gray-500">
-          <span id="sort-label">排序：</span>
-          <select id="sort-select" onchange="renderFrontCards()" class="bg-white border border-gray-200 rounded-lg px-2.5 py-1.5 font-medium text-gray-700 focus:outline-none"></select>
+        <div class="flex items-center justify-between sm:justify-end gap-2 text-xs text-gray-500 bg-white sm:bg-transparent px-3 py-2 sm:p-0 rounded-xl border border-gray-200/70 sm:border-0">
+          <span id="sort-label" class="font-semibold">排序：</span>
+          <select id="sort-select" onchange="renderFrontCards()" class="bg-transparent sm:bg-white sm:border sm:border-gray-200 rounded-lg px-2 py-1 sm:px-2.5 sm:py-1.5 font-bold text-gray-700 focus:outline-none"></select>
         </div>
       </div>
 
-      <div id="restaurant-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+      <div id="restaurant-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6"></div>
 
-      <div id="empty-state" class="hidden text-center py-16 bg-white rounded-2xl border border-dashed border-gray-300">
-        <div class="w-14 h-14 bg-orange-50 text-orange-500 rounded-full flex items-center justify-center mx-auto mb-3">
+      <div id="empty-state" class="hidden text-center py-14 px-4 bg-white rounded-3xl border border-dashed border-gray-300 shadow-2xs">
+        <div class="w-14 h-14 bg-orange-50 text-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-3">
           <i data-lucide="search-x" class="w-7 h-7"></i>
         </div>
         <h4 id="empty-title" class="text-base font-bold text-gray-900">搵唔到符合條件嘅餐廳</h4>
-        <p id="empty-desc" class="text-sm text-gray-500 mt-1 mb-4">試下清除篩選條件，或者自己報料新增呢間好西！</p>
-        <button type="button" id="reset-filters-btn" onclick="resetFilters()" class="px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-xl hover:bg-gray-800">重設所有篩選</button>
+        <p id="empty-desc" class="text-xs sm:text-sm text-gray-500 mt-1 mb-4">試下清除篩選條件，或者自己報料新增呢間好西！</p>
+        <button type="button" id="reset-filters-btn" onclick="resetFilters()" class="px-4 py-2.5 bg-gray-900 text-white text-xs font-bold rounded-xl hover:bg-gray-800">重設所有篩選</button>
       </div>
     </section>
   </main>
 
   <!-- ==================== 後台視圖 ==================== -->
-  <main id="admin-view" class="hidden flex-1 bg-slate-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+  <main id="admin-view" class="hidden flex-1 bg-slate-50/90">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6 bg-white p-4 sm:p-6 rounded-3xl border border-slate-200/80 shadow-xs">
         <div>
           <div class="flex items-center gap-2 flex-wrap">
-            <span class="px-2.5 py-0.5 rounded bg-slate-900 text-white text-[11px] font-bold tracking-wider">CMS ADMIN</span>
+            <span class="px-2.5 py-0.5 rounded-lg bg-slate-900 text-white text-[11px] font-bold tracking-wider">CMS ADMIN</span>
             <h2 id="admin-heading" class="text-xl sm:text-2xl font-black text-slate-900">美食資料庫管理後台</h2>
             <span id="current-admin-badge" class="px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold flex items-center gap-1">
               <i data-lucide="user-check" class="w-3.5 h-3.5"></i> 已登入
@@ -158,25 +172,25 @@
           <p id="admin-subheading" class="text-xs sm:text-sm text-slate-500 mt-1">管理全站餐廳收錄、審核街坊報料、匯出備份，以及管理後台帳號</p>
         </div>
 
-        <div class="flex flex-wrap items-center gap-2">
-          <button type="button" onclick="openAdminFormModal()" class="px-3.5 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs sm:text-sm font-bold flex items-center gap-1.5 shadow-sm">
+        <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2">
+          <button type="button" onclick="openAdminFormModal()" class="col-span-2 sm:col-auto px-3.5 py-2.5 sm:py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 shadow-sm">
             <i data-lucide="plus" class="w-4 h-4"></i>
             <span id="admin-add-restaurant-btn">新增餐廳</span>
           </button>
-          <button type="button" onclick="exportBackupJson()" class="px-3 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold flex items-center gap-1.5">
+          <button type="button" onclick="exportBackupJson()" class="px-3 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold flex items-center justify-center gap-1.5">
             <i data-lucide="download" class="w-3.5 h-3.5 text-blue-600"></i>
             <span id="admin-export-btn">匯出備份</span>
           </button>
-          <label class="cursor-pointer px-3 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold flex items-center gap-1.5">
+          <label class="cursor-pointer px-3 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold flex items-center justify-center gap-1.5">
             <i data-lucide="upload" class="w-3.5 h-3.5 text-emerald-600"></i>
             <span id="admin-import-btn">匯入還原</span>
             <input id="import-backup-input" type="file" accept=".json,application/json" onchange="handleImportBackup(event)" class="hidden" />
           </label>
-          <button type="button" id="btn-reset-demo" onclick="resetDemoData()" class="px-3 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold flex items-center gap-1.5">
+          <button type="button" id="btn-reset-demo" onclick="resetDemoData()" class="px-3 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold flex items-center justify-center gap-1.5">
             <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
             <span id="admin-reset-demo-btn">重設示範資料</span>
           </button>
-          <button type="button" onclick="logoutAdmin()" class="px-3 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold flex items-center gap-1.5">
+          <button type="button" onclick="logoutAdmin()" class="px-3 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold flex items-center justify-center gap-1.5">
             <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
             <span id="admin-logout-btn">登出後台</span>
           </button>
@@ -184,7 +198,7 @@
       </div>
 
       <div class="flex items-center gap-2 mb-6 border-b border-slate-200 pb-3 flex-wrap">
-        <button type="button" id="subtab-restaurants" onclick="switchAdminSubTab('restaurants')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 text-white flex items-center gap-2 shadow-sm">
+        <button type="button" id="subtab-restaurants" onclick="switchAdminSubTab('restaurants')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 text-white flex items-center gap-2 shadow-xs">
           <i data-lucide="utensils" class="w-4 h-4"></i>
           <span id="subtab-restaurants-label">餐廳資料庫管理</span>
         </button>
@@ -199,62 +213,62 @@
       </div>
 
       <div id="admin-panel-restaurants">
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-2xs">
             <div class="flex items-center justify-between text-slate-500 text-xs font-bold mb-2">
               <span id="stat-total-label">總收錄餐廳</span>
-              <div class="w-8 h-8 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center"><i data-lucide="store" class="w-4 h-4"></i></div>
+              <div class="w-8 h-8 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center"><i data-lucide="store" class="w-4 h-4"></i></div>
             </div>
             <div id="stat-total" class="text-2xl sm:text-3xl font-black text-slate-900">0</div>
             <p class="text-[11px] text-emerald-600 font-medium mt-1" id="stat-published-sub">已發佈 0 間</p>
           </div>
 
-          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-2xs">
             <div class="flex items-center justify-between text-slate-500 text-xs font-bold mb-2">
               <span id="stat-pending-label">待審核報料</span>
-              <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center"><i data-lucide="clock" class="w-4 h-4"></i></div>
+              <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center"><i data-lucide="clock" class="w-4 h-4"></i></div>
             </div>
             <div id="stat-pending" class="text-2xl sm:text-3xl font-black text-amber-600">0</div>
             <p id="stat-pending-sub" class="text-[11px] text-slate-400 font-medium mt-1">需管理員批核上架</p>
           </div>
 
-          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-2xs">
             <div class="flex items-center justify-between text-slate-500 text-xs font-bold mb-2">
               <span id="stat-top-district-label">最多餐廳地段</span>
-              <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center"><i data-lucide="map" class="w-4 h-4"></i></div>
+              <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center"><i data-lucide="map" class="w-4 h-4"></i></div>
             </div>
-            <div id="stat-top-district" class="text-2xl sm:text-3xl font-black text-slate-900">-</div>
+            <div id="stat-top-district" class="text-xl sm:text-2xl font-black text-slate-900 truncate">-</div>
             <p class="text-[11px] text-slate-400 font-medium mt-1" id="stat-district-count">共 0 間好西</p>
           </div>
 
-          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-2xs">
             <div class="flex items-center justify-between text-slate-500 text-xs font-bold mb-2">
               <span id="stat-avg-rating-label">全站平均評分</span>
-              <div class="w-8 h-8 rounded-lg bg-yellow-50 text-yellow-600 flex items-center justify-center"><i data-lucide="star" class="w-4 h-4"></i></div>
+              <div class="w-8 h-8 rounded-xl bg-yellow-50 text-yellow-600 flex items-center justify-center"><i data-lucide="star" class="w-4 h-4"></i></div>
             </div>
             <div id="stat-avg-rating" class="text-2xl sm:text-3xl font-black text-slate-900">0.0</div>
             <p id="stat-avg-rating-sub" class="text-[11px] text-slate-400 font-medium mt-1">滿分 5.0 分</p>
           </div>
         </div>
 
-        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-          <div class="p-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/50">
-            <div class="flex items-center gap-2">
-              <button type="button" onclick="setAdminStatusFilter('ALL')" id="tab-admin-all" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white">全部資料</button>
-              <button type="button" onclick="setAdminStatusFilter('published')" id="tab-admin-published" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-200/70">已發佈</button>
-              <button type="button" onclick="setAdminStatusFilter('pending')" id="tab-admin-pending" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-200/70 flex items-center gap-1">
+        <div class="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
+          <div class="p-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/60">
+            <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+              <button type="button" onclick="setAdminStatusFilter('ALL')" id="tab-admin-all" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white">全部資料</button>
+              <button type="button" onclick="setAdminStatusFilter('published')" id="tab-admin-published" class="px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200/70">已發佈</button>
+              <button type="button" onclick="setAdminStatusFilter('pending')" id="tab-admin-pending" class="px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200/70 flex items-center gap-1">
                 <span id="tab-admin-pending-text">待審核</span>
                 <span id="admin-tab-pending-count" class="px-1.5 py-0.2 rounded-full bg-amber-100 text-amber-700 text-[10px]">0</span>
               </button>
             </div>
             <div class="relative w-full sm:w-64">
               <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-              <input id="admin-search" type="text" oninput="renderAdminTable()" placeholder="搜尋餐廳、地段或菜式..." class="w-full pl-9 pr-3 py-1.5 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:border-slate-500" />
+              <input id="admin-search" type="text" oninput="renderAdminTable()" placeholder="搜尋餐廳、地段或菜式..." class="w-full pl-9 pr-3 py-2 sm:py-1.5 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:border-slate-500" />
             </div>
           </div>
 
           <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
+            <table class="w-full text-left border-collapse min-w-[680px]">
               <thead>
                 <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase bg-slate-50">
                   <th id="th-restaurant" class="py-3.5 px-4">餐廳資訊</th>
@@ -273,9 +287,9 @@
 
       <div id="admin-panel-admins" class="hidden">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm h-fit">
-            <div class="flex items-center gap-2 mb-4">
-              <div class="w-9 h-9 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center"><i data-lucide="user-plus" class="w-5 h-5"></i></div>
+          <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs h-fit">
+            <div class="flex items-center gap-2.5 mb-4">
+              <div class="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center"><i data-lucide="user-plus" class="w-5 h-5"></i></div>
               <div>
                 <h3 id="add-admin-title" class="font-bold text-base text-slate-900">增加新 Admin 管理員</h3>
                 <p id="add-admin-desc" class="text-xs text-slate-500">建立新帳號俾團隊成員一齊管理</p>
@@ -285,19 +299,19 @@
             <form onsubmit="handleAddAdmin(event)" novalidate class="space-y-4">
               <div>
                 <label id="lbl-new-admin-name" class="block text-xs font-bold text-slate-700 mb-1">顯示名稱 / 稱呼 *</label>
-                <input id="new-admin-name" type="text" placeholder="例如：九龍區美食編輯阿明" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl focus:outline-none focus:border-orange-500" />
+                <input id="new-admin-name" type="text" placeholder="例如：九龍區美食編輯阿明" class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-xl focus:outline-none focus:border-orange-500" />
               </div>
               <div>
                 <label id="lbl-new-admin-user" class="block text-xs font-bold text-slate-700 mb-1">登入帳號 (Username) *</label>
-                <input id="new-admin-username" type="text" placeholder="例如：editor_ming" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl focus:outline-none focus:border-orange-500" />
+                <input id="new-admin-username" type="text" placeholder="例如：editor_ming" class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-xl focus:outline-none focus:border-orange-500" />
               </div>
               <div>
                 <label id="lbl-new-admin-pass" class="block text-xs font-bold text-slate-700 mb-1">登入密碼 *</label>
-                <input id="new-admin-password" type="text" placeholder="至少 4 個字元" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl focus:outline-none focus:border-orange-500" />
+                <input id="new-admin-password" type="text" placeholder="至少 4 個字元" class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-xl focus:outline-none focus:border-orange-500" />
               </div>
               <div>
                 <label id="lbl-new-admin-role" class="block text-xs font-bold text-slate-700 mb-1">管理員角色權限</label>
-                <select id="new-admin-role" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl bg-white focus:outline-none focus:border-orange-500"></select>
+                <select id="new-admin-role" class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-xl bg-white focus:outline-none focus:border-orange-500"></select>
               </div>
               <button type="submit" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold rounded-xl shadow-sm transition-colors flex items-center justify-center gap-1.5">
                 <i data-lucide="plus-circle" class="w-4 h-4"></i>
@@ -306,13 +320,13 @@
             </form>
           </div>
 
-          <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+          <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
             <div class="p-5 border-b border-slate-200">
               <h3 id="admin-list-title" class="font-bold text-base text-slate-900">現有後台管理員名單</h3>
               <p id="admin-list-desc" class="text-xs text-slate-500 mt-0.5">以下帳號均可用於登入本網站後台管理系統</p>
             </div>
             <div class="overflow-x-auto">
-              <table class="w-full text-left border-collapse">
+              <table class="w-full text-left border-collapse min-w-[540px]">
                 <thead>
                   <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase bg-slate-50">
                     <th id="th-adm-name" class="py-3.5 px-5">管理員名稱</th>
@@ -331,8 +345,27 @@
     </div>
   </main>
 
+  <!-- 手機版底部固定快捷導航列 -->
+  <nav class="lg:hidden fixed bottom-0 inset-x-0 z-30 glass-header border-t border-gray-200/90 shadow-lg">
+    <div class="grid grid-cols-3 h-16 items-center px-2">
+      <button type="button" id="mob-nav-front" onclick="switchView('front')" class="flex flex-col items-center justify-center gap-1 py-1.5 rounded-xl text-orange-600 font-bold text-[11px]">
+        <i data-lucide="compass" class="w-5 h-5"></i>
+        <span id="mob-front-label">前台搵食</span>
+      </button>
+      <button type="button" id="mob-nav-saved" onclick="switchView('front'); if (!onlySavedFilter) toggleSavedFilter();" class="flex flex-col items-center justify-center gap-1 py-1.5 rounded-xl text-gray-600 font-bold text-[11px] relative">
+        <i data-lucide="bookmark" class="w-5 h-5"></i>
+        <span id="mob-saved-label">我嘅收藏</span>
+      </button>
+      <button type="button" id="mob-nav-admin" onclick="handleAdminNavClick()" class="flex flex-col items-center justify-center gap-1 py-1.5 rounded-xl text-gray-600 font-bold text-[11px] relative">
+        <i data-lucide="shield-check" class="w-5 h-5"></i>
+        <span id="mob-admin-label">後台 Admin</span>
+        <span id="mob-pending-badge" class="hidden absolute top-1 right-6 w-4 h-4 rounded-full bg-red-500 text-white text-[10px] flex items-center justify-center font-bold">0</span>
+      </button>
+    </div>
+  </nav>
+
   <!-- ==================== 登入 Modal ==================== -->
-  <div id="login-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+  <div id="login-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl">
       <div class="p-6 bg-slate-900 text-white text-center relative">
         <button type="button" onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
@@ -359,26 +392,26 @@
   </div>
 
   <!-- ==================== 餐廳詳情 Modal ==================== -->
-  <div id="detail-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl my-auto">
-      <div class="relative h-56 sm:h-64 bg-gray-200">
+  <div id="detail-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center sm:p-4 overflow-y-auto">
+    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl max-h-[92vh] flex flex-col">
+      <div class="relative h-52 sm:h-64 bg-gray-200 shrink-0">
         <img id="modal-img" src="" alt="" class="w-full h-full object-cover" />
-        <button type="button" onclick="closeDetailModal()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center"><i data-lucide="x" class="w-5 h-5"></i></button>
-        <div id="modal-featured-tag" class="hidden absolute top-4 left-4 px-3 py-1 rounded-full bg-orange-600 text-white text-xs font-bold shadow-md flex items-center gap-1">
+        <button type="button" onclick="closeDetailModal()" class="absolute top-3.5 right-3.5 w-9 h-9 rounded-full bg-black/55 hover:bg-black/75 text-white flex items-center justify-center"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <div id="modal-featured-tag" class="hidden absolute top-3.5 left-3.5 px-3 py-1 rounded-full bg-orange-600 text-white text-xs font-bold shadow-md flex items-center gap-1">
           <i data-lucide="award" class="w-3.5 h-3.5"></i> <span id="modal-featured-text">編輯精選</span>
         </div>
       </div>
 
-      <div class="p-6">
-        <div class="flex flex-wrap items-start justify-between gap-2 mb-3">
+      <div class="p-5 sm:p-6 overflow-y-auto">
+        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-3">
           <div>
             <div class="flex items-center gap-2 text-xs font-bold text-orange-600 mb-1 flex-wrap">
               <span id="modal-district">地段</span><span>•</span><span id="modal-category">分類</span><span>•</span><span id="modal-price" class="text-emerald-600">$$</span>
               <span id="modal-mealtime-badge" class="hidden px-2 py-0.5 rounded bg-blue-50 text-blue-700 text-[11px]"></span>
             </div>
-            <h3 id="modal-name" class="text-2xl font-black text-gray-900">餐廳名稱</h3>
+            <h3 id="modal-name" class="text-xl sm:text-2xl font-black text-gray-900">餐廳名稱</h3>
           </div>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 flex-wrap">
             <div class="flex items-center gap-1 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200">
               <i data-lucide="star" class="w-4 h-4 text-amber-500 fill-amber-500"></i>
               <span id="modal-rating" class="font-black text-amber-800 text-sm">4.8</span>
@@ -399,7 +432,7 @@
           <div id="modal-dishes" class="flex flex-wrap gap-1.5"></div>
         </div>
 
-        <p id="modal-desc" class="text-sm text-gray-700 leading-relaxed bg-orange-50/50 p-4 rounded-2xl border border-orange-100 mb-4"></p>
+        <p id="modal-desc" class="text-xs sm:text-sm text-gray-700 leading-relaxed bg-orange-50/60 p-4 rounded-2xl border border-orange-100 mb-4"></p>
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-gray-600 mb-4 bg-gray-50 p-3.5 rounded-2xl">
           <div class="flex items-start gap-2">
@@ -416,9 +449,8 @@
           </div>
         </div>
 
-        <!-- 地圖導航 / 複製地址 / 分享快捷列 -->
-        <div class="flex flex-wrap items-center gap-2 mb-6">
-          <a id="modal-gmaps-link" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition-colors">
+        <div class="flex flex-wrap items-center gap-2 mb-5">
+          <a id="modal-gmaps-link" href="#" target="_blank" rel="noopener noreferrer" class="flex-1 sm:flex-initial justify-center inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs transition-colors">
             <i data-lucide="navigation" class="w-3.5 h-3.5"></i>
             <span id="btn-open-gmaps">Google Maps 導航</span>
           </a>
@@ -436,8 +468,8 @@
           <h4 id="modal-comments-title" class="text-sm font-bold text-gray-900 mb-3 flex items-center gap-1.5"><i data-lucide="message-square" class="w-4 h-4 text-orange-500"></i> 街坊食評留言</h4>
           <div id="modal-comments" class="space-y-2 max-h-36 overflow-y-auto mb-3 pr-1"></div>
           <form onsubmit="addComment(event)" novalidate class="flex gap-2">
-            <input id="comment-input" type="text" placeholder="留低你嘅食後感..." class="flex-1 text-xs border border-gray-300 rounded-xl px-3.5 py-2 focus:outline-none focus:border-orange-500" />
-            <button type="submit" id="btn-post-comment" class="px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-xl hover:bg-gray-800">發佈</button>
+            <input id="comment-input" type="text" placeholder="留低你嘅食後感..." class="flex-1 text-xs border border-gray-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-orange-500" />
+            <button type="submit" id="btn-post-comment" class="px-4 py-2.5 bg-gray-900 text-white text-xs font-bold rounded-xl hover:bg-gray-800 shrink-0">發佈</button>
           </form>
         </div>
       </div>
@@ -445,9 +477,9 @@
   </div>
 
   <!-- ==================== 新增 / 編輯 / 報料 Modal ==================== -->
-  <div id="form-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-white rounded-3xl max-w-xl w-full overflow-hidden shadow-2xl my-auto">
-      <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
+  <div id="form-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center sm:p-4 overflow-y-auto">
+    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-xl w-full overflow-hidden shadow-2xl max-h-[92vh] flex flex-col">
+      <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between shrink-0">
         <div class="flex items-center gap-2">
           <i data-lucide="utensils-crossed" class="w-5 h-5 text-orange-400"></i>
           <h3 id="form-modal-title" class="font-bold text-base">新增餐廳資料</h3>
@@ -455,7 +487,7 @@
         <button type="button" onclick="closeFormModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
 
-      <form id="restaurant-form" onsubmit="handleFormSubmit(event)" novalidate class="p-6 space-y-4 max-h-[82vh] overflow-y-auto">
+      <form id="restaurant-form" onsubmit="handleFormSubmit(event)" novalidate class="p-5 sm:p-6 space-y-4 overflow-y-auto">
         <input type="hidden" id="form-id" />
         <input type="hidden" id="form-mode" value="admin" />
 
@@ -559,7 +591,7 @@
   </div>
 
   <!-- Toast -->
-  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-gray-900 text-white px-4 py-3 rounded-xl shadow-lg text-xs font-bold flex items-center gap-2">
+  <div id="toast" class="fixed bottom-20 lg:bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-gray-900 text-white px-4 py-3 rounded-xl shadow-lg text-xs font-bold flex items-center gap-2">
     <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
     <span id="toast-msg">操作成功</span>
   </div>
@@ -678,6 +710,9 @@
         brandHtml: '香港食好西<span class="text-orange-600">指南</span>',
         navFront: '前台搵食',
         navAdmin: '後台 Admin',
+        mobFront: '搵食',
+        mobSaved: '收藏',
+        mobAdmin: '後台',
         langToggle: 'EN',
         submitFull: '報料好西',
         submitShort: '報料',
@@ -822,6 +857,9 @@
         brandHtml: 'HK Foodie<span class="text-orange-600">Guide</span>',
         navFront: 'Explore',
         navAdmin: 'Admin CMS',
+        mobFront: 'Explore',
+        mobSaved: 'Saved',
+        mobAdmin: 'Admin',
         langToggle: '中',
         submitFull: 'Submit Spot',
         submitShort: 'Submit',
@@ -1034,6 +1072,7 @@
     let savedSpotIds = [];
     let onlySavedFilter = false;
     let currentAdmin = null;
+    let currentActiveView = 'front';
     let selectedCategory = '全部';
     let adminStatusFilter = 'ALL';
     let currentDetailId = null;
@@ -1074,6 +1113,20 @@
       }
     }
 
+    function updateMobileNavState() {
+      const mobFront = document.getElementById('mob-nav-front');
+      const mobSaved = document.getElementById('mob-nav-saved');
+      const mobAdmin = document.getElementById('mob-nav-admin');
+      if (!mobFront || !mobSaved || !mobAdmin) return;
+
+      mobFront.className = 'flex flex-col items-center justify-center gap-1 py-1.5 rounded-xl font-bold text-[11px] ' +
+        (currentActiveView === 'front' && !onlySavedFilter ? 'text-orange-600 bg-orange-50/70' : 'text-gray-500');
+      mobSaved.className = 'flex flex-col items-center justify-center gap-1 py-1.5 rounded-xl font-bold text-[11px] relative ' +
+        (currentActiveView === 'front' && onlySavedFilter ? 'text-amber-600 bg-amber-50/80' : 'text-gray-500');
+      mobAdmin.className = 'flex flex-col items-center justify-center gap-1 py-1.5 rounded-xl font-bold text-[11px] relative ' +
+        (currentActiveView === 'admin' ? 'text-slate-900 bg-slate-100' : 'text-gray-500');
+    }
+
     function loadSavedSpotIds() {
       try {
         const raw = localStorage.getItem('hk_foodie_saved_ids_v1');
@@ -1094,8 +1147,9 @@
       document.getElementById('saved-filter-label').textContent = l.savedFilterLabel;
       const btn = document.getElementById('btn-saved-only');
       btn.className = onlySavedFilter
-        ? 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500 text-white text-xs font-bold shadow-sm transition-colors'
-        : 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-amber-300 bg-white text-amber-700 hover:bg-amber-50 text-xs font-bold transition-colors';
+        ? 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500 text-white text-xs font-bold shadow-xs transition-colors'
+        : 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-amber-300 bg-white text-amber-700 hover:bg-amber-50 text-xs font-bold transition-colors shadow-2xs';
+      updateMobileNavState();
     }
 
     function toggleSavedFilter() {
@@ -1133,7 +1187,7 @@
       const txt = document.getElementById('modal-save-text');
       txt.textContent = isSaved ? l.savedSpot : l.saveSpot;
       btn.className = isSaved
-        ? 'flex items-center gap-1 px-3 py-1.5 rounded-xl bg-amber-500 text-white font-bold text-xs sm:text-sm shadow-sm'
+        ? 'flex items-center gap-1 px-3 py-1.5 rounded-xl bg-amber-500 text-white font-bold text-xs sm:text-sm shadow-xs'
         : 'flex items-center gap-1 px-3 py-1.5 rounded-xl border border-amber-300 bg-white hover:bg-amber-50 text-amber-700 font-bold text-xs sm:text-sm';
     }
 
@@ -1215,6 +1269,9 @@
       document.getElementById('brand-title').innerHTML = l.brandHtml;
       document.getElementById('nav-front-label').textContent = l.navFront;
       document.getElementById('nav-admin-label').textContent = l.navAdmin;
+      document.getElementById('mob-front-label').textContent = l.mobFront;
+      document.getElementById('mob-saved-label').textContent = l.mobSaved;
+      document.getElementById('mob-admin-label').textContent = l.mobAdmin;
       document.getElementById('lang-toggle-label').textContent = l.langToggle;
       document.getElementById('submit-btn-label').textContent = l.submitFull;
       document.getElementById('submit-btn-short').textContent = l.submitShort;
@@ -1374,6 +1431,7 @@
         <option value="newest">${l.sortNewest}</option>
       `;
       sortSel.value = prevSort;
+      updateMobileNavState();
     }
 
     function populateDistrictAndCategorySelects() {
@@ -1471,7 +1529,6 @@
     async function upsertRestaurantSupabase(payload) {
       if (!supabaseClient) return null;
       let { error } = await supabaseClient.from('restaurants').upsert(payload);
-      // 若雲端舊資料表尚未建立 mealtime / hours 欄位，自動降級相容寫入
       if (error && /mealtime|hours|column/i.test(error.message || '')) {
         const strip = (row) => {
           const copy = { ...row };
@@ -1668,13 +1725,13 @@
       if (tab === 'restaurants') {
         panelRest.classList.remove('hidden');
         panelAdmins.classList.add('hidden');
-        btnRest.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 text-white flex items-center gap-2 shadow-sm';
+        btnRest.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 text-white flex items-center gap-2 shadow-xs';
         btnAdmins.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 flex items-center gap-2';
         renderAdminDashboard();
       } else {
         panelRest.classList.add('hidden');
         panelAdmins.classList.remove('hidden');
-        btnAdmins.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 text-white flex items-center gap-2 shadow-sm';
+        btnAdmins.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 text-white flex items-center gap-2 shadow-xs';
         btnRest.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 flex items-center gap-2';
         renderAdminAccountsTable();
       }
@@ -1759,29 +1816,35 @@
       const btnAdmin = document.getElementById('btn-view-admin');
 
       if (view === 'front') {
+        currentActiveView = 'front';
         frontView.classList.remove('hidden');
         adminView.classList.add('hidden');
-        btnFront.className = 'flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-white text-orange-600 shadow-sm';
-        btnAdmin.className = 'flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-gray-600 hover:text-gray-900 relative';
+        btnFront.className = 'flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-sm font-bold transition-all bg-white text-orange-600 shadow-xs';
+        btnAdmin.className = 'flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-sm font-bold transition-all text-gray-600 hover:text-gray-900 relative';
+        updateMobileNavState();
         renderFrontCards();
       } else {
         if (!currentAdmin) { handleAdminNavClick(); return; }
+        currentActiveView = 'admin';
         frontView.classList.add('hidden');
         adminView.classList.remove('hidden');
-        btnAdmin.className = 'flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-slate-900 text-white shadow-sm relative';
-        btnFront.className = 'flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-gray-600 hover:text-gray-900';
+        btnAdmin.className = 'flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-sm font-bold transition-all bg-slate-900 text-white shadow-xs relative';
+        btnFront.className = 'flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-sm font-bold transition-all text-gray-600 hover:text-gray-900';
         document.getElementById('current-admin-badge').innerHTML = `<i data-lucide="user-check" class="w-3.5 h-3.5"></i> ${t().loggedInBadge(currentAdmin.name)}`;
         applyAdminRolePermissions();
         renderAdminDashboard();
         renderAdminAccountsTable();
+        updateMobileNavState();
       }
       refreshIcons();
     }
 
     function renderCategoryTabs() {
       document.getElementById('category-tabs').innerHTML = CATEGORY_LABELS.map(cat => `
-        <button type="button" onclick="selectCategory('${cat.value}')" class="px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
-          selectedCategory === cat.value ? 'bg-orange-600 text-white shadow-sm' : 'bg-white text-gray-600 border border-gray-200 hover:border-orange-300 hover:text-orange-600'
+        <button type="button" onclick="selectCategory('${cat.value}')" class="px-3 sm:px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
+          selectedCategory === cat.value
+            ? 'bg-orange-600 text-white shadow-xs'
+            : 'bg-white text-gray-600 border border-gray-200/90 hover:border-orange-300 hover:text-orange-600 shadow-2xs'
         }">${cat[currentLang]}</button>
       `).join('');
     }
@@ -1850,35 +1913,35 @@
         grid.innerHTML = filtered.map(r => {
           const isSaved = savedSpotIds.includes(r.id);
           return `
-          <article onclick="openDetailModal('${r.id}')" class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm card-hover cursor-pointer flex flex-col">
-            <div class="relative h-48 bg-gray-100 overflow-hidden">
+          <article onclick="openDetailModal('${r.id}')" class="bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-xs card-hover cursor-pointer flex flex-col">
+            <div class="relative h-48 sm:h-52 bg-gray-100 overflow-hidden">
               <img src="${r.image}" alt="${r.name}" class="w-full h-full object-cover" onerror="this.src='${getFallbackImage(r.category)}'" />
               <div class="absolute top-3 left-3 flex gap-1.5 flex-wrap pr-10">
-                <span class="px-2.5 py-1 rounded-lg bg-black/65 text-white text-[11px] font-bold">${getDistrictName(r.district)}</span>
-                ${r.featured ? `<span class="px-2.5 py-1 rounded-lg bg-orange-600 text-white text-[11px] font-bold flex items-center gap-1"><i data-lucide="award" class="w-3 h-3"></i> ${l.modalFeaturedText}</span>` : ''}
+                <span class="px-2.5 py-1 rounded-xl bg-black/65 backdrop-blur-2xs text-white text-[11px] font-bold">${getDistrictName(r.district)}</span>
+                ${r.featured ? `<span class="px-2.5 py-1 rounded-xl bg-orange-600 text-white text-[11px] font-bold shadow-xs flex items-center gap-1"><i data-lucide="award" class="w-3 h-3"></i> ${l.modalFeaturedText}</span>` : ''}
               </div>
-              <button type="button" onclick="toggleSaveSpot('${r.id}', event)" title="${isSaved ? l.savedSpot : l.saveSpot}" class="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center shadow-sm transition-colors ${isSaved ? 'bg-amber-500 text-white' : 'bg-white/90 text-gray-600 hover:text-amber-600'}">
+              <button type="button" onclick="toggleSaveSpot('${r.id}', event)" title="${isSaved ? l.savedSpot : l.saveSpot}" class="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center shadow-xs transition-colors ${isSaved ? 'bg-amber-500 text-white' : 'bg-white/95 text-gray-600 hover:text-amber-600'}">
                 <i data-lucide="bookmark" class="w-4 h-4 ${isSaved ? 'fill-white' : ''}"></i>
               </button>
-              <div class="absolute bottom-3 left-3 px-2 py-0.5 rounded-md bg-blue-600/90 text-white text-[10px] font-bold">
+              <div class="absolute bottom-3 left-3 px-2.5 py-0.5 rounded-lg bg-blue-600/90 text-white text-[10px] font-bold">
                 ${getMealtimeName(r.mealtime || '全日供應')}
               </div>
-              <div class="absolute bottom-3 right-3 px-2 py-1 rounded-lg bg-white/95 text-xs font-black text-amber-600 flex items-center gap-1 shadow-sm">
+              <div class="absolute bottom-3 right-3 px-2.5 py-1 rounded-xl bg-white/95 text-xs font-black text-amber-600 flex items-center gap-1 shadow-xs">
                 <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i> ${Number(r.rating).toFixed(1)}
               </div>
             </div>
-            <div class="p-4 flex-1 flex flex-col">
+            <div class="p-4 sm:p-5 flex-1 flex flex-col">
               <div class="flex items-center justify-between text-[11px] font-bold text-gray-400 mb-1">
-                <span>${getCategoryName(r.category)}</span><span class="text-emerald-600 font-black">${r.price}</span>
+                <span>${getCategoryName(r.category)}</span><span class="text-emerald-600 font-black text-xs">${r.price}</span>
               </div>
-              <h4 class="font-bold text-base text-gray-900 mb-2 line-clamp-1">${r.name}</h4>
+              <h4 class="font-black text-base sm:text-[17px] text-gray-900 mb-2 line-clamp-1">${r.name}</h4>
               <div class="flex flex-wrap gap-1 mb-3">
-                ${(r.dishes || []).slice(0, 3).map(d => `<span class="px-2 py-0.5 rounded-md bg-orange-50 text-orange-700 text-[11px] font-medium">${d}</span>`).join('')}
+                ${(r.dishes || []).slice(0, 3).map(d => `<span class="px-2 py-0.5 rounded-lg bg-orange-50 text-orange-700 text-[11px] font-medium">${d}</span>`).join('')}
               </div>
-              <p class="text-xs text-gray-500 line-clamp-2 mb-4 flex-1">${r.desc}</p>
-              <div class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
-                <span class="truncate max-w-[65%] flex items-center gap-1"><i data-lucide="map-pin" class="w-3.5 h-3.5 text-gray-400 shrink-0"></i><span class="truncate">${r.address}</span></span>
-                <span class="flex items-center gap-1 font-bold text-rose-500"><i data-lucide="heart" class="w-3.5 h-3.5 fill-rose-500"></i> ${r.likes}</span>
+              <p class="text-xs text-gray-500 line-clamp-2 mb-4 flex-1 leading-relaxed">${r.desc}</p>
+              <div class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500 gap-2">
+                <span class="truncate flex items-center gap-1"><i data-lucide="map-pin" class="w-3.5 h-3.5 text-gray-400 shrink-0"></i><span class="truncate">${r.address}</span></span>
+                <span class="flex items-center gap-1 font-bold text-rose-500 shrink-0"><i data-lucide="heart" class="w-3.5 h-3.5 fill-rose-500"></i> ${r.likes}</span>
               </div>
             </div>
           </article>
@@ -1994,9 +2057,14 @@
     function updateBadges() {
       const pendingCount = restaurants.filter(r => r.status === 'pending').length;
       const badge = document.getElementById('pending-badge');
+      const mobBadge = document.getElementById('mob-pending-badge');
       const tabBadge = document.getElementById('admin-tab-pending-count');
       badge.textContent = pendingCount;
       badge.classList.toggle('hidden', pendingCount === 0);
+      if (mobBadge) {
+        mobBadge.textContent = pendingCount;
+        mobBadge.classList.toggle('hidden', pendingCount === 0);
+      }
       if (tabBadge) tabBadge.textContent = pendingCount;
     }
 
@@ -2026,8 +2094,8 @@
       ['ALL', 'published', 'pending'].forEach(st => {
         const btn = document.getElementById(`tab-admin-${st.toLowerCase()}`);
         btn.className = st === status
-          ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white flex items-center gap-1'
-          : 'px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-200/70 flex items-center gap-1';
+          ? 'px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white flex items-center gap-1'
+          : 'px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200/70 flex items-center gap-1';
       });
       renderAdminTable();
     }
